@@ -29,15 +29,15 @@ namespace WorkshopBackend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateOrderStatuses([FromForm] OrderStatuses status)
+        public async Task<IActionResult> CreateOrderStatuses([FromForm] OrderStatuses newStatus)
         {
-            return Ok(new { createdStatus = await _orderStatusService.CreateOrderStatuses(status) });
+            return Ok(new { createdStatus = await _orderStatusService.CreateOrderStatuses(newStatus) });
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateOrderStatuses(int id, [FromForm] OrderStatuses status)
+        public async Task<IActionResult> UpdateOrderStatuses(int id, [FromForm] OrderStatuses updatedStatus)
         {
-            return Ok(new { updatedStatus = await _orderStatusService.UpdateOrderStatuses(id, status) });
+            return Ok(new { updatedStatus = await _orderStatusService.UpdateOrderStatuses(id, updatedStatus) });
         }
 
         [HttpDelete("{id}")]

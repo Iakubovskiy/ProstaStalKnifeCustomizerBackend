@@ -20,25 +20,25 @@ namespace WorkshopBackend.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllSheathColors()
         {
-            return Ok(new { sheathColors = await _sheathColorService.GetAllSheathColors() });
+            return Ok(await _sheathColorService.GetAllSheathColors());
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetSheathColorsById(int id)
         {
-            return Ok(new { color = await _sheathColorService.GetSheathColorById(id) });
+            return Ok(await _sheathColorService.GetSheathColorById(id));
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateSheathColor([FromForm] SheathColor color, IFormFile material)
+        public async Task<IActionResult> CreateSheathColor([FromForm] SheathColor newColor, IFormFile handleMaterial)
         {
-            return Ok(new { createdColor = await _sheathColorService.CreateSheathColor(color, material) });
+            return Ok(await _sheathColorService.CreateSheathColor(newColor, handleMaterial));
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateSheathColor(int id, [FromForm] SheathColor color, IFormFile? material)
+        public async Task<IActionResult> UpdateSheathColor(int id, [FromForm] SheathColor updatedColor, IFormFile? handleMaterial)
         {
-            return Ok(new { updatedColor = await _sheathColorService.UpdateSheathColor(id, color, material) });
+            return Ok(await _sheathColorService.UpdateSheathColor(id, updatedColor, handleMaterial));
         }
 
         [HttpDelete("{id}")]

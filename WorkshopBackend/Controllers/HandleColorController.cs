@@ -20,34 +20,34 @@ namespace WorkshopBackend.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllHandleColors()
         {
-            return Ok(new { handleColors = await _handleColorService.GetAllHandleColors() });
+            return Ok(await _handleColorService.GetAllHandleColors());
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetHandleColorsById(int id)
         {
-            return Ok(new { color = await _handleColorService.GetHandleColorById(id) });
+            return Ok(await _handleColorService.GetHandleColorById(id));
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateHandleColor([FromForm] HandleColor handleColor, IFormFile material)
         {
-            return Ok(new { createdColor = await _handleColorService.CreateHandleColor(
+            return Ok(await _handleColorService.CreateHandleColor(
                     handleColor, 
                     material
                 ) 
-            });
+            );
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateHandleColor(int id, [FromForm] HandleColor updateHandleColor, IFormFile? material)
         {
-            return Ok(new { updatedColor = await _handleColorService.UpdateHandleColor(
+            return Ok(await _handleColorService.UpdateHandleColor(
                     id, 
                     updateHandleColor, 
                     material
                 ) 
-            });
+            );
         }
 
         [HttpDelete("{id}")]

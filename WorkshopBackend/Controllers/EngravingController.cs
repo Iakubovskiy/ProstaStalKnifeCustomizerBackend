@@ -20,25 +20,25 @@ namespace WorkshopBackend.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllEngravings()
         {
-            return Ok(new { engravings = await _engravingService.GetAllEngravings() });
+            return Ok(await _engravingService.GetAllEngravings());
         }
 
         [HttpGet ("{id}")]
         public async Task<IActionResult> GetEngravingsById(int id)
         {
-            return Ok(new { engraving = await _engravingService.GetEngravingById(id) });
+            return Ok( await _engravingService.GetEngravingById(id));
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateEngraving([FromForm] Engraving engraving, IFormFile? engravingPicrutre)
         {
-            return Ok(new { createdEngraving = await _engravingService.CreateEngraving(engraving, engravingPicrutre) });
+            return Ok(await _engravingService.CreateEngraving(engraving, engravingPicrutre));
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateEngraving(int id, [FromForm] Engraving engraving, IFormFile? engravingPicrutre)
         {
-            return Ok(new { updatedEngraving = await _engravingService.UpdateEngraving(id, engraving, engravingPicrutre) });
+            return Ok(await _engravingService.UpdateEngraving(id, engraving, engravingPicrutre));
         }
 
         [HttpDelete("{id}")]

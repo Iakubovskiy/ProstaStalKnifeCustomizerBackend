@@ -26,7 +26,7 @@ namespace WorkshopBackend.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginDTO model)
+        public async Task<IActionResult> Login([FromForm] LoginDTO model)
         {
             if (!ModelState.IsValid)
             {
@@ -53,7 +53,30 @@ namespace WorkshopBackend.Controllers
                 var token = await _authService.GenerateJwtTokenAsync(user, role, claims);
                 return Ok(new { Token = token });
             }
+            var emailUser = await _userManager.FindByEmailAsync(model.Username);
+            if(emailUser != null)
+            {
+                var emailResult = await _signInManager.PasswordSignInAsync(emailUser.UserName, model.Password, false, lockoutOnFailure: false);
+                if (emailResult.Succeeded)
+                {
+                    var user = await _userManager.FindByNameAsync(emailUser.UserName);
+                    if (user == null)
+                    {
+                        return Unauthorized();
+                    }
 
+                    var roles = await _userManager.GetRolesAsync(user);
+                    var role = roles.FirstOrDefault() ?? "User";
+                    var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(ClaimTypes.Role, role),
+                    new Claim("UserId", user.Id.ToString()),
+                };
+                    var token = await _authService.GenerateJwtTokenAsync(user, role, claims);
+                    return Ok(new { Token = token });
+                }
+            }
             return Unauthorized();
         }
 

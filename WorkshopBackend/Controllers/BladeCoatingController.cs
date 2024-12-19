@@ -21,27 +21,27 @@ namespace WorkshopBackend.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllBladeCoatings()
         {
-            return Ok(new { bladeCoatingColors = await _bladeCoatingService.GetAllBladeCoatings() });
+            return Ok(await _bladeCoatingService.GetAllBladeCoatings());
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetBladeCoatingsById(int id)
         {
-            return Ok(new { coating = await _bladeCoatingService.GetBladeCoatingById(id) });
+            return Ok(await _bladeCoatingService.GetBladeCoatingById(id));
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateBladeCoating([FromForm] string coatingJson, IFormFile material)
         {
             var coating = JsonConvert.DeserializeObject<BladeCoating>(coatingJson);
-            return Ok(new { createdCoating = await _bladeCoatingService.CreateBladeCoating(coating, material) });
+            return Ok(await _bladeCoatingService.CreateBladeCoating(coating, material));
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateBladeCoating(int id, [FromForm] string coatingJson, IFormFile? material)
         {
             var coating = JsonConvert.DeserializeObject<BladeCoating>(coatingJson);
-            return Ok(new { updatedCoating = await _bladeCoatingService.UpdateBladeCoating(id, coating, material) });
+            return Ok(await _bladeCoatingService.UpdateBladeCoating(id, coating, material));
         }
 
         [HttpDelete("{id}")]

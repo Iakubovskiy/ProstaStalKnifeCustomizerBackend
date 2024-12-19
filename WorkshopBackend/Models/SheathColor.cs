@@ -8,5 +8,6 @@
         public string Material { get; set; }
         public string? MaterialUrl { get; set; }
         public double Price { get; set; }
+        public string EngravingColorCode { get; set; }
     }
 }

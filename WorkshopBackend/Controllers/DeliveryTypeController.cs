@@ -19,25 +19,25 @@ namespace WorkshopBackend.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllDeliveryTypes()
         {
-            return Ok(new { deliveryTypes = await _deliveryTypeService.GetAllDeliveryTypes() });
+            return Ok(await _deliveryTypeService.GetAllDeliveryTypes());
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetDeliveryTypesById(int id)
         {
-            return Ok(new { type = await _deliveryTypeService.GetDeliveryTypeById(id) });
+            return Ok(await _deliveryTypeService.GetDeliveryTypeById(id));
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateDeliveryType([FromForm] DeliveryType type)
         {
-            return Ok(new { createdType = await _deliveryTypeService.CreateDeliveryType(type) });
+            return Ok(await _deliveryTypeService.CreateDeliveryType(type));
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateDeliveryType(int id, [FromForm] DeliveryType type)
         {
-            return Ok(new { updatedType = await _deliveryTypeService.UpdateDeliveryType(id, type) });
+            return Ok(await _deliveryTypeService.UpdateDeliveryType(id, type));
         }
 
         [HttpDelete("{id}")]

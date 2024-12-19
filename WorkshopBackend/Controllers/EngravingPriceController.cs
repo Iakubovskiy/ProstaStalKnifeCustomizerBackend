@@ -19,25 +19,25 @@ namespace WorkshopBackend.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllEngravingPrices()
         {
-            return Ok(new { engravingPrices = await _engravingPriceService.GetAllEngravingPrices() });
+            return Ok(await _engravingPriceService.GetAllEngravingPrices());
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetEngravingPricesById(int id)
         {
-            return Ok(new { price = await _engravingPriceService.GetEngravingPriceById(id) });
+            return Ok(await _engravingPriceService.GetEngravingPriceById(id));
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateEngravingPrice([FromForm] EngravingPrice price)
+        public async Task<IActionResult> CreateEngravingPrice([FromForm] EngravingPrice engravingPrice)
         {
-            return Ok(new { createdPrice = await _engravingPriceService.CreateEngravingPrice(price) });
+            return Ok(await _engravingPriceService.CreateEngravingPrice(engravingPrice));
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateEngravingPrice(int id, [FromForm] EngravingPrice price)
+        public async Task<IActionResult> UpdateEngravingPrice(int id, [FromForm] EngravingPrice engravingPrice)
         {
-            return Ok(new { updatedPrice = await _engravingPriceService.UpdateEngravingPrice(id, price) });
+            return Ok(await _engravingPriceService.UpdateEngravingPrice(id, engravingPrice));
         }
 
         [HttpDelete("{id}")]

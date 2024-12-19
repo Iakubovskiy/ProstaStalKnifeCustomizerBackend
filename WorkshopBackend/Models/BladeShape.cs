@@ -20,5 +20,11 @@
         public string bladeShapeModelUrl { get; set; }
         public string handleShapeModelUrl { get; set; }
         public string sheathModelUrl { get; set; }
+        public double? handleLocationX { get; set; }
+        public double? handleLocationY { get; set; }
+        public double? handleLocationZ { get; set; }
+        public double? handleRotationX { get; set; }
+        public double? handleRotationY { get; set; }
+        public double? handleRotationZ { get; set; }
     }
 }

@@ -20,13 +20,13 @@ namespace WorkshopBackend.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllBladeShapes()
         {
-            return Ok(new { bladeShapes = await _bladeShapeService.GetAllBladeShapes() });
+            return Ok(await _bladeShapeService.GetAllBladeShapes());
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetBladeShapesById(int id)
         {
-            return Ok(new { bladeShape = await _bladeShapeService.GetBladeShapeById(id) });
+            return Ok(await _bladeShapeService.GetBladeShapeById(id));
         }
 
         [HttpPost]
@@ -37,15 +37,14 @@ namespace WorkshopBackend.Controllers
                 IFormFile sheathModel
             )
         {
-            return Ok(new
-            {
-                createdBladeShape = await _bladeShapeService.CreateBladeShape(
+            return Ok(
+                await _bladeShapeService.CreateBladeShape(
                     shape,
                     bladeShapeModel, 
                     handleShapeModel, 
                     sheathModel
                 )
-            });
+            );
 
         }
 
@@ -58,14 +57,15 @@ namespace WorkshopBackend.Controllers
                 IFormFile? sheathModel
             )
         {
-            return Ok(new { updatedBladeShape = await _bladeShapeService.UpdateBladeShape(
+            return Ok(
+                await _bladeShapeService.UpdateBladeShape(
                     id,
                     updateBladeShape, 
                     bladeShapeModel,
                     handleShapeModel, 
                     sheathModel
                 ) 
-            });
+            );
         }
 
         [HttpDelete("{id}")]
