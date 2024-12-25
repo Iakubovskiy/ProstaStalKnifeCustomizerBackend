@@ -50,9 +50,6 @@ namespace WorkshopBackend.Repositories
             if (!string.IsNullOrEmpty(newBladeShape.bladeShapeModelUrl))
                 existingBladeShape.bladeShapeModelUrl = newBladeShape.bladeShapeModelUrl;
 
-            if (!string.IsNullOrEmpty(newBladeShape.handleShapeModelUrl))
-                existingBladeShape.handleShapeModelUrl = newBladeShape.handleShapeModelUrl;
-
             if (!string.IsNullOrEmpty(newBladeShape.sheathModelUrl))
                 existingBladeShape.sheathModelUrl = newBladeShape.sheathModelUrl;
             

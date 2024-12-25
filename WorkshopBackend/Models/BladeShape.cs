@@ -10,21 +10,14 @@
         public double bladeWidth { get; set; }
         public double bladeWeight { get; set; }
         public double sharpeningAngle { get; set; }
-        public double rockwellHardnessUnits { get; set; }
-        public double engravingLocationX { get; set; }
-        public double engravingLocationY { get; set; }
-        public double engravingLocationZ { get; set; }
-        public double engravingRotationX { get; set; }
-        public double engravingRotationY { get; set; }
-        public double engravingRotationZ { get; set; }
+        public double? rockwellHardnessUnits { get; set; }
+        public double? engravingLocationX { get; set; }
+        public double? engravingLocationY { get; set; }
+        public double? engravingLocationZ { get; set; }
+        public double? engravingRotationX { get; set; }
+        public double? engravingRotationY { get; set; }
+        public double? engravingRotationZ { get; set; }
         public string bladeShapeModelUrl { get; set; }
-        public string handleShapeModelUrl { get; set; }
         public string sheathModelUrl { get; set; }
-        public double? handleLocationX { get; set; }
-        public double? handleLocationY { get; set; }
-        public double? handleLocationZ { get; set; }
-        public double? handleRotationX { get; set; }
-        public double? handleRotationY { get; set; }
-        public double? handleRotationZ { get; set; }
     }
 }

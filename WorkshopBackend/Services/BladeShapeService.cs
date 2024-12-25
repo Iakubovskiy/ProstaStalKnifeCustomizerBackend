@@ -28,12 +28,10 @@ namespace WorkshopBackend.Services
         public async Task<BladeShape> CreateBladeShape(
             BladeShape bladeShape, 
             IFormFile bladeShapeModel, 
-            IFormFile handleModel,
             IFormFile sheathModel
             )
         {
             bladeShape.bladeShapeModelUrl = await _fileService.SaveFile(bladeShapeModel);
-            bladeShape.handleShapeModelUrl = await _fileService.SaveFile(handleModel);
             bladeShape.sheathModelUrl = await _fileService.SaveFile(sheathModel);
             return await _bladeShapeRepository.Create(bladeShape);
         }
@@ -42,7 +40,6 @@ namespace WorkshopBackend.Services
             int id, 
             BladeShape bladeShape,
             IFormFile? bladeShapeModel,
-            IFormFile? handleModel,
             IFormFile? sheathModel
             )
         {
@@ -50,13 +47,9 @@ namespace WorkshopBackend.Services
             {
                 bladeShape.bladeShapeModelUrl = await _fileService.SaveFile(bladeShapeModel);
             }
-            if (handleModel != null)
-            {
-                bladeShape.bladeShapeModelUrl = await _fileService.SaveFile(handleModel);
-            }
             if (sheathModel != null)
             {
-                bladeShape.bladeShapeModelUrl = await _fileService.SaveFile(sheathModel);
+                bladeShape.sheathModelUrl = await _fileService.SaveFile(sheathModel);
             }
             return await _bladeShapeRepository.Update(id, bladeShape);
         }
@@ -65,10 +58,8 @@ namespace WorkshopBackend.Services
         {
             BladeShape bladeShape = await _bladeShapeRepository.GetById(id);
             string shapeFileId = _fileService.GetIdFromUrl(bladeShape.bladeShapeModelUrl);
-            string handleFileId = _fileService.GetIdFromUrl(bladeShape.handleShapeModelUrl);
             string sheathFileId = _fileService.GetIdFromUrl(bladeShape.sheathModelUrl);
             await _fileService.DeleteFile(shapeFileId);
-            await _fileService.DeleteFile(handleFileId);
             await _fileService.DeleteFile(sheathFileId);
 
             return await _bladeShapeRepository.Delete(id);

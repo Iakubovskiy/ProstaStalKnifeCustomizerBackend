@@ -33,15 +33,13 @@ namespace WorkshopBackend.Controllers
         public async Task<IActionResult> CreateBladeShape(
                 [FromForm] BladeShape shape, 
                 IFormFile bladeShapeModel,
-                IFormFile handleShapeModel,
                 IFormFile sheathModel
             )
         {
             return Ok(
                 await _bladeShapeService.CreateBladeShape(
                     shape,
-                    bladeShapeModel, 
-                    handleShapeModel, 
+                    bladeShapeModel,  
                     sheathModel
                 )
             );
@@ -53,7 +51,6 @@ namespace WorkshopBackend.Controllers
                 int id, 
                 [FromForm] BladeShape updateBladeShape,
                 IFormFile? bladeShapeModel,
-                IFormFile? handleShapeModel,
                 IFormFile? sheathModel
             )
         {
@@ -61,8 +58,7 @@ namespace WorkshopBackend.Controllers
                 await _bladeShapeService.UpdateBladeShape(
                     id,
                     updateBladeShape, 
-                    bladeShapeModel,
-                    handleShapeModel, 
+                    bladeShapeModel, 
                     sheathModel
                 ) 
             );
