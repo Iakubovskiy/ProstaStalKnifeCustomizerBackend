@@ -43,8 +43,18 @@ namespace WorkshopBackend.Repositories
 
             foreach (BladeCoatingColor color in newBladeCoatingColors)
             {
-                if (bladeCoatingColors.Any(c => c.ColorCode == color.ColorCode))
+                if (bladeCoatingColors.Any(c => c.ColorCode == color.ColorCode || c.Color == color.Color) && color.Id != 0)
                 {
+                    BladeCoatingColor bladeCoatingColorToUpdate = await _context.BladeCoatingColors
+                        .FirstOrDefaultAsync(c => c.Id == color.Id);
+                   
+                    if (bladeCoatingColorToUpdate != null)
+                    {
+                        bladeCoatingColorToUpdate.Color = color.Color;
+                        bladeCoatingColorToUpdate.ColorCode = color.ColorCode;
+                        bladeCoatingColorToUpdate.EngravingColorCode = color.EngravingColorCode;
+                    }
+                    await _context.SaveChangesAsync();
                     bladeCoatingColors.Remove(bladeCoatingColors.First(c => c.ColorCode == color.ColorCode));
                 }
                 else
