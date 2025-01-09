@@ -19,5 +19,6 @@
         public double? engravingRotationZ { get; set; }
         public string bladeShapeModelUrl { get; set; }
         public string sheathModelUrl { get; set; }
+        public bool IsActive { get; set; } = true;
     }
 }

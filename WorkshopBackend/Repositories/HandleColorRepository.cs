@@ -35,9 +35,17 @@ namespace WorkshopBackend.Repositories
             existingHandleColor.ColorName = newHandleColor.ColorName;
             existingHandleColor.ColorCode = newHandleColor.ColorCode;
             existingHandleColor.Material = newHandleColor.Material;
-            if(newHandleColor.MaterialUrl != null)
+            if (newHandleColor.ColorMapUrl != null)
             {
-                existingHandleColor.MaterialUrl = newHandleColor.MaterialUrl;
+                existingHandleColor.ColorMapUrl = newHandleColor.ColorMapUrl;
+            }
+            if (newHandleColor.NormalMapUrl != null)
+            {
+                existingHandleColor.NormalMapUrl = newHandleColor.NormalMapUrl;
+            }
+            if (newHandleColor.RoughnessMapUrl != null)
+            {
+                existingHandleColor.RoughnessMapUrl = newHandleColor.RoughnessMapUrl;
             }
 
             await _context.SaveChangesAsync();

@@ -33,10 +33,11 @@ namespace WorkshopBackend.Repositories
         {
             var existingFastening = await _context.Fastenings.FirstOrDefaultAsync(a => a.Id == id);
             existingFastening.Name = newFastening.Name;
-            existingFastening.price = newFastening.price;
+            existingFastening.Price = newFastening.Price;
             existingFastening.Material = newFastening.Material;
             existingFastening.Color = newFastening.Color;
             existingFastening.ColorCode = newFastening.ColorCode;
+            existingFastening.IsActive = newFastening.IsActive;
             if(newFastening.ModelUrl != null)
             {
                 existingFastening.ModelUrl = newFastening.ModelUrl;

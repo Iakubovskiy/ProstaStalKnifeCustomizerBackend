@@ -35,6 +35,18 @@ namespace WorkshopBackend.Repositories
             existingBladeCoatingColor.Color = newBladeCoatingColor.Color;
             existingBladeCoatingColor.ColorCode = newBladeCoatingColor.ColorCode;
             existingBladeCoatingColor.EngravingColorCode = newBladeCoatingColor.EngravingColorCode;
+            if (newBladeCoatingColor.ColorMapUrl != null)
+            {
+                existingBladeCoatingColor.ColorMapUrl = newBladeCoatingColor.ColorMapUrl;
+            }
+            if (newBladeCoatingColor.NormalMapUrl != null)
+            {
+                existingBladeCoatingColor.NormalMapUrl = newBladeCoatingColor.NormalMapUrl;
+            }
+            if (newBladeCoatingColor.RoughnessMapUrl != null)
+            {
+                existingBladeCoatingColor.RoughnessMapUrl = newBladeCoatingColor.RoughnessMapUrl;
+            }
             await _context.SaveChangesAsync();
             return existingBladeCoatingColor;
         }

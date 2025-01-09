@@ -22,7 +22,6 @@ namespace WorkshopBackend.Repositories
         {
             return await _context.Knives
                 .Include(k => k.Shape)
-                .Include(k => k.BladeCoating)
                 .Include(k => k.BladeCoatingColor)
                 .Include(k => k.HandleColor)
                 .Include(k => k.SheathColor)
@@ -34,22 +33,14 @@ namespace WorkshopBackend.Repositories
         {
             if (_context.Entry(knife.Shape).State == EntityState.Detached)
                 _context.Attach(knife.Shape);
-            if (_context.Entry(knife.BladeCoating).State == EntityState.Detached)
-                _context.Attach(knife.BladeCoating);
             if (_context.Entry(knife.BladeCoatingColor).State == EntityState.Detached)
                 _context.Attach(knife.BladeCoatingColor);
             if (_context.Entry(knife.HandleColor).State == EntityState.Detached)
                 _context.Attach(knife.HandleColor);
             if (_context.Entry(knife.SheathColor).State == EntityState.Detached)
                 _context.Attach(knife.SheathColor);
-            if (knife.Fastening != null)
-            {
-                foreach (var fastening in knife.Fastening)
-                {
-                    if (_context.Entry(fastening).State == EntityState.Detached)
-                        _context.Attach(fastening);
-                }
-            }
+            if (_context.Entry(knife.Fastening).State == EntityState.Detached)
+                _context.Attach(knife.Fastening);
             if (knife.Engravings != null)
             {
                 foreach (var engraving in knife.Engravings)
@@ -66,7 +57,6 @@ namespace WorkshopBackend.Repositories
         {
             var existingKnife = await _context.Knives
                 .Include(k => k.Shape)
-                .Include(k => k.BladeCoating)
                 .Include(k => k.BladeCoatingColor)
                 .Include(k => k.HandleColor)
                 .Include(k => k.SheathColor)
@@ -79,25 +69,12 @@ namespace WorkshopBackend.Repositories
 
             if (_context.Entry(newKnife.Shape).State == EntityState.Detached)
                 _context.Attach(newKnife.Shape);
-            if (_context.Entry(newKnife.BladeCoating).State == EntityState.Detached)
-                _context.Attach(newKnife.BladeCoating);
             if (_context.Entry(newKnife.BladeCoatingColor).State == EntityState.Detached)
                 _context.Attach(newKnife.BladeCoatingColor);
             if (_context.Entry(newKnife.HandleColor).State == EntityState.Detached)
                 _context.Attach(newKnife.HandleColor);
             if (_context.Entry(newKnife.SheathColor).State == EntityState.Detached)
                 _context.Attach(newKnife.SheathColor);
-
-            if (newKnife.Fastening != null)
-            {
-                existingKnife.Fastening.Clear();
-                foreach (var fastening in newKnife.Fastening)
-                {
-                    if (_context.Entry(fastening).State == EntityState.Detached)
-                        _context.Attach(fastening);
-                    existingKnife.Fastening.Add(fastening);
-                }
-            }
             if (newKnife.Engravings != null)
             {
                 existingKnife.Engravings.Clear();

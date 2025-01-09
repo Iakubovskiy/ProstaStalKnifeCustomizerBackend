@@ -1,5 +1,6 @@
 ﻿using WorkshopBackend.Interfaces;
 using WorkshopBackend.Models;
+using WorkshopBackend.Repositories;
 
 namespace WorkshopBackend.Services
 {
@@ -42,15 +43,7 @@ namespace WorkshopBackend.Services
         public async Task<double> KnifePrice(int id)
         {
             Knife knife = await _knifeRepository.GetById(id);
-            double fasteningPrice = 0;
-            if(knife.Fastening != null)
-            {
-                foreach (Fastening fastening in knife.Fastening)
-                {
-                    fasteningPrice += fastening.price;
-                }
-            }
-            
+                        
             List<int>uniqueSides = new List<int>();
             if (knife.Engravings != null)
             {
@@ -65,8 +58,15 @@ namespace WorkshopBackend.Services
             List<EngravingPrice> prices = await _engravingPriceService.GetAllEngravingPrices();
             double oneSidePrice = prices[0].Price;
             double engravingPrice = uniqueSides.Count * oneSidePrice;
-            double price = knife.Shape.Price + knife.BladeCoating.Price + knife.SheathColor.Price + fasteningPrice + engravingPrice;
+            double price = knife.Shape.Price + knife.BladeCoatingColor.Price + knife.SheathColor.Price + knife.Fastening.Price + engravingPrice;
             return price;
+        }
+
+        public async Task<Knife> ChangeActive(int id, bool active)
+        {
+            Knife knife = await _knifeRepository.GetById(id);
+            knife.IsActive = active;
+            return await _knifeRepository.Update(id, knife);
         }
     }
 }

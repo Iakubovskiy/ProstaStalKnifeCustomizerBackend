@@ -5,8 +5,8 @@
         public int Id { get; set; }
         public string Number { get; set; }
         public double Total { get; set; }
-        public OrderStatuses Status { get; set; }
-        public List<Knife> Knives { get; set; }
+        public string Status { get; set; }
+        public List<Product> Products { get; set; }
         public DeliveryType DeliveryType { get; set; }
         public string ClientFullName { get; set; }
         public string ClientPhoneNumber { get; set; }

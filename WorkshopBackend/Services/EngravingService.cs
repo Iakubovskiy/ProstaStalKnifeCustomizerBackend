@@ -37,6 +37,10 @@ namespace WorkshopBackend.Services
         {
             if (file != null)
             {
+                if (!string.IsNullOrEmpty(engraving.pictureUrl))
+                {
+                    await _fileService.DeleteFile(_fileService.GetIdFromUrl(engraving.pictureUrl));
+                }
                 engraving.pictureUrl = await _fileService.SaveFile(file);
             }
             return await _engravingRepository.Update(id, engraving);

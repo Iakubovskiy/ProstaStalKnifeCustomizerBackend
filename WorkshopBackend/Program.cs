@@ -120,7 +120,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 #region interfaces
-builder.Services.AddScoped<Repository<BladeCoating, int>, BladeCoatingRepository>();
 builder.Services.AddScoped<Repository<BladeCoatingColor, int>, BladeCoatingColorRepository>();
 builder.Services.AddScoped<Repository<BladeShape, int>, BladeShapeRepository>();
 builder.Services.AddScoped<Repository<DeliveryType, int>, DeliveryTypeRepository>();
@@ -137,7 +136,6 @@ builder.Services.AddScoped<IFileService, CloudinaryService>();
 #endregion
 
 #region services
-builder.Services.AddScoped<BladeCoatingService>();
 builder.Services.AddScoped<BladeCoatingColorService>();
 builder.Services.AddScoped<BladeShapeService>();
 builder.Services.AddScoped<CloudinarySettings>();

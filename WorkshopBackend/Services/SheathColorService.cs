@@ -25,17 +25,74 @@ namespace WorkshopBackend.Services
             return await _sheathColorRepository.GetById(id);
         }
 
-        public async Task<SheathColor> CreateSheathColor(SheathColor sheathColor, IFormFile material)
+        public async Task<SheathColor> CreateSheathColor(
+            SheathColor sheathColor,
+            IFormFile? colorMap,
+            IFormFile? normalMap,
+            IFormFile? roughnesMap
+            )
         {
-            sheathColor.MaterialUrl = await _fileService.SaveFile(material);
+            if (colorMap != null)
+            {
+                sheathColor.ColorMapUrl = await _fileService.SaveFile(colorMap);
+            }
+            if (normalMap != null)
+            {
+                sheathColor.NormalMapUrl = await _fileService.SaveFile(normalMap);
+            }
+            if (roughnesMap != null)
+            {
+                sheathColor.RoughnessMapUrl = await _fileService.SaveFile(roughnesMap);
+            }
             return await _sheathColorRepository.Create(sheathColor);
         }
 
-        public async Task<SheathColor> UpdateSheathColor(int id, SheathColor sheathColor, IFormFile? material)
+        public async Task<SheathColor> UpdateSheathColor(
+            int id, 
+            SheathColor sheathColor, 
+            IFormFile? colorMap,
+            IFormFile? normalMap,
+            IFormFile? roughnesMap
+            )
         {
-            if(material != null)
+            if (colorMap != null)
             {
-                sheathColor.MaterialUrl = await _fileService.SaveFile(material);
+                if (!string.IsNullOrEmpty(sheathColor.ColorMapUrl))
+                {
+                    List<SheathColor> colors = await _sheathColorRepository.GetAll();
+                    int quantity = colors.Count(c => c.ColorMapUrl == sheathColor.ColorMapUrl);
+                    if (quantity <= 1)
+                    {
+                        await _fileService.DeleteFile(_fileService.GetIdFromUrl(sheathColor.ColorMapUrl));
+                    }
+                }
+                sheathColor.ColorMapUrl = await _fileService.SaveFile(colorMap);
+            }
+            if (normalMap != null)
+            {
+                if (!string.IsNullOrEmpty(sheathColor.NormalMapUrl))
+                {
+                    List<SheathColor> colors = await _sheathColorRepository.GetAll();
+                    int quantity = colors.Count(c => c.NormalMapUrl == sheathColor.NormalMapUrl);
+                    if (quantity <= 1)
+                    {
+                        await _fileService.DeleteFile(_fileService.GetIdFromUrl(sheathColor.NormalMapUrl));
+                    }
+                }
+                sheathColor.NormalMapUrl = await _fileService.SaveFile(normalMap);
+            }
+            if (roughnesMap != null)
+            {
+                if (!string.IsNullOrEmpty(sheathColor.RoughnessMapUrl))
+                {
+                    List<SheathColor> colors = await _sheathColorRepository.GetAll();
+                    int quantity = colors.Count(c => c.RoughnessMapUrl == sheathColor.RoughnessMapUrl);
+                    if (quantity <= 1)
+                    {
+                        await _fileService.DeleteFile(_fileService.GetIdFromUrl(sheathColor.RoughnessMapUrl));
+                    }
+                }
+                sheathColor.RoughnessMapUrl = await _fileService.SaveFile(roughnesMap);
             }
             return await _sheathColorRepository.Update(id, sheathColor);
         }
@@ -44,12 +101,28 @@ namespace WorkshopBackend.Services
         {
             SheathColor color = await _sheathColorRepository.GetById(id);
             List<SheathColor> colors = await _sheathColorRepository.GetAll();
-            int materialColorsQuantity = colors.Count(c => c.Material == color.Material);
-            if (materialColorsQuantity == 1 && color.MaterialUrl != null)
+            int quantity = colors.Count(c => c.ColorMapUrl == color.ColorMapUrl);
+            if (quantity <= 1)
             {
-                await _fileService.DeleteFile(_fileService.GetIdFromUrl(color.MaterialUrl));
+                await _fileService.DeleteFile(_fileService.GetIdFromUrl(color.ColorMapUrl));
+            }
+            quantity = colors.Count(c => c.RoughnessMapUrl == color.RoughnessMapUrl);
+            if (quantity <= 1)
+            {
+                await _fileService.DeleteFile(_fileService.GetIdFromUrl(color.RoughnessMapUrl));
+            }
+            quantity = colors.Count(c => c.NormalMapUrl == color.NormalMapUrl);
+            if (quantity <= 1)
+            {
+                await _fileService.DeleteFile(_fileService.GetIdFromUrl(color.NormalMapUrl));
             }
             return await _sheathColorRepository.Delete(id);
+        }
+        public async Task<SheathColor> ChangeActive(int id, bool active)
+        {
+            SheathColor sheathColor = await _sheathColorRepository.GetById(id);
+            sheathColor.IsActive = active;
+            return await _sheathColorRepository.Update(id, sheathColor);
         }
     }
 }

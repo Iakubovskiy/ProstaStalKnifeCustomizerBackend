@@ -46,6 +46,7 @@ namespace WorkshopBackend.Repositories
             existingBladeShape.engravingRotationX = newBladeShape.engravingRotationX;
             existingBladeShape.engravingRotationY = newBladeShape.engravingRotationY;
             existingBladeShape.engravingRotationZ = newBladeShape.engravingRotationZ;
+            existingBladeShape.IsActive = newBladeShape.IsActive;
 
             if (!string.IsNullOrEmpty(newBladeShape.bladeShapeModelUrl))
                 existingBladeShape.bladeShapeModelUrl = newBladeShape.bladeShapeModelUrl;

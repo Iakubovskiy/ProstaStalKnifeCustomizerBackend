@@ -35,6 +35,15 @@ namespace WorkshopBackend.Services
         {
             if (model != null) 
             {
+                if (!string.IsNullOrEmpty(fastening.ModelUrl))
+                {
+                    List<Fastening> fastenings = await _fasteningRepository.GetAll();
+                    int quantity = fastenings.Count(c => c.ModelUrl == fastening.ModelUrl);
+                    if (quantity <= 1)
+                    {
+                        await _fileService.DeleteFile(_fileService.GetIdFromUrl(fastening.ModelUrl));
+                    }
+                }
                 fastening.ModelUrl = await _fileService.SaveFile(model);
             }
             return await _fasteningRepository.Update(id, fastening);
@@ -46,6 +55,13 @@ namespace WorkshopBackend.Services
             string publicFileId = _fileService.GetIdFromUrl(existingFastening.ModelUrl);
             await _fileService.DeleteFile(publicFileId);
             return await _fasteningRepository.Delete(id);
+        }
+
+        public async Task<Fastening> ChangeActive(int id, bool active)
+        {
+            Fastening fastening = await _fasteningRepository.GetById(id);
+            fastening.IsActive = active;
+            return await _fasteningRepository.Update(id, fastening);
         }
     }
 }

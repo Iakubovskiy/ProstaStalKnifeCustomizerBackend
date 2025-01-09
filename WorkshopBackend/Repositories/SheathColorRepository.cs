@@ -36,9 +36,18 @@ namespace WorkshopBackend.Repositories
             existingSheathColor.ColorCode = newSheathColor.ColorCode;
             existingSheathColor.Material = newSheathColor.Material;
             existingSheathColor.Price = newSheathColor.Price;
-            if(newSheathColor.MaterialUrl != null)
+            existingSheathColor.IsActive = newSheathColor.IsActive;
+            if (newSheathColor.ColorMapUrl != null)
             {
-                existingSheathColor.MaterialUrl = newSheathColor.MaterialUrl;
+                existingSheathColor.ColorMapUrl = newSheathColor.ColorMapUrl;
+            }
+            if (newSheathColor.NormalMapUrl != null)
+            {
+                existingSheathColor.NormalMapUrl = newSheathColor.NormalMapUrl;
+            }
+            if (newSheathColor.RoughnessMapUrl != null)
+            {
+                existingSheathColor.RoughnessMapUrl = newSheathColor.RoughnessMapUrl;
             }
             await _context.SaveChangesAsync();
             return existingSheathColor;
