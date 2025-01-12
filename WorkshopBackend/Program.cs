@@ -14,13 +14,24 @@ using WorkshopBackend.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetValue<string>("DATABASE_URL");
-if (connectionString == null )
+if (connectionString != null)
+{
+    var databaseUrl = new Uri(connectionString);
+    var userInfo = databaseUrl.UserInfo.Split(':');
+
+    connectionString = $"Host={databaseUrl.Host};" +
+                      $"Port={databaseUrl.Port};" +
+                      $"Database={databaseUrl.AbsolutePath.Trim('/')};" +
+                      $"Username={userInfo[0]};" +
+                      $"Password={userInfo[1]};" +
+                      $"SSL Mode=Require;Trust Server Certificate=True;";
+}
+else
 {
     connectionString = builder.Configuration.GetConnectionString("DBContext");
 }
 builder.Services.AddDbContext<DBContext>(options =>
-    options.UseNpgsql(connectionString
-    ));
+    options.UseNpgsql(connectionString));
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowLocalhost",
