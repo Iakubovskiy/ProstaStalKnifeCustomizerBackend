@@ -5,7 +5,7 @@ using WorkshopBackend.Models;
 
 namespace WorkshopBackend.Repositories
 {
-    public class BladeCoatingColorRepository : Repository<BladeCoatingColor, int>
+    public class BladeCoatingColorRepository : Repository<BladeCoatingColor, Guid>
     {
         private readonly DBContext _context;
         public BladeCoatingColorRepository(DBContext context)
@@ -17,7 +17,7 @@ namespace WorkshopBackend.Repositories
             return await _context.BladeCoatingColors.ToListAsync();
         }
 
-        public async Task<BladeCoatingColor> GetById(int id)
+        public async Task<BladeCoatingColor> GetById(Guid id)
         {
             return await _context.BladeCoatingColors.FirstOrDefaultAsync(a => a.Id == id);
         }
@@ -29,7 +29,7 @@ namespace WorkshopBackend.Repositories
             return BladeCoatingColor;
         }
 
-        public async Task<BladeCoatingColor> Update(int id, BladeCoatingColor newBladeCoatingColor)
+        public async Task<BladeCoatingColor> Update(Guid id, BladeCoatingColor newBladeCoatingColor)
         {
             var existingBladeCoatingColor = await _context.BladeCoatingColors.FirstOrDefaultAsync(a => a.Id == id);
             existingBladeCoatingColor.Color = newBladeCoatingColor.Color;
@@ -51,7 +51,7 @@ namespace WorkshopBackend.Repositories
             return existingBladeCoatingColor;
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<bool> Delete(Guid id)
         {
             var BladeCoatingColor = await _context.BladeCoatingColors.FirstOrDefaultAsync(a => a.Id == id);
             _context.BladeCoatingColors.Remove(BladeCoatingColor);

@@ -1,11 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.EntityFrameworkCore;
 
 namespace WorkshopBackend.Models
 {
     [Index(nameof(ColorCode))]
-    public class BladeCoatingColor
+    public class BladeCoatingColor : IEntity
     {
-        public int Id { get; set; }
+        [BindNever]
+        public Guid Id { get; set; }
         public string Type { get; set; }
         public string Color { get; set; }
         public string? ColorCode { get; set; }

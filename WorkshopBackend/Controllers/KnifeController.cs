@@ -12,7 +12,6 @@ namespace WorkshopBackend.Controllers
     public class KnifeController : ControllerBase
     {
         private readonly KnifeService _knifeService;
-        private readonly BladeCoatingService _bladeCoatingService;
         private readonly BladeCoatingColorService _bladeCoatingColorService;
         private readonly SheathColorService _sheathService;
         private readonly HandleColorService _handleColorService;
@@ -22,7 +21,6 @@ namespace WorkshopBackend.Controllers
 
         public KnifeController(
             KnifeService service,
-            BladeCoatingService bladeCoatingService,
             BladeCoatingColorService bladeCoatingColorService,
             SheathColorService sheathColorService,
             HandleColorService handleColorService,
@@ -33,7 +31,6 @@ namespace WorkshopBackend.Controllers
         {
             _knifeService = service;
             _bladeCoatingColorService = bladeCoatingColorService;
-            _bladeCoatingService = bladeCoatingService;
             _bladeShapeService = bladeShapeService;
             _engravingService = engravingService;
             _fasteningService = fasteningService;
@@ -48,8 +45,14 @@ namespace WorkshopBackend.Controllers
             return Ok(await _knifeService.GetAllKnives());
         }
 
+        [HttpGet("active")]
+        public async Task<IActionResult> GetAllActiveKnifes()
+        {
+            return Ok(await _knifeService.GetAllActiveKnives());
+        }
+
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetKnifesById(int id)
+        public async Task<IActionResult> GetKnifesById(Guid id)
         {
             return Ok(await _knifeService.GetKnifeById(id));
         }
@@ -57,43 +60,28 @@ namespace WorkshopBackend.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateKnife([FromForm] KnifeDTO knife)
         {
-            var fastenings = !string.IsNullOrEmpty(knife.FasteningJson)
-            ? JsonSerializer.Deserialize<List<int>>(knife.FasteningJson)
-                .Select(id => _fasteningService.GetFasteningById(id).Result)
-                .ToList()
-            : new List<Fastening>();
-
             var engravings = !string.IsNullOrEmpty(knife.EngravingsJson)
-            ? JsonSerializer.Deserialize<List<int>>(knife.EngravingsJson)
+            ? JsonSerializer.Deserialize<List<Guid>>(knife.EngravingsJson)
                 .Select(id => _engravingService.GetEngravingById(id).Result)
                 .ToList()
             : new List<Engraving>();
             var newKnife = new Knife
             {
-                Id = knife.Id,
                 Shape = await _bladeShapeService.GetBladeShapeById(knife.ShapeId),
-                BladeCoating = await _bladeCoatingService.GetBladeCoatingById(knife.BladeCoatingId),
                 BladeCoatingColor = await _bladeCoatingColorService.GetBladeCoatingColorById(knife.BladeCoatingColorId),
                 HandleColor = await _handleColorService.GetHandleColorById(knife.HandleColorId),
                 SheathColor = await _sheathService.GetSheathColorById(knife.SheathColorId),
-                Fastening = fastenings,
+                Fastening = await _fasteningService.GetFasteningById(knife.FasteningId),
                 Engravings = engravings,
-                Quantity = knife.Quantity
             };
             return Ok(await _knifeService.CreateKnife(newKnife));
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateKnife(int id, [FromForm] KnifeDTO knifeDto)
+        public async Task<IActionResult> UpdateKnife(Guid id, [FromForm] KnifeDTO knifeDto)
         {
-            var fastenings = !string.IsNullOrEmpty(knifeDto.FasteningJson)
-            ? JsonSerializer.Deserialize<List<int>>(knifeDto.FasteningJson)
-                .Select(id => _fasteningService.GetFasteningById(id).Result)
-                .ToList()
-            : new List<Fastening>();
-
             var engravings = !string.IsNullOrEmpty(knifeDto.EngravingsJson)
-            ? JsonSerializer.Deserialize<List<int>>(knifeDto.EngravingsJson)
+            ? JsonSerializer.Deserialize<List<Guid>>(knifeDto.EngravingsJson)
                 .Select(id => _engravingService.GetEngravingById(id).Result)
                 .ToList()
             : new List<Engraving>();
@@ -102,13 +90,11 @@ namespace WorkshopBackend.Controllers
             {
                 Id = id,
                 Shape = await _bladeShapeService.GetBladeShapeById(knifeDto.ShapeId),
-                BladeCoating = await _bladeCoatingService.GetBladeCoatingById(knifeDto.BladeCoatingId),
                 BladeCoatingColor = await _bladeCoatingColorService.GetBladeCoatingColorById(knifeDto.BladeCoatingColorId),
                 HandleColor = await _handleColorService.GetHandleColorById(knifeDto.HandleColorId),
                 SheathColor = await _sheathService.GetSheathColorById(knifeDto.SheathColorId),
-                Fastening = fastenings,
+                Fastening = await _fasteningService.GetFasteningById(knifeDto.FasteningId),
                 Engravings = engravings,
-                Quantity = knifeDto.Quantity
             };
             var updatedKnife = await _knifeService.UpdateKnife(id, knife);
 
@@ -116,15 +102,27 @@ namespace WorkshopBackend.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteKnife(int id)
+        public async Task<IActionResult> DeleteKnife(Guid id)
         {
             return Ok(new { isDeleted = await _knifeService.DeleteKnife(id) });
         }
 
         [HttpGet("price/{id}")]
-        public async Task<IActionResult> GetKnifePrice(int id)
+        public async Task<IActionResult> GetKnifePrice(Guid id)
         {
             return Ok(new { price = await _knifeService.KnifePrice(id)});
+        }
+
+        [HttpPatch("deactivate/{id}")]
+        public async Task<IActionResult> Deactivate(Guid id)
+        {
+            return Ok(await _knifeService.ChangeActive(id, false));
+        }
+
+        [HttpPatch("activate/{id}")]
+        public async Task<IActionResult> Activate(Guid id)
+        {
+            return Ok(await _knifeService.ChangeActive(id, true));
         }
     }
 }

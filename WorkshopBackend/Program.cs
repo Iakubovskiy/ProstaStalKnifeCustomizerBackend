@@ -120,17 +120,17 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 #region interfaces
-builder.Services.AddScoped<Repository<BladeCoatingColor, int>, BladeCoatingColorRepository>();
-builder.Services.AddScoped<Repository<BladeShape, int>, BladeShapeRepository>();
-builder.Services.AddScoped<Repository<DeliveryType, int>, DeliveryTypeRepository>();
-builder.Services.AddScoped<Repository<Engraving, int>, EngravingRepository>();
-builder.Services.AddScoped<Repository<EngravingPrice, int>, EngravingPriceRepository>();
-builder.Services.AddScoped<Repository<Fastening, int>, FasteningRepository>();
-builder.Services.AddScoped<Repository<HandleColor, int>, HandleColorRepository>();
-builder.Services.AddScoped<Repository<Knife, int>, KnifeRepository>();
-builder.Services.AddScoped<Repository<Order, int>, OrderRepository>();
-builder.Services.AddScoped<Repository<OrderStatuses, int>, OrderStatusesRepository>();
-builder.Services.AddScoped<Repository<SheathColor, int>, SheathColorRepository>();
+builder.Services.AddScoped<Repository<BladeCoatingColor, Guid>, BladeCoatingColorRepository>();
+builder.Services.AddScoped<Repository<BladeShape, Guid>, BladeShapeRepository>();
+builder.Services.AddScoped<Repository<DeliveryType, Guid>, DeliveryTypeRepository>();
+builder.Services.AddScoped<Repository<Engraving, Guid>, EngravingRepository>();
+builder.Services.AddScoped<Repository<EngravingPrice, Guid>, EngravingPriceRepository>();
+builder.Services.AddScoped<Repository<Fastening, Guid>, FasteningRepository>();
+builder.Services.AddScoped<Repository<HandleColor, Guid>, HandleColorRepository>();
+builder.Services.AddScoped<Repository<Knife, Guid>, KnifeRepository>();
+builder.Services.AddScoped<Repository<Order, Guid>, OrderRepository>();
+builder.Services.AddScoped<Repository<OrderStatuses, Guid>, OrderStatusesRepository>();
+builder.Services.AddScoped<Repository<SheathColor, Guid>, SheathColorRepository>();
 builder.Services.AddScoped<ICustomEmailSender, EmailSenderService>();
 builder.Services.AddScoped<IFileService, CloudinaryService>();
 #endregion

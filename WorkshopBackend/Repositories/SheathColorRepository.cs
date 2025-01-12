@@ -5,7 +5,7 @@ using WorkshopBackend.Models;
 
 namespace WorkshopBackend.Repositories
 {
-    public class SheathColorRepository : Repository<SheathColor, int>
+    public class SheathColorRepository : Repository<SheathColor, Guid>
     {
         private readonly DBContext _context;
         public SheathColorRepository(DBContext context)
@@ -17,7 +17,7 @@ namespace WorkshopBackend.Repositories
             return await _context.SheathColors.ToListAsync();
         }
 
-        public async Task<SheathColor> GetById(int id)
+        public async Task<SheathColor> GetById(Guid id)
         {
             return await _context.SheathColors.FirstOrDefaultAsync(a => a.Id == id);
         }
@@ -29,7 +29,7 @@ namespace WorkshopBackend.Repositories
             return SheathColor;
         }
 
-        public async Task<SheathColor> Update(int id, SheathColor newSheathColor)
+        public async Task<SheathColor> Update(Guid id, SheathColor newSheathColor)
         {
             var existingSheathColor = await _context.SheathColors.FirstOrDefaultAsync(a => a.Id == id);
             existingSheathColor.Color = newSheathColor.Color;
@@ -53,7 +53,7 @@ namespace WorkshopBackend.Repositories
             return existingSheathColor;
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<bool> Delete(Guid id)
         {
             var SheathColor = await _context.SheathColors.FirstOrDefaultAsync(a => a.Id == id);
             _context.SheathColors.Remove(SheathColor);

@@ -6,21 +6,25 @@ namespace WorkshopBackend.Services
 {
     public class KnifeService
     {
-        public Repository<Knife, int> _knifeRepository;
+        public Repository<Knife, Guid> _knifeRepository;
         public EngravingPriceService _engravingPriceService;
 
-        public KnifeService(Repository<Knife, int> knifeRepository, EngravingPriceService engravingPriceService)
+        public KnifeService(Repository<Knife, Guid> knifeRepository, EngravingPriceService engravingPriceService)
         {
             _knifeRepository = knifeRepository;
             _engravingPriceService = engravingPriceService;
         }
-
+        public async Task<List<Knife>> GetAllActiveKnives()
+        {
+            List<Knife> knives = await _knifeRepository.GetAll();
+            return knives.Where(c => c.IsActive).ToList();
+        }
         public async Task<List<Knife>> GetAllKnives()
         {
             return await _knifeRepository.GetAll();
         }
 
-        public async Task<Knife> GetKnifeById(int id)
+        public async Task<Knife> GetKnifeById(Guid id)
         {
             return await _knifeRepository.GetById(id);
         }
@@ -30,17 +34,17 @@ namespace WorkshopBackend.Services
             return await _knifeRepository.Create(knife);
         }
 
-        public async Task<Knife> UpdateKnife(int id, Knife newKnife)
+        public async Task<Knife> UpdateKnife(Guid id, Knife newKnife)
         {
             return await _knifeRepository.Update(id, newKnife);
         }
 
-        public async Task<bool> DeleteKnife(int id)
+        public async Task<bool> DeleteKnife(Guid id)
         {
             return await _knifeRepository.Delete(id);
         }
 
-        public async Task<double> KnifePrice(int id)
+        public async Task<double> KnifePrice(Guid id)
         {
             Knife knife = await _knifeRepository.GetById(id);
                         
@@ -62,7 +66,7 @@ namespace WorkshopBackend.Services
             return price;
         }
 
-        public async Task<Knife> ChangeActive(int id, bool active)
+        public async Task<Knife> ChangeActive(Guid id, bool active)
         {
             Knife knife = await _knifeRepository.GetById(id);
             knife.IsActive = active;

@@ -23,8 +23,14 @@ namespace WorkshopBackend.Controllers
             return Ok(await _fasteningService.GetAllFastenings());
         }
 
+        [HttpGet("active")]
+        public async Task<IActionResult> GetAllActiveFastenings()
+        {
+            return Ok(await _fasteningService.GetAllActiveFastenings());
+        }
+
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetFasteningsById(int id)
+        public async Task<IActionResult> GetFasteningsById(Guid id)
         {
             return Ok(await _fasteningService.GetFasteningById(id));
         }
@@ -40,15 +46,27 @@ namespace WorkshopBackend.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateFastening(int id, [FromForm] Fastening updateFastening, IFormFile? model)
+        public async Task<IActionResult> UpdateFastening(Guid id, [FromForm] Fastening updateFastening, IFormFile? model)
         {
             return Ok(await _fasteningService.UpdateFastening(id, updateFastening, model));
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteFastening(int id)
+        public async Task<IActionResult> DeleteFastening(Guid id)
         {
             return Ok(new { isDeleted = await _fasteningService.DeleteFastening(id) });
+        }
+
+        [HttpPatch("deactivate/{id}")]
+        public async Task<IActionResult> Deactivate(Guid id)
+        {
+            return Ok(await _fasteningService.ChangeActive(id, false));
+        }
+
+        [HttpPatch("activate/{id}")]
+        public async Task<IActionResult> Activate(Guid id)
+        {
+            return Ok(await _fasteningService.ChangeActive(id, true));
         }
     }
 }

@@ -24,7 +24,7 @@ namespace WorkshopBackend.Controllers
         }
 
         [HttpGet ("{id}")]
-        public async Task<IActionResult> GetEngravingsById(int id)
+        public async Task<IActionResult> GetEngravingsById(Guid id)
         {
             return Ok( await _engravingService.GetEngravingById(id));
         }
@@ -36,13 +36,13 @@ namespace WorkshopBackend.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateEngraving(int id, [FromForm] Engraving engraving, IFormFile? engravingPicrutre)
+        public async Task<IActionResult> UpdateEngraving(Guid id, [FromForm] Engraving engraving, IFormFile? engravingPicrutre)
         {
             return Ok(await _engravingService.UpdateEngraving(id, engraving, engravingPicrutre));
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteEngraving(int id)
+        public async Task<IActionResult> DeleteEngraving(Guid id)
         {
             return Ok(new { isDeleted = await _engravingService.DeleteEngraving(id) });
         }

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WorkshopBackend.Repositories
 {
-    public class KnifeRepository: Repository<Knife, int>
+    public class KnifeRepository: Repository<Knife, Guid>
     {
         private readonly DBContext _context;
         
@@ -18,7 +18,7 @@ namespace WorkshopBackend.Repositories
         {
             return await _context.Knives.ToListAsync();
         }
-        public async Task<Knife> GetById(int id)
+        public async Task<Knife> GetById(Guid id)
         {
             return await _context.Knives
                 .Include(k => k.Shape)
@@ -53,7 +53,7 @@ namespace WorkshopBackend.Repositories
             await _context.SaveChangesAsync();
             return knife;
         }
-        public async Task<Knife> Update (int id, Knife newKnife)
+        public async Task<Knife> Update (Guid id, Knife newKnife)
         {
             var existingKnife = await _context.Knives
                 .Include(k => k.Shape)
@@ -86,12 +86,12 @@ namespace WorkshopBackend.Repositories
                 }
             }
 
-            _context.Entry(existingKnife).CurrentValues.SetValues(newKnife);
+            existingKnife.IsActive = newKnife.IsActive;
             await _context.SaveChangesAsync();
             
             return newKnife;
         }
-        public async Task<bool> Delete(int id)
+        public async Task<bool> Delete(Guid id)
         {
             var knife = await _context.Knives.FirstOrDefaultAsync(k => k.Id == id);
             _context.Knives.Remove(knife);

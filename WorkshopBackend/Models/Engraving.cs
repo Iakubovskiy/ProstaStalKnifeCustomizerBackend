@@ -1,8 +1,11 @@
-﻿namespace WorkshopBackend.Models
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+
+namespace WorkshopBackend.Models
 {
-    public class Engraving
+    public class Engraving : IEntity
     {
-        public int Id { get; set; }
+        [BindNever]
+        public Guid Id { get; set; }
         public string? Name { get; set; }
         public int Side { get; set; }
         public string? Text { get; set; }

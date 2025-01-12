@@ -6,10 +6,10 @@ namespace WorkshopBackend.Services
 {
     public class SheathColorService
     {
-        private readonly Repository<SheathColor, int> _sheathColorRepository;
+        private readonly Repository<SheathColor, Guid> _sheathColorRepository;
         private readonly IFileService _fileService;
 
-        public SheathColorService(Repository<SheathColor, int> sheathColorRepository, IFileService fileService)
+        public SheathColorService(Repository<SheathColor, Guid> sheathColorRepository, IFileService fileService)
         {
             _sheathColorRepository = sheathColorRepository;
             _fileService = fileService;
@@ -20,7 +20,13 @@ namespace WorkshopBackend.Services
             return await _sheathColorRepository.GetAll();
         }
 
-        public async Task<SheathColor> GetSheathColorById(int id)
+        public async Task<List<SheathColor>> GetAllActiveSheathColors()
+        {
+            List<SheathColor> sheathColors = await _sheathColorRepository.GetAll();
+            return sheathColors.Where(c => c.IsActive).ToList();
+        }
+
+        public async Task<SheathColor> GetSheathColorById(Guid id)
         {
             return await _sheathColorRepository.GetById(id);
         }
@@ -48,7 +54,7 @@ namespace WorkshopBackend.Services
         }
 
         public async Task<SheathColor> UpdateSheathColor(
-            int id, 
+            Guid id, 
             SheathColor sheathColor, 
             IFormFile? colorMap,
             IFormFile? normalMap,
@@ -97,7 +103,7 @@ namespace WorkshopBackend.Services
             return await _sheathColorRepository.Update(id, sheathColor);
         }
 
-        public async Task<bool> DeleteSheathColor(int id)
+        public async Task<bool> DeleteSheathColor(Guid id)
         {
             SheathColor color = await _sheathColorRepository.GetById(id);
             List<SheathColor> colors = await _sheathColorRepository.GetAll();
@@ -118,7 +124,7 @@ namespace WorkshopBackend.Services
             }
             return await _sheathColorRepository.Delete(id);
         }
-        public async Task<SheathColor> ChangeActive(int id, bool active)
+        public async Task<SheathColor> ChangeActive(Guid id, bool active)
         {
             SheathColor sheathColor = await _sheathColorRepository.GetById(id);
             sheathColor.IsActive = active;

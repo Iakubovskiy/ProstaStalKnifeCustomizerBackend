@@ -23,28 +23,57 @@ namespace WorkshopBackend.Controllers
             return Ok(await _bladeCoatingColorService.GetAllBladeCoatingColors());
         }
 
+        [HttpGet("active")]
+        public async Task<IActionResult> GetAllActiveBladeCoatingColors()
+        {
+            return Ok(await _bladeCoatingColorService.GetAllActiveBladeCoatingColors());
+        }
+
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetBladeCoatingColorsById(int id)
+        public async Task<IActionResult> GetBladeCoatingColorsById(Guid id)
         {
             return Ok(await _bladeCoatingColorService.GetBladeCoatingColorById(id));
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateBladeCoatingColor([FromForm] BladeCoatingColor color)
+        public async Task<IActionResult> CreateBladeCoatingColor(
+            [FromForm] BladeCoatingColor newColor,
+            IFormFile? colorMap,
+            IFormFile? normalMap,
+            IFormFile? roughnesMap
+            )
         {
-            return Ok(await _bladeCoatingColorService.CreateBladeCoatingColor(color));
+            return Ok(await _bladeCoatingColorService.CreateBladeCoatingColor(newColor,colorMap,normalMap,roughnesMap));
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateBladeCoatingColor (int id, [FromForm] BladeCoatingColor color)
+        public async Task<IActionResult> UpdateBladeCoatingColor (
+            Guid id, 
+            [FromForm] BladeCoatingColor newColor,
+            IFormFile? colorMap,
+            IFormFile? normalMap,
+            IFormFile? roughnesMap
+            )
         {
-            return Ok(await _bladeCoatingColorService.UpdateBladeCoatingColor(id, color));
+            return Ok(await _bladeCoatingColorService.UpdateBladeCoatingColor(id, newColor, colorMap, normalMap, roughnesMap));
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteBladeCoatingColor(int id)
+        public async Task<IActionResult> DeleteBladeCoatingColor(Guid id)
         {
             return Ok(new { isDeleted = await _bladeCoatingColorService.DeleteBladeCoatingColor(id) });
+        }
+
+        [HttpPatch("deactivate/{id}")]
+        public async Task<IActionResult> Deactivate(Guid id)
+        {
+            return Ok(await _bladeCoatingColorService.ChangeActive(id,false));
+        }
+
+        [HttpPatch("activate/{id}")]
+        public async Task<IActionResult> Activate(Guid id)
+        {
+            return Ok(await _bladeCoatingColorService.ChangeActive(id, true));
         }
     }
 }

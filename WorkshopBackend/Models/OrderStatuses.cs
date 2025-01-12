@@ -1,8 +1,11 @@
-﻿namespace WorkshopBackend.Models
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+
+namespace WorkshopBackend.Models
 {
-    public class OrderStatuses
+    public class OrderStatuses : IEntity
     {
-        public int Id { get; set; }
+        [BindNever]
+        public Guid Id { get; set; }
         public string Status { get; set; }
     }
 }

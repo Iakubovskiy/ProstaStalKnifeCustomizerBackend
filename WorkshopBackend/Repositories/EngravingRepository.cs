@@ -5,7 +5,7 @@ using WorkshopBackend.Models;
 
 namespace WorkshopBackend.Repositories
 {
-    public class EngravingRepository : Repository<Engraving, int>
+    public class EngravingRepository : Repository<Engraving, Guid>
     {
         private readonly DBContext _context;
         public EngravingRepository(DBContext context)
@@ -17,7 +17,7 @@ namespace WorkshopBackend.Repositories
             return await _context.Engravings.ToListAsync();
         }
 
-        public async Task<Engraving> GetById(int id)
+        public async Task<Engraving> GetById(Guid id)
         {
             return await _context.Engravings.FirstOrDefaultAsync(a => a.Id == id);
         }
@@ -29,7 +29,7 @@ namespace WorkshopBackend.Repositories
             return Engraving;
         }
 
-        public async Task<Engraving> Update(int id, Engraving newEngraving)
+        public async Task<Engraving> Update(Guid id, Engraving newEngraving)
         {
             var existingEngraving = await _context.Engravings.FirstOrDefaultAsync(a => a.Id == id);
 
@@ -55,7 +55,7 @@ namespace WorkshopBackend.Repositories
             return existingEngraving;
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<bool> Delete(Guid id)
         {
             var Engraving = await _context.Engravings.FirstOrDefaultAsync(a => a.Id == id);
             _context.Engravings.Remove(Engraving);

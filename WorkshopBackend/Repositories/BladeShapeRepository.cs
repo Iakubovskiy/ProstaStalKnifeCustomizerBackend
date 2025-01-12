@@ -5,7 +5,7 @@ using WorkshopBackend.Models;
 
 namespace WorkshopBackend.Repositories
 {
-    public class BladeShapeRepository : Repository<BladeShape, int>
+    public class BladeShapeRepository : Repository<BladeShape, Guid>
     {
         private readonly DBContext _context;
         public BladeShapeRepository(DBContext context)
@@ -17,7 +17,7 @@ namespace WorkshopBackend.Repositories
             return await _context.BladeShapes.ToListAsync();
         }
 
-        public async Task<BladeShape> GetById(int id)
+        public async Task<BladeShape> GetById(Guid id)
         {
             return await _context.BladeShapes.FirstOrDefaultAsync(a => a.Id == id);
         }
@@ -29,7 +29,7 @@ namespace WorkshopBackend.Repositories
             return BladeShape;
         }
 
-        public async Task<BladeShape> Update(int id, BladeShape newBladeShape)
+        public async Task<BladeShape> Update(Guid id, BladeShape newBladeShape)
         {
             var existingBladeShape = await _context.BladeShapes.FirstOrDefaultAsync(a => a.Id == id);
             existingBladeShape.Name = newBladeShape.Name ?? existingBladeShape.Name;
@@ -40,12 +40,6 @@ namespace WorkshopBackend.Repositories
             existingBladeShape.bladeWeight = newBladeShape.bladeWeight;
             existingBladeShape.sharpeningAngle = newBladeShape.sharpeningAngle;
             existingBladeShape.rockwellHardnessUnits = newBladeShape.rockwellHardnessUnits;
-            existingBladeShape.engravingLocationX = newBladeShape.engravingLocationX;
-            existingBladeShape.engravingLocationY = newBladeShape.engravingLocationY;
-            existingBladeShape.engravingLocationZ = newBladeShape.engravingLocationZ;
-            existingBladeShape.engravingRotationX = newBladeShape.engravingRotationX;
-            existingBladeShape.engravingRotationY = newBladeShape.engravingRotationY;
-            existingBladeShape.engravingRotationZ = newBladeShape.engravingRotationZ;
             existingBladeShape.IsActive = newBladeShape.IsActive;
 
             if (!string.IsNullOrEmpty(newBladeShape.bladeShapeModelUrl))
@@ -58,7 +52,7 @@ namespace WorkshopBackend.Repositories
             return existingBladeShape;
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<bool> Delete(Guid id)
         {
             var BladeShape = await _context.BladeShapes.FirstOrDefaultAsync(a => a.Id == id);
             _context.BladeShapes.Remove(BladeShape);

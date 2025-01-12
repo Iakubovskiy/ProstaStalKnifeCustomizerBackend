@@ -5,7 +5,7 @@ using WorkshopBackend.Models;
 
 namespace WorkshopBackend.Repositories
 {
-    public class DeliveryTypeRepository : Repository<DeliveryType, int>
+    public class DeliveryTypeRepository : Repository<DeliveryType, Guid>
     {
         private readonly DBContext _context;
         public DeliveryTypeRepository(DBContext context)
@@ -17,7 +17,7 @@ namespace WorkshopBackend.Repositories
             return await _context.DeliveryTypes.ToListAsync();
         }
 
-        public async Task<DeliveryType> GetById(int id)
+        public async Task<DeliveryType> GetById(Guid id)
         {
             return await _context.DeliveryTypes.FirstOrDefaultAsync(a => a.Id == id);
         }
@@ -29,17 +29,18 @@ namespace WorkshopBackend.Repositories
             return DeliveryType;
         }
 
-        public async Task<DeliveryType> Update(int id, DeliveryType newDeliveryType)
+        public async Task<DeliveryType> Update(Guid id, DeliveryType newDeliveryType)
         {
             var existingDeliveryType = await _context.DeliveryTypes.FirstOrDefaultAsync(a => a.Id == id);
             existingDeliveryType.Name = newDeliveryType.Name;
             existingDeliveryType.Price = newDeliveryType.Price;
             existingDeliveryType.Comment = newDeliveryType.Comment;
+            existingDeliveryType.IsActive = newDeliveryType.IsActive;
             await _context.SaveChangesAsync();
             return existingDeliveryType;
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<bool> Delete(Guid id)
         {
             var DeliveryType = await _context.DeliveryTypes.FirstOrDefaultAsync(a => a.Id == id);
             _context.DeliveryTypes.Remove(DeliveryType);

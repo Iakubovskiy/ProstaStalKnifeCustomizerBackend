@@ -4,12 +4,12 @@ namespace WorkshopBackend.DTO
 {
     public class OrderDTO
     {
-        public int Id { get; set; }
         public string Number { get; set; }
         public double Total { get; set; }
-        public int StatusId { get; set; }
-        public string KnivesIdsJson { get; set; }
-        public int DeliveryTypeId { get; set; }
+        public string Status { get; set; }
+        public string ProductIdsJson { get; set; }
+        public string ProductQuantitiesJson { get; set; }
+        public Guid DeliveryTypeId { get; set; }
         public string ClientFullName { get; set; }
         public string ClientPhoneNumber { get; set; }
         public string CountryForDelivery { get; set; }

@@ -8,10 +8,10 @@ namespace WorkshopBackend.Services
 {
     public class BladeShapeService
     {
-        private readonly Repository<BladeShape, int> _bladeShapeRepository;
+        private readonly Repository<BladeShape, Guid> _bladeShapeRepository;
         private readonly IFileService _fileService;
 
-        public BladeShapeService(Repository<BladeShape, int> bladeShapeRepository, IFileService fileService)
+        public BladeShapeService(Repository<BladeShape, Guid> bladeShapeRepository, IFileService fileService)
         {
             _bladeShapeRepository = bladeShapeRepository;
             _fileService = fileService;
@@ -22,14 +22,22 @@ namespace WorkshopBackend.Services
             return await _bladeShapeRepository.GetAll();
         }
 
-        public async Task<BladeShape> GetBladeShapeById(int id)
+        public async Task<List<BladeShape>> GetAllActiveBladeShapes()
+        {
+            List<BladeShape> bladeShapes = await _bladeShapeRepository.GetAll();
+            return bladeShapes.Where(c => c.IsActive).ToList();
+        }
+
+        public async Task<BladeShape> GetBladeShapeById(Guid id)
         {
             return await _bladeShapeRepository.GetById(id);
         }
 
-        public async Task<BladeShape> ChangeActive(int id, bool active)
+        public async Task<BladeShape> ChangeActive(Guid id, bool active)
         {
             BladeShape bladeShape = await _bladeShapeRepository.GetById(id);
+            if (bladeShape is null)
+                return null;
             bladeShape.IsActive = active;
             return await _bladeShapeRepository.Update(id, bladeShape);
         }
@@ -46,7 +54,7 @@ namespace WorkshopBackend.Services
         }
 
         public async Task<BladeShape> UpdateBladeShape(
-            int id, 
+            Guid id, 
             BladeShape bladeShape,
             IFormFile? bladeShapeModel,
             IFormFile? sheathModel
@@ -81,7 +89,7 @@ namespace WorkshopBackend.Services
             return await _bladeShapeRepository.Update(id, bladeShape);
         }
 
-        public async Task<bool> DeleteBladeShape(int id)
+        public async Task<bool> DeleteBladeShape(Guid id)
         {
             BladeShape bladeShape = await _bladeShapeRepository.GetById(id);
             string shapeFileId = _fileService.GetIdFromUrl(bladeShape.bladeShapeModelUrl);

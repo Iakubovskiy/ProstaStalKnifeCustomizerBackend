@@ -5,7 +5,7 @@ using WorkshopBackend.Models;
 
 namespace WorkshopBackend.Repositories
 {
-    public class OrderRepository: Repository<Order, int> 
+    public class OrderRepository: Repository<Order, Guid> 
     {
         private readonly DBContext _context;
         public OrderRepository(DBContext context)
@@ -16,45 +16,51 @@ namespace WorkshopBackend.Repositories
         {
             return await _context.Orders.ToListAsync();
         }
-        public async Task<Order> GetById(int id)
+        public async Task<Order> GetById(Guid id)
         {
             return _context.Orders
                 .Include(o => o.DeliveryType)
-                .Include(o => o.Status)
-                .Include(o => o.Knives)
+                .Include(o => o.Products)
                 .FirstOrDefault(o => o.Id == id);
         }
         public async Task<Order> Create(Order order)
         {
-            foreach (var knife in order.Knives)
+            if (order.DeliveryType != null)
             {
-                _context.Entry(knife).State = EntityState.Unchanged;
+                _context.Entry(order.DeliveryType).State = EntityState.Unchanged;
             }
-            _context.Attach(order.DeliveryType);
-            _context.Attach(order.Status);
+
+            if (order.Products != null)
+            {
+                foreach (var product in order.Products)
+                {
+                    _context.Entry(product).State = EntityState.Unchanged;
+                }
+            }
 
             _context.Add(order);
             await _context.SaveChangesAsync();
             return order;
         }
 
-        public async Task<Order> Update(int id, Order newOrder)
+        public async Task<Order> Update(Guid id, Order newOrder)
         {
             var existingOrder = await _context.Orders
-                .Include(o => o.Knives)
+                .Include(o => o.Products)
                 .FirstOrDefaultAsync(o => o.Id == id);
 
             if (existingOrder == null)
                 throw new KeyNotFoundException($"Order with id {id} not found.");
-
-            existingOrder.Knives.Clear();
-            foreach (var knife in newOrder.Knives)
+            if (newOrder.Products.Count != 0)
             {
-                _context.Attach(knife);
-                existingOrder.Knives.Add(knife);
+                existingOrder.Products.Clear();
+                foreach (var knife in newOrder.Products)
+                {
+                    _context.Attach(knife);
+                    existingOrder.Products.Add(knife);
+                }
             }
             _context.Attach(newOrder.DeliveryType);
-            _context.Attach(newOrder.Status);
             existingOrder.DeliveryType = newOrder.DeliveryType;
             existingOrder.Status = newOrder.Status;
             
@@ -71,7 +77,7 @@ namespace WorkshopBackend.Repositories
             return existingOrder;
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<bool> Delete(Guid id)
         {
             var order = await _context.Orders.FirstOrDefaultAsync(k => k.Id == id);
             _context.Orders.Remove(order);

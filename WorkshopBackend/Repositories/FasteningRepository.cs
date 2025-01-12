@@ -5,7 +5,7 @@ using WorkshopBackend.Models;
 
 namespace WorkshopBackend.Repositories
 {
-    public class FasteningRepository : Repository<Fastening, int>
+    public class FasteningRepository : Repository<Fastening, Guid>
     {
         private readonly DBContext _context;
         public FasteningRepository(DBContext context)
@@ -17,7 +17,7 @@ namespace WorkshopBackend.Repositories
             return await _context.Fastenings.ToListAsync();
         }
 
-        public async Task<Fastening> GetById(int id)
+        public async Task<Fastening> GetById(Guid id)
         {
             return await _context.Fastenings.FirstOrDefaultAsync(a => a.Id == id);
         }
@@ -29,7 +29,7 @@ namespace WorkshopBackend.Repositories
             return Fastening;
         }
 
-        public async Task<Fastening> Update(int id, Fastening newFastening)
+        public async Task<Fastening> Update(Guid id, Fastening newFastening)
         {
             var existingFastening = await _context.Fastenings.FirstOrDefaultAsync(a => a.Id == id);
             existingFastening.Name = newFastening.Name;
@@ -46,7 +46,7 @@ namespace WorkshopBackend.Repositories
             return existingFastening;
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<bool> Delete(Guid id)
         {
             var Fastening = await _context.Fastenings.FirstOrDefaultAsync(a => a.Id == id);
             _context.Fastenings.Remove(Fastening);

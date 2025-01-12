@@ -6,10 +6,10 @@ namespace WorkshopBackend.Services
 {
     public class BladeCoatingColorService
     {
-        private readonly Repository<BladeCoatingColor, int> _bladeCoatingColorRepository;
+        private readonly Repository<BladeCoatingColor, Guid> _bladeCoatingColorRepository;
         private readonly IFileService _fileService;
 
-        public BladeCoatingColorService(Repository<BladeCoatingColor, int> bladeCoatingRepository, IFileService fileService)
+        public BladeCoatingColorService(Repository<BladeCoatingColor, Guid> bladeCoatingRepository, IFileService fileService)
         {
             _bladeCoatingColorRepository = bladeCoatingRepository;
             _fileService = fileService;
@@ -20,7 +20,13 @@ namespace WorkshopBackend.Services
             return await _bladeCoatingColorRepository.GetAll();
         }
 
-        public async Task<BladeCoatingColor> GetBladeCoatingColorById(int id)
+        public async Task<List<BladeCoatingColor>> GetAllActiveBladeCoatingColors()
+        {
+            List<BladeCoatingColor> bladeCoatingColors = await _bladeCoatingColorRepository.GetAll();
+            return bladeCoatingColors.Where(c => c.IsActive).ToList();
+        }
+
+        public async Task<BladeCoatingColor> GetBladeCoatingColorById(Guid id)
         {
             return await _bladeCoatingColorRepository.GetById(id);
         }
@@ -48,7 +54,7 @@ namespace WorkshopBackend.Services
         }
 
         public async Task<BladeCoatingColor> UpdateBladeCoatingColor(
-            int id, 
+            Guid id, 
             BladeCoatingColor bladeCoatingColor,
             IFormFile? colorMap,
             IFormFile? normalMap,
@@ -97,7 +103,7 @@ namespace WorkshopBackend.Services
             return await _bladeCoatingColorRepository.Update(id, bladeCoatingColor);
         }
 
-        public async Task<bool> DeleteBladeCoatingColor(int id)
+        public async Task<bool> DeleteBladeCoatingColor(Guid id)
         {
             BladeCoatingColor color = await _bladeCoatingColorRepository.GetById(id);
             List<BladeCoatingColor> colors = await _bladeCoatingColorRepository.GetAll();
@@ -119,7 +125,7 @@ namespace WorkshopBackend.Services
             return await _bladeCoatingColorRepository.Delete(id);
         }
 
-        public async Task<BladeCoatingColor> ChangeActive(int id, bool active)
+        public async Task<BladeCoatingColor> ChangeActive(Guid id, bool active)
         {
             BladeCoatingColor bladeCoatingColor = await _bladeCoatingColorRepository.GetById(id);
             bladeCoatingColor.IsActive = active;

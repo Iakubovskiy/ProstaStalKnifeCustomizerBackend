@@ -1,13 +1,14 @@
 ﻿using WorkshopBackend.Interfaces;
 using WorkshopBackend.Models;
+using WorkshopBackend.Repositories;
 
 namespace WorkshopBackend.Services
 {
     public class DeliveryTypeService
     {
-        private readonly Repository<DeliveryType, int> _deliveryTypeRepository;
+        private readonly Repository<DeliveryType, Guid> _deliveryTypeRepository;
 
-        public DeliveryTypeService(Repository<DeliveryType, int> deliveryTypeRepository)
+        public DeliveryTypeService(Repository<DeliveryType, Guid> deliveryTypeRepository)
         {
             _deliveryTypeRepository = deliveryTypeRepository;
         }
@@ -17,7 +18,13 @@ namespace WorkshopBackend.Services
             return await _deliveryTypeRepository.GetAll();
         }
 
-        public async Task<DeliveryType> GetDeliveryTypeById(int id)
+        public async Task<List<DeliveryType>> GetAllActiveDeliveryTypes()
+        {
+            List<DeliveryType> deliveryTypes = await _deliveryTypeRepository.GetAll();
+            return deliveryTypes.Where(c => c.IsActive).ToList();
+        }
+
+        public async Task<DeliveryType> GetDeliveryTypeById(Guid id)
         {
             return await _deliveryTypeRepository.GetById(id);
         }
@@ -27,14 +34,21 @@ namespace WorkshopBackend.Services
             return await _deliveryTypeRepository.Create(deliveryType);
         }
 
-        public async Task<DeliveryType> UpdateDeliveryType(int id, DeliveryType deliveryType)
+        public async Task<DeliveryType> UpdateDeliveryType(Guid id, DeliveryType deliveryType)
         {
             return await _deliveryTypeRepository.Update(id, deliveryType);
         }
 
-        public async Task<bool> DeleteDeliveryType(int id)
+        public async Task<bool> DeleteDeliveryType(Guid id)
         {
             return await _deliveryTypeRepository.Delete(id);
+        }
+
+        public async Task<DeliveryType> ChangeActive(Guid id, bool active)
+        {
+            DeliveryType deliveryType = await _deliveryTypeRepository.GetById(id);
+            deliveryType.IsActive = active;
+            return await _deliveryTypeRepository.Update(id, deliveryType);
         }
     }
 }

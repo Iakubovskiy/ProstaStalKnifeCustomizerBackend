@@ -5,10 +5,10 @@ namespace WorkshopBackend.Services
 {
     public class EngravingService
     {
-        private readonly Repository<Engraving, int> _engravingRepository;
+        private readonly Repository<Engraving, Guid> _engravingRepository;
         private readonly IFileService _fileService;
 
-        public EngravingService(Repository<Engraving, int> engravingRepository, IFileService fileService)
+        public EngravingService(Repository<Engraving, Guid> engravingRepository, IFileService fileService)
         {
             _engravingRepository = engravingRepository;
             _fileService = fileService;
@@ -19,7 +19,7 @@ namespace WorkshopBackend.Services
             return await _engravingRepository.GetAll();
         }
 
-        public async Task<Engraving> GetEngravingById(int id)
+        public async Task<Engraving> GetEngravingById(Guid id)
         {
             return await _engravingRepository.GetById(id);
         }
@@ -33,7 +33,7 @@ namespace WorkshopBackend.Services
             return await _engravingRepository.Create(engraving);
         }
 
-        public async Task<Engraving> UpdateEngraving(int id, Engraving engraving, IFormFile? file)
+        public async Task<Engraving> UpdateEngraving(Guid id, Engraving engraving, IFormFile? file)
         {
             if (file != null)
             {
@@ -46,7 +46,7 @@ namespace WorkshopBackend.Services
             return await _engravingRepository.Update(id, engraving);
         }
 
-        public async Task<bool> DeleteEngraving(int id)
+        public async Task<bool> DeleteEngraving(Guid id)
         {
             Engraving engraving = await _engravingRepository.GetById(id);
             if (!string.IsNullOrEmpty(engraving.pictureUrl))

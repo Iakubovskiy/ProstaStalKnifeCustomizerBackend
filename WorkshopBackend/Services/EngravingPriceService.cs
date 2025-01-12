@@ -5,9 +5,9 @@ namespace WorkshopBackend.Services
 {
     public class EngravingPriceService
     {
-        private readonly Repository<EngravingPrice, int> _engravingPriceRepository;
+        private readonly Repository<EngravingPrice, Guid> _engravingPriceRepository;
 
-        public EngravingPriceService(Repository<EngravingPrice, int> engravingPriceRepository)
+        public EngravingPriceService(Repository<EngravingPrice, Guid> engravingPriceRepository)
         {
             _engravingPriceRepository = engravingPriceRepository;
         }
@@ -17,7 +17,7 @@ namespace WorkshopBackend.Services
             return await _engravingPriceRepository.GetAll();
         }
 
-        public async Task<EngravingPrice> GetEngravingPriceById(int id)
+        public async Task<EngravingPrice> GetEngravingPriceById(Guid id)
         {
             return await _engravingPriceRepository.GetById(id);
         }
@@ -27,12 +27,12 @@ namespace WorkshopBackend.Services
             return await _engravingPriceRepository.Create(engravingPrice);
         }
 
-        public async Task<EngravingPrice> UpdateEngravingPrice(int id, EngravingPrice engravingPrice)
+        public async Task<EngravingPrice> UpdateEngravingPrice(Guid id, EngravingPrice engravingPrice)
         {
             return await _engravingPriceRepository.Update(id, engravingPrice);
         }
 
-        public async Task<bool> DeleteEngravingPrice(int id)
+        public async Task<bool> DeleteEngravingPrice(Guid id)
         {
             return await _engravingPriceRepository.Delete(id);
         }

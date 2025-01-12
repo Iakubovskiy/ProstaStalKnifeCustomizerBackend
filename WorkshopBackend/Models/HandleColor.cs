@@ -1,8 +1,11 @@
-﻿namespace WorkshopBackend.Models
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+
+namespace WorkshopBackend.Models
 {
-    public class HandleColor
+    public class HandleColor : IEntity
     {
-        public int Id { get; set; }
+        [BindNever]
+        public Guid Id { get; set; }
         public string ColorName { get; set; }
         public string? ColorCode { get; set; }
         public string Material {  get; set; }

@@ -6,13 +6,19 @@ namespace WorkshopBackend.Services
 {
     public class HandleColorService
     {
-        private readonly Repository<HandleColor, int> _handleColorRepository;
+        private readonly Repository<HandleColor, Guid> _handleColorRepository;
         private readonly IFileService _fileService;
 
-        public HandleColorService(Repository<HandleColor, int> handleColorRepository, IFileService fileService)
+        public HandleColorService(Repository<HandleColor, Guid> handleColorRepository, IFileService fileService)
         {
             _handleColorRepository = handleColorRepository;
             _fileService = fileService;
+        }
+
+        public async Task<List<HandleColor>> GetAllActiveHandleColors()
+        {
+            List<HandleColor> handleColors = await _handleColorRepository.GetAll();
+            return handleColors.Where(c => c.IsActive).ToList();
         }
 
         public async Task<List<HandleColor>> GetAllHandleColors()
@@ -20,7 +26,7 @@ namespace WorkshopBackend.Services
             return await _handleColorRepository.GetAll();
         }
 
-        public async Task<HandleColor> GetHandleColorById(int id)
+        public async Task<HandleColor> GetHandleColorById(Guid id)
         {
             return await _handleColorRepository.GetById(id);
         }
@@ -75,7 +81,7 @@ namespace WorkshopBackend.Services
         }
 
         public async Task<HandleColor> UpdateHandleColor(
-            int id, 
+            Guid id, 
             HandleColor handleColor,
             IFormFile? colorMap,
             IFormFile? normalMap,
@@ -97,7 +103,7 @@ namespace WorkshopBackend.Services
             return await _handleColorRepository.Update(id, handleColor);
         }
 
-        public async Task<bool> DeleteHandleColor(int id)
+        public async Task<bool> DeleteHandleColor(Guid id)
         {
             HandleColor color = await _handleColorRepository.GetById(id);
             List<HandleColor> colors = await _handleColorRepository.GetAll();            
@@ -119,7 +125,7 @@ namespace WorkshopBackend.Services
             return await _handleColorRepository.Delete(id);
         }
 
-        public async Task<HandleColor> ChangeActive(int id, bool active)
+        public async Task<HandleColor> ChangeActive(Guid id, bool active)
         {
             HandleColor handleColor = await _handleColorRepository.GetById(id);
             handleColor.IsActive = active;

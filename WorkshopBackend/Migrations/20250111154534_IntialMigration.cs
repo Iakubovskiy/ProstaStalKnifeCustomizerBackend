@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace WorkshopBackend.Migrations
 {
     /// <inheritdoc />
-    public partial class FirstMigration : Migration
+    public partial class IntialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -53,40 +53,47 @@ namespace WorkshopBackend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BladeCoating",
+                name: "BladeCoatingColors",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: true),
-                    Price = table.Column<double>(type: "double precision", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Type = table.Column<string>(type: "text", nullable: false),
+                    Color = table.Column<string>(type: "text", nullable: false),
+                    ColorCode = table.Column<string>(type: "text", nullable: true),
+                    EngravingColorCode = table.Column<string>(type: "text", nullable: false),
+                    Price = table.Column<double>(type: "double precision", nullable: false, defaultValue: 0.0),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
+                    ColorMapUrl = table.Column<string>(type: "text", nullable: true),
+                    NormalMapUrl = table.Column<string>(type: "text", nullable: true),
+                    RoughnessMapUrl = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BladeCoating", x => x.Id);
+                    table.PrimaryKey("PK_BladeCoatingColors", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "BladeShapes",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    Price = table.Column<double>(type: "double precision", nullable: false),
+                    Price = table.Column<double>(type: "double precision", nullable: false, defaultValue: 0.0),
                     totalLength = table.Column<double>(type: "double precision", nullable: false),
                     bladeLength = table.Column<double>(type: "double precision", nullable: false),
                     bladeWidth = table.Column<double>(type: "double precision", nullable: false),
                     bladeWeight = table.Column<double>(type: "double precision", nullable: false),
                     sharpeningAngle = table.Column<double>(type: "double precision", nullable: false),
-                    rockwellHardnessUnits = table.Column<double>(type: "double precision", nullable: false),
-                    engravingLocationX = table.Column<double>(type: "double precision", nullable: false),
-                    engravingLocationY = table.Column<double>(type: "double precision", nullable: false),
-                    engravingLocationZ = table.Column<double>(type: "double precision", nullable: false),
-                    engravingRotationX = table.Column<double>(type: "double precision", nullable: false),
-                    engravingRotationY = table.Column<double>(type: "double precision", nullable: false),
-                    engravingRotationZ = table.Column<double>(type: "double precision", nullable: false)
+                    rockwellHardnessUnits = table.Column<double>(type: "double precision", nullable: true),
+                    engravingLocationX = table.Column<double>(type: "double precision", nullable: true),
+                    engravingLocationY = table.Column<double>(type: "double precision", nullable: true),
+                    engravingLocationZ = table.Column<double>(type: "double precision", nullable: true),
+                    engravingRotationX = table.Column<double>(type: "double precision", nullable: true),
+                    engravingRotationY = table.Column<double>(type: "double precision", nullable: true),
+                    engravingRotationZ = table.Column<double>(type: "double precision", nullable: true),
+                    bladeShapeModelUrl = table.Column<string>(type: "text", nullable: false),
+                    sheathModelUrl = table.Column<string>(type: "text", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true)
                 },
                 constraints: table =>
                 {
@@ -97,11 +104,11 @@ namespace WorkshopBackend.Migrations
                 name: "DeliveryTypes",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Price = table.Column<double>(type: "double precision", nullable: false),
-                    Comment = table.Column<string>(type: "text", nullable: true)
+                    Comment = table.Column<string>(type: "text", nullable: true),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -112,8 +119,7 @@ namespace WorkshopBackend.Migrations
                 name: "EngravingPrices",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Price = table.Column<double>(type: "double precision", nullable: false)
                 },
                 constraints: table =>
@@ -122,15 +128,42 @@ namespace WorkshopBackend.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Engravings",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: true),
+                    Side = table.Column<int>(type: "integer", nullable: false),
+                    Text = table.Column<string>(type: "text", nullable: true),
+                    Font = table.Column<string>(type: "text", nullable: true),
+                    pictureUrl = table.Column<string>(type: "text", nullable: true),
+                    rotationX = table.Column<double>(type: "double precision", nullable: false),
+                    rotationY = table.Column<double>(type: "double precision", nullable: false),
+                    rotationZ = table.Column<double>(type: "double precision", nullable: false),
+                    locationX = table.Column<double>(type: "double precision", nullable: false),
+                    locationY = table.Column<double>(type: "double precision", nullable: false),
+                    locationZ = table.Column<double>(type: "double precision", nullable: false),
+                    scaleX = table.Column<double>(type: "double precision", nullable: false),
+                    scaleY = table.Column<double>(type: "double precision", nullable: false),
+                    scaleZ = table.Column<double>(type: "double precision", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Engravings", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "HandleColors",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     ColorName = table.Column<string>(type: "text", nullable: false),
-                    ColorCode = table.Column<string>(type: "text", nullable: false),
+                    ColorCode = table.Column<string>(type: "text", nullable: true),
                     Material = table.Column<string>(type: "text", nullable: false),
-                    MaterialUrl = table.Column<string>(type: "text", nullable: true)
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
+                    ColorMapUrl = table.Column<string>(type: "text", nullable: true),
+                    NormalMapUrl = table.Column<string>(type: "text", nullable: true),
+                    RoughnessMapUrl = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -141,8 +174,7 @@ namespace WorkshopBackend.Migrations
                 name: "OrderStatuses",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Status = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
@@ -154,13 +186,16 @@ namespace WorkshopBackend.Migrations
                 name: "SheathColors",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Color = table.Column<string>(type: "text", nullable: false),
                     ColorCode = table.Column<string>(type: "text", nullable: false),
                     Material = table.Column<string>(type: "text", nullable: false),
-                    MaterialUrl = table.Column<string>(type: "text", nullable: true),
-                    Price = table.Column<double>(type: "double precision", nullable: false)
+                    Price = table.Column<double>(type: "double precision", nullable: false),
+                    EngravingColorCode = table.Column<string>(type: "text", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
+                    ColorMapUrl = table.Column<string>(type: "text", nullable: true),
+                    NormalMapUrl = table.Column<string>(type: "text", nullable: true),
+                    RoughnessMapUrl = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -274,36 +309,14 @@ namespace WorkshopBackend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BladeCoatingColors",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Color = table.Column<string>(type: "text", nullable: false),
-                    ColorCode = table.Column<string>(type: "text", nullable: false),
-                    EngravingColorCode = table.Column<string>(type: "text", nullable: false),
-                    BladeCoatingId = table.Column<int>(type: "integer", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_BladeCoatingColors", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_BladeCoatingColors_BladeCoating_BladeCoatingId",
-                        column: x => x.BladeCoatingId,
-                        principalTable: "BladeCoating",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Orders",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Number = table.Column<string>(type: "text", nullable: false),
                     Total = table.Column<double>(type: "double precision", nullable: false),
-                    StatusId = table.Column<int>(type: "integer", nullable: false),
-                    DeliveryTypeId = table.Column<int>(type: "integer", nullable: false),
+                    Status = table.Column<string>(type: "text", nullable: false),
+                    DeliveryTypeId = table.Column<Guid>(type: "uuid", nullable: false),
                     ClientFullName = table.Column<string>(type: "text", nullable: false),
                     ClientPhoneNumber = table.Column<string>(type: "text", nullable: false),
                     CountryForDelivery = table.Column<string>(type: "text", nullable: false),
@@ -320,55 +333,55 @@ namespace WorkshopBackend.Migrations
                         principalTable: "DeliveryTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Orders_OrderStatuses_StatusId",
-                        column: x => x.StatusId,
-                        principalTable: "OrderStatuses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Knives",
+                name: "Product",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ShapeId = table.Column<int>(type: "integer", nullable: false),
-                    BladeCoatingId = table.Column<int>(type: "integer", nullable: false),
-                    HandleColorId = table.Column<int>(type: "integer", nullable: false),
-                    SheathColorId = table.Column<int>(type: "integer", nullable: false),
-                    Quantity = table.Column<int>(type: "integer", nullable: false),
-                    OrderId = table.Column<int>(type: "integer", nullable: true)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
+                    Discriminator = table.Column<string>(type: "character varying(13)", maxLength: 13, nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: true),
+                    Material = table.Column<string>(type: "text", nullable: true),
+                    Color = table.Column<string>(type: "text", nullable: true),
+                    ColorCode = table.Column<string>(type: "text", nullable: true),
+                    Price = table.Column<double>(type: "double precision", nullable: true),
+                    ModelUrl = table.Column<string>(type: "text", nullable: true),
+                    ShapeId = table.Column<Guid>(type: "uuid", nullable: true),
+                    BladeCoatingColorId = table.Column<Guid>(type: "uuid", nullable: true),
+                    HandleColorId = table.Column<Guid>(type: "uuid", nullable: true),
+                    SheathColorId = table.Column<Guid>(type: "uuid", nullable: true),
+                    FasteningId = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Knives", x => x.Id);
+                    table.PrimaryKey("PK_Product", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Knives_BladeCoating_BladeCoatingId",
-                        column: x => x.BladeCoatingId,
-                        principalTable: "BladeCoating",
+                        name: "FK_Product_BladeCoatingColors_BladeCoatingColorId",
+                        column: x => x.BladeCoatingColorId,
+                        principalTable: "BladeCoatingColors",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Knives_BladeShapes_ShapeId",
+                        name: "FK_Product_BladeShapes_ShapeId",
                         column: x => x.ShapeId,
                         principalTable: "BladeShapes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Knives_HandleColors_HandleColorId",
+                        name: "FK_Product_HandleColors_HandleColorId",
                         column: x => x.HandleColorId,
                         principalTable: "HandleColors",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Knives_Orders_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "Orders",
+                        name: "FK_Product_Product_FasteningId",
+                        column: x => x.FasteningId,
+                        principalTable: "Product",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Knives_SheathColors_SheathColorId",
+                        name: "FK_Product_SheathColors_SheathColorId",
                         column: x => x.SheathColorId,
                         principalTable: "SheathColors",
                         principalColumn: "Id",
@@ -376,58 +389,53 @@ namespace WorkshopBackend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Engravings",
+                name: "EngravingKnife",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: true),
-                    Side = table.Column<int>(type: "integer", nullable: false),
-                    Text = table.Column<string>(type: "text", nullable: true),
-                    Font = table.Column<string>(type: "text", nullable: true),
-                    pictureUrl = table.Column<string>(type: "text", nullable: true),
-                    rotationX = table.Column<double>(type: "double precision", nullable: false),
-                    rotationY = table.Column<double>(type: "double precision", nullable: false),
-                    rotationZ = table.Column<double>(type: "double precision", nullable: false),
-                    locationX = table.Column<double>(type: "double precision", nullable: false),
-                    locationY = table.Column<double>(type: "double precision", nullable: false),
-                    locationZ = table.Column<double>(type: "double precision", nullable: false),
-                    scaleX = table.Column<double>(type: "double precision", nullable: false),
-                    scaleY = table.Column<double>(type: "double precision", nullable: false),
-                    scaleZ = table.Column<double>(type: "double precision", nullable: false),
-                    KnifeId = table.Column<int>(type: "integer", nullable: true)
+                    EngravingsId = table.Column<Guid>(type: "uuid", nullable: false),
+                    KnifeId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Engravings", x => x.Id);
+                    table.PrimaryKey("PK_EngravingKnife", x => new { x.EngravingsId, x.KnifeId });
                     table.ForeignKey(
-                        name: "FK_Engravings_Knives_KnifeId",
+                        name: "FK_EngravingKnife_Engravings_EngravingsId",
+                        column: x => x.EngravingsId,
+                        principalTable: "Engravings",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EngravingKnife_Product_KnifeId",
                         column: x => x.KnifeId,
-                        principalTable: "Knives",
-                        principalColumn: "Id");
+                        principalTable: "Product",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Fastenings",
+                name: "OrderItems",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Material = table.Column<string>(type: "text", nullable: false),
-                    Color = table.Column<string>(type: "text", nullable: false),
-                    ColorCode = table.Column<string>(type: "text", nullable: false),
-                    price = table.Column<double>(type: "double precision", nullable: false),
-                    KnifeId = table.Column<int>(type: "integer", nullable: true)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ProductId = table.Column<Guid>(type: "uuid", nullable: false),
+                    OrderId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Quantity = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Fastenings", x => x.Id);
+                    table.PrimaryKey("PK_OrderItems", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Fastenings_Knives_KnifeId",
-                        column: x => x.KnifeId,
-                        principalTable: "Knives",
-                        principalColumn: "Id");
+                        name: "FK_OrderItems_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrderItems_Product_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Product",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -468,44 +476,24 @@ namespace WorkshopBackend.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_BladeCoatingColors_BladeCoatingId",
+                name: "IX_BladeCoatingColors_ColorCode",
                 table: "BladeCoatingColors",
-                column: "BladeCoatingId");
+                column: "ColorCode");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Engravings_KnifeId",
-                table: "Engravings",
+                name: "IX_EngravingKnife_KnifeId",
+                table: "EngravingKnife",
                 column: "KnifeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Fastenings_KnifeId",
-                table: "Fastenings",
-                column: "KnifeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Knives_BladeCoatingId",
-                table: "Knives",
-                column: "BladeCoatingId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Knives_HandleColorId",
-                table: "Knives",
-                column: "HandleColorId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Knives_OrderId",
-                table: "Knives",
+                name: "IX_OrderItems_OrderId",
+                table: "OrderItems",
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Knives_ShapeId",
-                table: "Knives",
-                column: "ShapeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Knives_SheathColorId",
-                table: "Knives",
-                column: "SheathColorId");
+                name: "IX_OrderItems_ProductId",
+                table: "OrderItems",
+                column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_DeliveryTypeId",
@@ -513,9 +501,29 @@ namespace WorkshopBackend.Migrations
                 column: "DeliveryTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_StatusId",
-                table: "Orders",
-                column: "StatusId");
+                name: "IX_Product_BladeCoatingColorId",
+                table: "Product",
+                column: "BladeCoatingColorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Product_FasteningId",
+                table: "Product",
+                column: "FasteningId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Product_HandleColorId",
+                table: "Product",
+                column: "HandleColorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Product_ShapeId",
+                table: "Product",
+                column: "ShapeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Product_SheathColorId",
+                table: "Product",
+                column: "SheathColorId");
         }
 
         /// <inheritdoc />
@@ -537,16 +545,16 @@ namespace WorkshopBackend.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "BladeCoatingColors");
+                name: "EngravingKnife");
 
             migrationBuilder.DropTable(
                 name: "EngravingPrices");
 
             migrationBuilder.DropTable(
-                name: "Engravings");
+                name: "OrderItems");
 
             migrationBuilder.DropTable(
-                name: "Fastenings");
+                name: "OrderStatuses");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -555,10 +563,19 @@ namespace WorkshopBackend.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Knives");
+                name: "Engravings");
 
             migrationBuilder.DropTable(
-                name: "BladeCoating");
+                name: "Orders");
+
+            migrationBuilder.DropTable(
+                name: "Product");
+
+            migrationBuilder.DropTable(
+                name: "DeliveryTypes");
+
+            migrationBuilder.DropTable(
+                name: "BladeCoatingColors");
 
             migrationBuilder.DropTable(
                 name: "BladeShapes");
@@ -567,16 +584,7 @@ namespace WorkshopBackend.Migrations
                 name: "HandleColors");
 
             migrationBuilder.DropTable(
-                name: "Orders");
-
-            migrationBuilder.DropTable(
                 name: "SheathColors");
-
-            migrationBuilder.DropTable(
-                name: "DeliveryTypes");
-
-            migrationBuilder.DropTable(
-                name: "OrderStatuses");
         }
     }
 }

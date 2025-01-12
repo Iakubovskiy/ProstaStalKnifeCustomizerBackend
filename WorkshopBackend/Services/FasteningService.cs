@@ -6,10 +6,10 @@ namespace WorkshopBackend.Services
 {
     public class FasteningService
     {
-        private readonly Repository<Fastening, int> _fasteningRepository;
+        private readonly Repository<Fastening, Guid> _fasteningRepository;
         private readonly IFileService _fileService;
 
-        public FasteningService(Repository<Fastening, int> fasteningRepository, IFileService fileService)
+        public FasteningService(Repository<Fastening, Guid> fasteningRepository, IFileService fileService)
         {
             _fasteningRepository = fasteningRepository;
             _fileService = fileService;
@@ -20,7 +20,13 @@ namespace WorkshopBackend.Services
             return await _fasteningRepository.GetAll();
         }
 
-        public async Task<Fastening> GetFasteningById(int id)
+        public async Task<List<Fastening>> GetAllActiveFastenings()
+        {
+            List<Fastening> fastenings = await _fasteningRepository.GetAll();
+            return fastenings.Where(c => c.IsActive).ToList();
+        }
+
+        public async Task<Fastening> GetFasteningById(Guid id)
         {
             return await _fasteningRepository.GetById(id);
         }
@@ -31,7 +37,7 @@ namespace WorkshopBackend.Services
             return await _fasteningRepository.Create(fastening);
         }
 
-        public async Task<Fastening> UpdateFastening(int id, Fastening fastening, IFormFile? model)
+        public async Task<Fastening> UpdateFastening(Guid id, Fastening fastening, IFormFile? model)
         {
             if (model != null) 
             {
@@ -49,7 +55,7 @@ namespace WorkshopBackend.Services
             return await _fasteningRepository.Update(id, fastening);
         }
 
-        public async Task<bool> DeleteFastening(int id)
+        public async Task<bool> DeleteFastening(Guid id)
         {
             Fastening existingFastening = await _fasteningRepository.GetById(id);
             string publicFileId = _fileService.GetIdFromUrl(existingFastening.ModelUrl);
@@ -57,7 +63,7 @@ namespace WorkshopBackend.Services
             return await _fasteningRepository.Delete(id);
         }
 
-        public async Task<Fastening> ChangeActive(int id, bool active)
+        public async Task<Fastening> ChangeActive(Guid id, bool active)
         {
             Fastening fastening = await _fasteningRepository.GetById(id);
             fastening.IsActive = active;

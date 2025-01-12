@@ -12,8 +12,8 @@ using WorkshopBackend.Data;
 namespace WorkshopBackend.Migrations
 {
     [DbContext(typeof(DBContext))]
-    [Migration("20241219183726_NewFieldsAdded")]
-    partial class NewFieldsAdded
+    [Migration("20250111154534_IntialMigration")]
+    partial class IntialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,21 @@ namespace WorkshopBackend.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("EngravingKnife", b =>
+                {
+                    b.Property<Guid>("EngravingsId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("KnifeId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("EngravingsId", "KnifeId");
+
+                    b.HasIndex("KnifeId");
+
+                    b.ToTable("EngravingKnife");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -157,56 +172,47 @@ namespace WorkshopBackend.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("WorkshopBackend.Models.BladeCoating", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("MaterialUrl")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<double>("Price")
-                        .HasColumnType("double precision");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("BladeCoatings");
-                });
-
             modelBuilder.Entity("WorkshopBackend.Models.BladeCoatingColor", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("BladeCoatingId")
-                        .HasColumnType("integer");
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Color")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("ColorCode")
-                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ColorMapUrl")
                         .HasColumnType("text");
 
                     b.Property<string>("EngravingColorCode")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("Id");
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
 
-                    b.HasIndex("BladeCoatingId");
+                    b.Property<string>("NormalMapUrl")
+                        .HasColumnType("text");
+
+                    b.Property<double>("Price")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("double precision")
+                        .HasDefaultValue(0.0);
+
+                    b.Property<string>("RoughnessMapUrl")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("ColorCode");
 
@@ -215,18 +221,23 @@ namespace WorkshopBackend.Migrations
 
             modelBuilder.Entity("WorkshopBackend.Models.BladeShape", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("uuid");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<double>("Price")
-                        .HasColumnType("double precision");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("double precision")
+                        .HasDefaultValue(0.0);
 
                     b.Property<double>("bladeLength")
                         .HasColumnType("double precision");
@@ -241,47 +252,25 @@ namespace WorkshopBackend.Migrations
                     b.Property<double>("bladeWidth")
                         .HasColumnType("double precision");
 
-                    b.Property<double>("engravingLocationX")
+                    b.Property<double?>("engravingLocationX")
                         .HasColumnType("double precision");
 
-                    b.Property<double>("engravingLocationY")
+                    b.Property<double?>("engravingLocationY")
                         .HasColumnType("double precision");
 
-                    b.Property<double>("engravingLocationZ")
+                    b.Property<double?>("engravingLocationZ")
                         .HasColumnType("double precision");
 
-                    b.Property<double>("engravingRotationX")
+                    b.Property<double?>("engravingRotationX")
                         .HasColumnType("double precision");
 
-                    b.Property<double>("engravingRotationY")
+                    b.Property<double?>("engravingRotationY")
                         .HasColumnType("double precision");
 
-                    b.Property<double>("engravingRotationZ")
+                    b.Property<double?>("engravingRotationZ")
                         .HasColumnType("double precision");
 
-                    b.Property<double?>("handleLocationX")
-                        .HasColumnType("double precision");
-
-                    b.Property<double?>("handleLocationY")
-                        .HasColumnType("double precision");
-
-                    b.Property<double?>("handleLocationZ")
-                        .HasColumnType("double precision");
-
-                    b.Property<double?>("handleRotationX")
-                        .HasColumnType("double precision");
-
-                    b.Property<double?>("handleRotationY")
-                        .HasColumnType("double precision");
-
-                    b.Property<double?>("handleRotationZ")
-                        .HasColumnType("double precision");
-
-                    b.Property<string>("handleShapeModelUrl")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<double>("rockwellHardnessUnits")
+                    b.Property<double?>("rockwellHardnessUnits")
                         .HasColumnType("double precision");
 
                     b.Property<double>("sharpeningAngle")
@@ -301,14 +290,15 @@ namespace WorkshopBackend.Migrations
 
             modelBuilder.Entity("WorkshopBackend.Models.DeliveryType", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Comment")
                         .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -324,17 +314,12 @@ namespace WorkshopBackend.Migrations
 
             modelBuilder.Entity("WorkshopBackend.Models.Engraving", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Font")
                         .HasColumnType("text");
-
-                    b.Property<int?>("KnifeId")
-                        .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .HasColumnType("text");
@@ -377,18 +362,14 @@ namespace WorkshopBackend.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("KnifeId");
-
                     b.ToTable("Engravings");
                 });
 
             modelBuilder.Entity("WorkshopBackend.Models.EngravingPrice", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<double>("Price")
                         .HasColumnType("double precision");
@@ -398,68 +379,35 @@ namespace WorkshopBackend.Migrations
                     b.ToTable("EngravingPrices");
                 });
 
-            modelBuilder.Entity("WorkshopBackend.Models.Fastening", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Color")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("ColorCode")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int?>("KnifeId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Material")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("ModelUrl")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<double>("price")
-                        .HasColumnType("double precision");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("KnifeId");
-
-                    b.ToTable("Fastenings");
-                });
-
             modelBuilder.Entity("WorkshopBackend.Models.HandleColor", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("ColorCode")
-                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ColorMapUrl")
                         .HasColumnType("text");
 
                     b.Property<string>("ColorName")
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
                     b.Property<string>("Material")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("MaterialUrl")
+                    b.Property<string>("NormalMapUrl")
+                        .HasColumnType("text");
+
+                    b.Property<string>("RoughnessMapUrl")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -467,59 +415,11 @@ namespace WorkshopBackend.Migrations
                     b.ToTable("HandleColors");
                 });
 
-            modelBuilder.Entity("WorkshopBackend.Models.Knife", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BladeCoatingColorId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("BladeCoatingId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("HandleColorId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("OrderId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ShapeId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("SheathColorId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BladeCoatingColorId");
-
-                    b.HasIndex("BladeCoatingId");
-
-                    b.HasIndex("HandleColorId");
-
-                    b.HasIndex("OrderId");
-
-                    b.HasIndex("ShapeId");
-
-                    b.HasIndex("SheathColorId");
-
-                    b.ToTable("Knives");
-                });
-
             modelBuilder.Entity("WorkshopBackend.Models.Order", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("City")
                         .IsRequired()
@@ -540,8 +440,8 @@ namespace WorkshopBackend.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("DeliveryTypeId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("DeliveryTypeId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -551,8 +451,9 @@ namespace WorkshopBackend.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("StatusId")
-                        .HasColumnType("integer");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<double>("Total")
                         .HasColumnType("double precision");
@@ -561,18 +462,38 @@ namespace WorkshopBackend.Migrations
 
                     b.HasIndex("DeliveryTypeId");
 
-                    b.HasIndex("StatusId");
-
                     b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("WorkshopBackend.Models.OrderItem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("WorkshopBackend.Models.OrderStatuses", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -583,13 +504,36 @@ namespace WorkshopBackend.Migrations
                     b.ToTable("OrderStatuses");
                 });
 
+            modelBuilder.Entity("WorkshopBackend.Models.Product", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(13)
+                        .HasColumnType("character varying(13)");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Product");
+
+                    b.HasDiscriminator().HasValue("Product");
+
+                    b.UseTphMappingStrategy();
+                });
+
             modelBuilder.Entity("WorkshopBackend.Models.SheathColor", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Color")
                         .IsRequired()
@@ -599,19 +543,30 @@ namespace WorkshopBackend.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("ColorMapUrl")
+                        .HasColumnType("text");
+
                     b.Property<string>("EngravingColorCode")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
 
                     b.Property<string>("Material")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("MaterialUrl")
+                    b.Property<string>("NormalMapUrl")
                         .HasColumnType("text");
 
                     b.Property<double>("Price")
                         .HasColumnType("double precision");
+
+                    b.Property<string>("RoughnessMapUrl")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -691,11 +646,88 @@ namespace WorkshopBackend.Migrations
                     b.UseTphMappingStrategy();
                 });
 
+            modelBuilder.Entity("WorkshopBackend.Models.Fastening", b =>
+                {
+                    b.HasBaseType("WorkshopBackend.Models.Product");
+
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ColorCode")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Material")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ModelUrl")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("double precision");
+
+                    b.HasDiscriminator().HasValue("Fastening");
+                });
+
+            modelBuilder.Entity("WorkshopBackend.Models.Knife", b =>
+                {
+                    b.HasBaseType("WorkshopBackend.Models.Product");
+
+                    b.Property<Guid>("BladeCoatingColorId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("FasteningId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("HandleColorId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ShapeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("SheathColorId")
+                        .HasColumnType("uuid");
+
+                    b.HasIndex("BladeCoatingColorId");
+
+                    b.HasIndex("FasteningId");
+
+                    b.HasIndex("HandleColorId");
+
+                    b.HasIndex("ShapeId");
+
+                    b.HasIndex("SheathColorId");
+
+                    b.HasDiscriminator().HasValue("Knife");
+                });
+
             modelBuilder.Entity("WorkshopBackend.Models.Admin", b =>
                 {
                     b.HasBaseType("WorkshopBackend.Models.User");
 
                     b.HasDiscriminator().HasValue("Admin");
+                });
+
+            modelBuilder.Entity("EngravingKnife", b =>
+                {
+                    b.HasOne("WorkshopBackend.Models.Engraving", null)
+                        .WithMany()
+                        .HasForeignKey("EngravingsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WorkshopBackend.Models.Knife", null)
+                        .WithMany()
+                        .HasForeignKey("KnifeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -749,25 +781,34 @@ namespace WorkshopBackend.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("WorkshopBackend.Models.BladeCoatingColor", b =>
+            modelBuilder.Entity("WorkshopBackend.Models.Order", b =>
                 {
-                    b.HasOne("WorkshopBackend.Models.BladeCoating", null)
-                        .WithMany("Colors")
-                        .HasForeignKey("BladeCoatingId");
+                    b.HasOne("WorkshopBackend.Models.DeliveryType", "DeliveryType")
+                        .WithMany()
+                        .HasForeignKey("DeliveryTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("DeliveryType");
                 });
 
-            modelBuilder.Entity("WorkshopBackend.Models.Engraving", b =>
+            modelBuilder.Entity("WorkshopBackend.Models.OrderItem", b =>
                 {
-                    b.HasOne("WorkshopBackend.Models.Knife", null)
-                        .WithMany("Engravings")
-                        .HasForeignKey("KnifeId");
-                });
+                    b.HasOne("WorkshopBackend.Models.Order", "Order")
+                        .WithMany()
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-            modelBuilder.Entity("WorkshopBackend.Models.Fastening", b =>
-                {
-                    b.HasOne("WorkshopBackend.Models.Knife", null)
-                        .WithMany("Fastening")
-                        .HasForeignKey("KnifeId");
+                    b.HasOne("WorkshopBackend.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("WorkshopBackend.Models.Knife", b =>
@@ -778,21 +819,15 @@ namespace WorkshopBackend.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WorkshopBackend.Models.BladeCoating", "BladeCoating")
+                    b.HasOne("WorkshopBackend.Models.Fastening", "Fastening")
                         .WithMany()
-                        .HasForeignKey("BladeCoatingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("FasteningId");
 
                     b.HasOne("WorkshopBackend.Models.HandleColor", "HandleColor")
                         .WithMany()
                         .HasForeignKey("HandleColorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("WorkshopBackend.Models.Order", null)
-                        .WithMany("Knives")
-                        .HasForeignKey("OrderId");
 
                     b.HasOne("WorkshopBackend.Models.BladeShape", "Shape")
                         .WithMany()
@@ -806,51 +841,15 @@ namespace WorkshopBackend.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("BladeCoating");
-
                     b.Navigation("BladeCoatingColor");
+
+                    b.Navigation("Fastening");
 
                     b.Navigation("HandleColor");
 
                     b.Navigation("Shape");
 
                     b.Navigation("SheathColor");
-                });
-
-            modelBuilder.Entity("WorkshopBackend.Models.Order", b =>
-                {
-                    b.HasOne("WorkshopBackend.Models.DeliveryType", "DeliveryType")
-                        .WithMany()
-                        .HasForeignKey("DeliveryTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("WorkshopBackend.Models.OrderStatuses", "Status")
-                        .WithMany()
-                        .HasForeignKey("StatusId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("DeliveryType");
-
-                    b.Navigation("Status");
-                });
-
-            modelBuilder.Entity("WorkshopBackend.Models.BladeCoating", b =>
-                {
-                    b.Navigation("Colors");
-                });
-
-            modelBuilder.Entity("WorkshopBackend.Models.Knife", b =>
-                {
-                    b.Navigation("Engravings");
-
-                    b.Navigation("Fastening");
-                });
-
-            modelBuilder.Entity("WorkshopBackend.Models.Order", b =>
-                {
-                    b.Navigation("Knives");
                 });
 #pragma warning restore 612, 618
         }

@@ -23,7 +23,7 @@ namespace WorkshopBackend.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetEngravingPricesById(int id)
+        public async Task<IActionResult> GetEngravingPricesById(Guid id)
         {
             return Ok(await _engravingPriceService.GetEngravingPriceById(id));
         }
@@ -35,13 +35,13 @@ namespace WorkshopBackend.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateEngravingPrice(int id, [FromForm] EngravingPrice engravingPrice)
+        public async Task<IActionResult> UpdateEngravingPrice(Guid id, [FromForm] EngravingPrice engravingPrice)
         {
             return Ok(await _engravingPriceService.UpdateEngravingPrice(id, engravingPrice));
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteEngravingPrice(int id)
+        public async Task<IActionResult> DeleteEngravingPrice(Guid id)
         {
             return Ok(new { isDeleted = await _engravingPriceService.DeleteEngravingPrice(id) });
         }

@@ -5,9 +5,9 @@ namespace WorkshopBackend.Services
 {
     public class OrderStatusesService
     {
-        private readonly Repository<OrderStatuses, int> _orderStatusesRepository;
+        private readonly Repository<OrderStatuses, Guid> _orderStatusesRepository;
 
-        public OrderStatusesService(Repository<OrderStatuses, int> orderStatusesRepository)
+        public OrderStatusesService(Repository<OrderStatuses, Guid> orderStatusesRepository)
         {
             _orderStatusesRepository = orderStatusesRepository;
         }
@@ -17,7 +17,7 @@ namespace WorkshopBackend.Services
             return await _orderStatusesRepository.GetAll();
         }
 
-        public async Task<OrderStatuses> GetOrderStatusesById(int id)
+        public async Task<OrderStatuses> GetOrderStatusesById(Guid id)
         {
             return await _orderStatusesRepository.GetById(id);
         }
@@ -27,12 +27,12 @@ namespace WorkshopBackend.Services
             return await _orderStatusesRepository.Create(orderStatuses);
         }
 
-        public async Task<OrderStatuses> UpdateOrderStatuses(int id, OrderStatuses orderStatuses)
+        public async Task<OrderStatuses> UpdateOrderStatuses(Guid id, OrderStatuses orderStatuses)
         {
             return await _orderStatusesRepository.Update(id, orderStatuses);
         }
 
-        public async Task<bool> DeleteOrderStatuses(int id)
+        public async Task<bool> DeleteOrderStatuses(Guid id)
         {
             return await _orderStatusesRepository.Delete(id);
         }

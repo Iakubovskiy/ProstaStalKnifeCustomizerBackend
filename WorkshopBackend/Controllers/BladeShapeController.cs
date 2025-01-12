@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using WorkshopBackend.DTO;
 using WorkshopBackend.Models;
 using WorkshopBackend.Services;
@@ -23,8 +24,14 @@ namespace WorkshopBackend.Controllers
             return Ok(await _bladeShapeService.GetAllBladeShapes());
         }
 
+        [HttpGet("active")]
+        public async Task<IActionResult> GetAllActiveBladeShapes()
+        {
+            return Ok(await _bladeShapeService.GetAllActiveBladeShapes());
+        }
+
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetBladeShapesById(int id)
+        public async Task<IActionResult> GetBladeShapesById(Guid id)
         {
             return Ok(await _bladeShapeService.GetBladeShapeById(id));
         }
@@ -48,7 +55,7 @@ namespace WorkshopBackend.Controllers
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateBladeShape(
-                int id, 
+                Guid id, 
                 [FromForm] BladeShape updateBladeShape,
                 IFormFile? bladeShapeModel,
                 IFormFile? sheathModel
@@ -65,9 +72,35 @@ namespace WorkshopBackend.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteBladeShape(int id)
+        public async Task<IActionResult> DeleteBladeShape(Guid id)
         {
             return Ok(new { isDeleted = await _bladeShapeService.DeleteBladeShape(id) });
+        }
+
+        [HttpPatch("deactivate/{id}")]
+        public async Task<IActionResult> Deactivate(Guid id)
+        {
+            var bladeShape = await _bladeShapeService.ChangeActive(id, false);
+
+            if (bladeShape == null)
+            {
+                return BadRequest(new { message = "Invalid BladeShape ID." });
+            }
+
+            return Ok(bladeShape);
+        }
+
+        [HttpPatch("activate/{id}")]
+        public async Task<IActionResult> Activate(Guid id)
+        {
+            var bladeShape = await _bladeShapeService.ChangeActive(id, true);
+
+            if (bladeShape == null)
+            {
+                return BadRequest(new { message = "Invalid BladeShape ID." });
+            }
+
+            return Ok(bladeShape);
         }
     }
 }

@@ -5,7 +5,7 @@ using WorkshopBackend.Models;
 
 namespace WorkshopBackend.Repositories
 {
-    public class OrderStatusesRepository : Repository<OrderStatuses, int>
+    public class OrderStatusesRepository : Repository<OrderStatuses, Guid>
     {
         private readonly DBContext _context;
         public OrderStatusesRepository(DBContext context)
@@ -17,7 +17,7 @@ namespace WorkshopBackend.Repositories
             return await _context.OrderStatuses.ToListAsync();
         }
 
-        public async Task<OrderStatuses> GetById(int id)
+        public async Task<OrderStatuses> GetById(Guid id)
         {
             return await _context.OrderStatuses.FirstOrDefaultAsync(a => a.Id == id);
         }
@@ -29,7 +29,7 @@ namespace WorkshopBackend.Repositories
             return OrderStatuses;
         }
 
-        public async Task<OrderStatuses> Update(int id, OrderStatuses newOrderStatuses)
+        public async Task<OrderStatuses> Update(Guid id, OrderStatuses newOrderStatuses)
         {
             var existingOrderStatuses = await _context.OrderStatuses.FirstOrDefaultAsync(a => a.Id == id);
             existingOrderStatuses.Status = newOrderStatuses.Status;
@@ -37,7 +37,7 @@ namespace WorkshopBackend.Repositories
             return existingOrderStatuses;
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<bool> Delete(Guid id)
         {
             var OrderStatuses = await _context.OrderStatuses.FirstOrDefaultAsync(a => a.Id == id);
             _context.OrderStatuses.Remove(OrderStatuses);
