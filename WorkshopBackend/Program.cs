@@ -13,8 +13,13 @@ using WorkshopBackend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var connectionString = builder.Configuration.GetValue<string>("DATABASE_URL");
+if (connectionString == null )
+{
+    connectionString = builder.Configuration.GetConnectionString("DBContext");
+}
 builder.Services.AddDbContext<DBContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DBContext")
+    options.UseNpgsql(connectionString
     ));
 builder.Services.AddCors(options =>
 {
