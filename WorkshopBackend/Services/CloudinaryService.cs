@@ -13,7 +13,11 @@ namespace WorkshopBackend.Services
         public CloudinaryService(IConfiguration configuration)
         {
             _configuration = configuration;
-            string cloudinaryUrl = _configuration.GetSection("Cloudinary:CLOUDINARY_URL").Value;
+            string cloudinaryUrl = configuration.GetValue<string>("CLOUDINARY_URL");
+            if (cloudinaryUrl == null)
+            {
+                cloudinaryUrl = _configuration.GetSection("Cloudinary:CLOUDINARY_URL").Value;
+            }
             cloudinary = new Cloudinary(cloudinaryUrl);
         }
 
