@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AWSSDK.S3" Version="4.0.0-preview.5" />
     <PackageReference Include="CloudinaryDotNet" Version="1.26.2" />
     <PackageReference Include="EntityFramework" Version="6.5.0" />
     <PackageReference Include="EntityFramework.IndexingExtensions" Version="1.0.1" />

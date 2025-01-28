@@ -148,7 +148,7 @@ builder.Services.AddScoped<Repository<Order, Guid>, OrderRepository>();
 builder.Services.AddScoped<Repository<OrderStatuses, Guid>, OrderStatusesRepository>();
 builder.Services.AddScoped<Repository<SheathColor, Guid>, SheathColorRepository>();
 builder.Services.AddScoped<ICustomEmailSender, EmailSenderService>();
-builder.Services.AddScoped<IFileService, CloudinaryService>();
+builder.Services.AddScoped<IFileService, AWSService>();
 #endregion
 
 #region services
