@@ -71,9 +71,12 @@ namespace WorkshopBackend.Controllers
                 BladeCoatingColor = await _bladeCoatingColorService.GetBladeCoatingColorById(knife.BladeCoatingColorId),
                 HandleColor = await _handleColorService.GetHandleColorById(knife.HandleColorId),
                 SheathColor = await _sheathService.GetSheathColorById(knife.SheathColorId),
-                Fastening = await _fasteningService.GetFasteningById(knife.FasteningId),
                 Engravings = engravings,
             };
+            if (knife.FasteningId != null && knife.FasteningId != Guid.Empty)
+            {
+                newKnife.Fastening = await _fasteningService.GetFasteningById(knife.FasteningId.Value);
+            }
             return Ok(await _knifeService.CreateKnife(newKnife));
         }
 
@@ -93,9 +96,12 @@ namespace WorkshopBackend.Controllers
                 BladeCoatingColor = await _bladeCoatingColorService.GetBladeCoatingColorById(knifeDto.BladeCoatingColorId),
                 HandleColor = await _handleColorService.GetHandleColorById(knifeDto.HandleColorId),
                 SheathColor = await _sheathService.GetSheathColorById(knifeDto.SheathColorId),
-                Fastening = await _fasteningService.GetFasteningById(knifeDto.FasteningId),
                 Engravings = engravings,
             };
+            if (knifeDto.FasteningId != null && knifeDto.FasteningId != Guid.Empty)
+            {
+                knife.Fastening = await _fasteningService.GetFasteningById(knifeDto.FasteningId.Value);
+            }
             var updatedKnife = await _knifeService.UpdateKnife(id, knife);
 
             return Ok(updatedKnife);

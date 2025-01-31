@@ -8,7 +8,7 @@ namespace WorkshopBackend.DTO
         public Guid BladeCoatingColorId { get; set; }
         public Guid HandleColorId { get; set; }
         public Guid SheathColorId { get; set; }
-        public Guid FasteningId { get; set; }
+        public Guid? FasteningId { get; set; }
         public string? EngravingsJson { get; set; }
     }
 }
