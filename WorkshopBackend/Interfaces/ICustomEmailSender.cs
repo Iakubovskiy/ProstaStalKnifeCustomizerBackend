@@ -4,6 +4,6 @@ namespace WorkshopBackend.Interfaces
 {
     public interface ICustomEmailSender
     {
-        void SendEmailAsync(EmailDTO data);
+        public Task SendEmailAsync(EmailDTO data);
     }
 }

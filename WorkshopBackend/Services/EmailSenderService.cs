@@ -14,19 +14,19 @@ namespace WorkshopBackend.Services
         {
             _configuration = configuration;
         }
-        public void SendEmailAsync(EmailDTO emailDTO)
+        public async Task SendEmailAsync(EmailDTO emailDto)
         {
             var email = new MimeMessage();
             email.From.Add(MailboxAddress.Parse(_configuration.GetSection("SenderEmail").Value));
-            email.To.Add(MailboxAddress.Parse(emailDTO.EmailTo));
-            email.Subject = emailDTO.EmailSubject;
-            email.Body = new TextPart(TextFormat.Plain){Text = emailDTO.EmailBody };
+            email.To.Add(MailboxAddress.Parse(emailDto.EmailTo));
+            email.Subject = emailDto.EmailSubject;
+            email.Body = new TextPart(TextFormat.Plain){Text = emailDto.EmailBody };
 
             using var smtp = new SmtpClient();
-            smtp.Connect(_configuration.GetSection("SenderEmail").Value, 587, SecureSocketOptions.StartTls);
-            smtp.Authenticate(_configuration.GetSection("SenderEmail").Value, _configuration.GetSection("SenderEmailPassword").Value);
-            smtp.Send(email);
-            smtp.Disconnect(true);
+            await smtp.ConnectAsync(_configuration.GetSection("EmailHost").Value, 587, SecureSocketOptions.StartTls);
+            await smtp.AuthenticateAsync(_configuration.GetSection("SenderEmail").Value, _configuration.GetSection("SenderEmailPassword").Value);
+            await smtp.SendAsync(email);
+            await smtp.DisconnectAsync(true);
         }
     }
 }
