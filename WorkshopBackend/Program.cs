@@ -41,6 +41,12 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader()
             .AllowCredentials());
 });
+
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.Limits.MaxRequestBodySize = 512 * 1024 * 1024;
+});
+
 var secretKey = builder.Configuration["Jwt:Key"];
 builder.Services.AddAuthentication(options =>
 {

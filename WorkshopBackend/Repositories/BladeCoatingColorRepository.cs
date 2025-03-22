@@ -35,6 +35,7 @@ namespace WorkshopBackend.Repositories
             existingBladeCoatingColor.Color = newBladeCoatingColor.Color;
             existingBladeCoatingColor.ColorCode = newBladeCoatingColor.ColorCode;
             existingBladeCoatingColor.EngravingColorCode = newBladeCoatingColor.EngravingColorCode;
+            existingBladeCoatingColor.Type = newBladeCoatingColor.Type;
             if (newBladeCoatingColor.ColorMapUrl != null)
             {
                 existingBladeCoatingColor.ColorMapUrl = newBladeCoatingColor.ColorMapUrl;
