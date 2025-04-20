@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using WorkshopBackend.DTO;
+﻿using Microsoft.AspNetCore.Mvc;
 using WorkshopBackend.Models;
 using WorkshopBackend.Services;
 
@@ -80,27 +77,29 @@ namespace WorkshopBackend.Controllers
         [HttpPatch("deactivate/{id}")]
         public async Task<IActionResult> Deactivate(Guid id)
         {
-            var bladeShape = await _bladeShapeService.ChangeActive(id, false);
-
-            if (bladeShape == null)
+            try
+            {
+                var bladeShape = await _bladeShapeService.ChangeActive(id, false);
+                return Ok(bladeShape);
+            }
+            catch (Exception)
             {
                 return BadRequest(new { message = "Invalid BladeShape ID." });
             }
-
-            return Ok(bladeShape);
         }
 
         [HttpPatch("activate/{id}")]
         public async Task<IActionResult> Activate(Guid id)
         {
-            var bladeShape = await _bladeShapeService.ChangeActive(id, true);
-
-            if (bladeShape == null)
+            try
+            {
+                BladeShape bladeShape = await _bladeShapeService.ChangeActive(id, true);
+                return Ok(bladeShape);
+            }
+            catch (Exception)
             {
                 return BadRequest(new { message = "Invalid BladeShape ID." });
             }
-
-            return Ok(bladeShape);
         }
     }
 }

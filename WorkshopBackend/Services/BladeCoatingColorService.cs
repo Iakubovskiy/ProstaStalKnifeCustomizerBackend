@@ -1,15 +1,14 @@
 ﻿using WorkshopBackend.Interfaces;
 using WorkshopBackend.Models;
-using WorkshopBackend.Repositories;
 
 namespace WorkshopBackend.Services
 {
     public class BladeCoatingColorService
     {
-        private readonly Repository<BladeCoatingColor, Guid> _bladeCoatingColorRepository;
+        private readonly IRepository<BladeCoatingColor, Guid> _bladeCoatingColorRepository;
         private readonly IFileService _fileService;
 
-        public BladeCoatingColorService(Repository<BladeCoatingColor, Guid> bladeCoatingRepository, IFileService fileService)
+        public BladeCoatingColorService(IRepository<BladeCoatingColor, Guid> bladeCoatingRepository, IFileService fileService)
         {
             _bladeCoatingColorRepository = bladeCoatingRepository;
             _fileService = fileService;
@@ -35,7 +34,7 @@ namespace WorkshopBackend.Services
             BladeCoatingColor bladeCoatingColor,
             IFormFile? colorMap,
             IFormFile? normalMap,
-            IFormFile? roughnesMap
+            IFormFile? roughnessMap
             )
         {
             if (colorMap != null)
@@ -46,9 +45,9 @@ namespace WorkshopBackend.Services
             {
                 bladeCoatingColor.NormalMapUrl = await _fileService.SaveFile(normalMap);
             }
-            if (roughnesMap != null)
+            if (roughnessMap != null)
             {
-                bladeCoatingColor.RoughnessMapUrl = await _fileService.SaveFile(roughnesMap);
+                bladeCoatingColor.RoughnessMapUrl = await _fileService.SaveFile(roughnessMap);
             }
             return await _bladeCoatingColorRepository.Create(bladeCoatingColor);
         }
@@ -58,7 +57,7 @@ namespace WorkshopBackend.Services
             BladeCoatingColor bladeCoatingColor,
             IFormFile? colorMap,
             IFormFile? normalMap,
-            IFormFile? roughnesMap
+            IFormFile? roughnessMap
             )
         {
             if (colorMap != null)
@@ -87,7 +86,7 @@ namespace WorkshopBackend.Services
                 }
                 bladeCoatingColor.NormalMapUrl = await _fileService.SaveFile(normalMap);
             }
-            if (roughnesMap != null)
+            if (roughnessMap != null)
             {
                 if (!string.IsNullOrEmpty(bladeCoatingColor.RoughnessMapUrl))
                 {
@@ -98,7 +97,7 @@ namespace WorkshopBackend.Services
                         await _fileService.DeleteFile(_fileService.GetIdFromUrl(bladeCoatingColor.RoughnessMapUrl));
                     }
                 }
-                bladeCoatingColor.RoughnessMapUrl = await _fileService.SaveFile(roughnesMap);
+                bladeCoatingColor.RoughnessMapUrl = await _fileService.SaveFile(roughnessMap);
             }
             return await _bladeCoatingColorRepository.Update(id, bladeCoatingColor);
         }
@@ -108,17 +107,17 @@ namespace WorkshopBackend.Services
             BladeCoatingColor color = await _bladeCoatingColorRepository.GetById(id);
             List<BladeCoatingColor> colors = await _bladeCoatingColorRepository.GetAll();
             int quantity = colors.Count(c => c.ColorMapUrl == color.ColorMapUrl);
-            if (quantity <= 1)
+            if (quantity <= 1 && color.ColorMapUrl != null)
             {
                 await _fileService.DeleteFile(_fileService.GetIdFromUrl(color.ColorMapUrl));
             }
             quantity = colors.Count(c => c.RoughnessMapUrl == color.RoughnessMapUrl);
-            if (quantity <= 1)
+            if (quantity <= 1 && color.RoughnessMapUrl != null)
             {
                 await _fileService.DeleteFile(_fileService.GetIdFromUrl(color.RoughnessMapUrl));
             }
             quantity = colors.Count(c => c.NormalMapUrl == color.NormalMapUrl);
-            if (quantity <= 1)
+            if (quantity <= 1 && color.NormalMapUrl != null)
             {
                 await _fileService.DeleteFile(_fileService.GetIdFromUrl(color.NormalMapUrl));
             }

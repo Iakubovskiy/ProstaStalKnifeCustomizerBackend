@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using WorkshopBackend.Models;
 using WorkshopBackend.Services;
 
@@ -31,7 +30,14 @@ namespace WorkshopBackend.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetDeliveryTypesById(Guid id)
         {
-            return Ok(await _deliveryTypeService.GetDeliveryTypeById(id));
+            try
+            {
+                return Ok(await _deliveryTypeService.GetDeliveryTypeById(id));
+            }
+            catch (Exception)
+            {
+                return BadRequest("Can't find DeliveryType");
+            }
         }
 
         [HttpPost]
@@ -43,25 +49,53 @@ namespace WorkshopBackend.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateDeliveryType(Guid id, [FromForm] DeliveryType type)
         {
-            return Ok(await _deliveryTypeService.UpdateDeliveryType(id, type));
+            try
+            {
+                return Ok(await _deliveryTypeService.UpdateDeliveryType(id, type));
+            }
+            catch (Exception)
+            {
+                return BadRequest("Can't find delivery type");
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDeliveryType(Guid id)
         {
-            return Ok(new { isDeleted = await _deliveryTypeService.DeleteDeliveryType(id) });
+            try
+            {
+                return Ok(new { isDeleted = await _deliveryTypeService.DeleteDeliveryType(id) });
+            }
+            catch (Exception)
+            {
+                return BadRequest("Can't find delivery type");
+            }
         }
 
         [HttpPatch("deactivate/{id}")]
         public async Task<IActionResult> Deactivate(Guid id)
         {
-            return Ok(await _deliveryTypeService.ChangeActive(id, false));
+            try
+            {
+                return Ok(await _deliveryTypeService.ChangeActive(id, false));
+            }
+            catch (Exception)
+            {
+                return BadRequest("Can't find delivery type");
+            }
         }
 
         [HttpPatch("activate/{id}")]
         public async Task<IActionResult> Activate(Guid id)
         {
-            return Ok(await _deliveryTypeService.ChangeActive(id, true));
+            try
+            {
+                return Ok(await _deliveryTypeService.ChangeActive(id, true));
+            }
+            catch (Exception)
+            {
+                return BadRequest("Can't find delivery type");
+            }
         }
     }
 }

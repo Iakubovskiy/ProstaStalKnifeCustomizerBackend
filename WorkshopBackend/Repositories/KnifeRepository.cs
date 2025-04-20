@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WorkshopBackend.Repositories
 {
-    public class KnifeRepository: Repository<Knife, Guid>
+    public class KnifeRepository: IRepository<Knife, Guid>
     {
         private readonly DBContext _context;
         
@@ -27,45 +27,43 @@ namespace WorkshopBackend.Repositories
                 .Include(k => k.SheathColor)
                 .Include(k => k.Fastening)
                 .Include(k => k.Engravings)
-                .FirstOrDefaultAsync(k => k.Id == id);
+                .FirstOrDefaultAsync(k => k.Id == id) ?? throw new Exception($"Knife not found by id: {id}");
         }
-        public async Task<Knife> Create (Knife knife)
+        public async Task<Knife> Create (Knife order)
         {
-            if (_context.Entry(knife.Shape).State == EntityState.Detached)
-                _context.Attach(knife.Shape);
-            if (_context.Entry(knife.BladeCoatingColor).State == EntityState.Detached)
-                _context.Attach(knife.BladeCoatingColor);
-            if (_context.Entry(knife.HandleColor).State == EntityState.Detached)
-                _context.Attach(knife.HandleColor);
-            if (_context.Entry(knife.SheathColor).State == EntityState.Detached)
-                _context.Attach(knife.SheathColor);
-            if (_context.Entry(knife.Fastening).State == EntityState.Detached)
-                _context.Attach(knife.Fastening);
-            if (knife.Engravings != null)
+            if (_context.Entry(order.Shape).State == EntityState.Detached)
+                _context.Attach(order.Shape);
+            if (_context.Entry(order.BladeCoatingColor).State == EntityState.Detached)
+                _context.Attach(order.BladeCoatingColor);
+            if (_context.Entry(order.HandleColor).State == EntityState.Detached)
+                _context.Attach(order.HandleColor);
+            if (_context.Entry(order.SheathColor).State == EntityState.Detached)
+                _context.Attach(order.SheathColor);
+            if (order.Fastening != null && _context.Entry(order.Fastening).State == EntityState.Detached)
+                _context.Attach(order.Fastening);
+            if (order.Engravings != null)
             {
-                foreach (var engraving in knife.Engravings)
+                foreach (var engraving in order.Engravings)
                 {
                     if (_context.Entry(engraving).State == EntityState.Detached)
                         _context.Attach(engraving);
                 }
             }
-            _context.Add(knife);
+            _context.Add(order);
             await _context.SaveChangesAsync();
-            return knife;
+            return order;
         }
         public async Task<Knife> Update (Guid id, Knife newKnife)
         {
-            var existingKnife = await _context.Knives
+            Knife existingKnife = await _context.Knives
                 .Include(k => k.Shape)
                 .Include(k => k.BladeCoatingColor)
                 .Include(k => k.HandleColor)
                 .Include(k => k.SheathColor)
                 .Include(k => k.Fastening)
                 .Include(k => k.Engravings)
-                .FirstOrDefaultAsync(k => k.Id == id);
-
-            if (existingKnife == null)
-                throw new KeyNotFoundException($"Knife with ID {id} not found.");
+                .FirstOrDefaultAsync(k => k.Id == id) 
+                                  ?? throw new KeyNotFoundException($"Knife with ID {id} not found.");
 
             if (_context.Entry(newKnife.Shape).State == EntityState.Detached)
                 _context.Attach(newKnife.Shape);
@@ -77,7 +75,10 @@ namespace WorkshopBackend.Repositories
                 _context.Attach(newKnife.SheathColor);
             if (newKnife.Engravings != null)
             {
-                existingKnife.Engravings.Clear();
+                if(existingKnife.Engravings != null)
+                    existingKnife.Engravings.Clear();
+                else
+                    existingKnife.Engravings = new List<Engraving>();
                 foreach (var engraving in newKnife.Engravings)
                 {
                     if (_context.Entry(engraving).State == EntityState.Detached)
@@ -93,7 +94,8 @@ namespace WorkshopBackend.Repositories
         }
         public async Task<bool> Delete(Guid id)
         {
-            var knife = await _context.Knives.FirstOrDefaultAsync(k => k.Id == id);
+            Knife knife = await _context.Knives.FirstOrDefaultAsync(k => k.Id == id)
+                ?? throw new Exception($"knife not found by id: {id}");
             _context.Knives.Remove(knife);
             await _context.SaveChangesAsync();
             return true;

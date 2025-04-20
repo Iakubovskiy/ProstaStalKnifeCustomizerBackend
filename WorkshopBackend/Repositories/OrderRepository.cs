@@ -5,7 +5,7 @@ using WorkshopBackend.Models;
 
 namespace WorkshopBackend.Repositories
 {
-    public class OrderRepository: Repository<Order, Guid> 
+    public class OrderRepository: IRepository<Order, Guid> 
     {
         private readonly DBContext _context;
         public OrderRepository(DBContext context)
@@ -18,24 +18,20 @@ namespace WorkshopBackend.Repositories
         }
         public async Task<Order> GetById(Guid id)
         {
-            return _context.Orders
+            return await  _context.Orders
                 .Include(o => o.DeliveryType)
                 .Include(o => o.Products)
-                .FirstOrDefault(o => o.Id == id);
+                .FirstOrDefaultAsync(o => o.Id == id)
+                ?? throw new Exception($"Order with id {id} not found");
         }
         public async Task<Order> Create(Order order)
         {
-            if (order.DeliveryType != null)
+            
+            _context.Entry(order.DeliveryType).State = EntityState.Unchanged;
+            
+            foreach (var product in order.Products)
             {
-                _context.Entry(order.DeliveryType).State = EntityState.Unchanged;
-            }
-
-            if (order.Products != null)
-            {
-                foreach (var product in order.Products)
-                {
-                    _context.Entry(product).State = EntityState.Unchanged;
-                }
+                _context.Entry(product).State = EntityState.Unchanged;
             }
 
             _context.Add(order);
@@ -45,9 +41,10 @@ namespace WorkshopBackend.Repositories
 
         public async Task<Order> Update(Guid id, Order newOrder)
         {
-            var existingOrder = await _context.Orders
+            Order existingOrder = await _context.Orders
                 .Include(o => o.Products)
-                .FirstOrDefaultAsync(o => o.Id == id);
+                .FirstOrDefaultAsync(o => o.Id == id)
+                ?? throw new Exception($"Order with id {id} not found");
 
             if (existingOrder == null)
                 throw new KeyNotFoundException($"Order with id {id} not found.");
@@ -79,7 +76,8 @@ namespace WorkshopBackend.Repositories
 
         public async Task<bool> Delete(Guid id)
         {
-            var order = await _context.Orders.FirstOrDefaultAsync(k => k.Id == id);
+            Order order = await _context.Orders.FirstOrDefaultAsync(k => k.Id == id)
+                ?? throw new Exception($"Order with id {id} not found");
             _context.Orders.Remove(order);
             await _context.SaveChangesAsync();
             return true;

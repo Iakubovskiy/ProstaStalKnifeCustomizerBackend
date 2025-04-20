@@ -20,11 +20,9 @@ namespace WorkshopBackend.Services
             _configuration = configuration;
         }
 
-        public async Task<(bool Success, string Role)> ValidateUserAsync(string username, string password)
+        public async Task<(bool, string? role)> ValidateUserAsync(string username, string password)
         {
-            var user = await _userManager.FindByNameAsync(username);
-            if (user == null)
-                user = await _userManager.FindByEmailAsync(username);
+            var user = await _userManager.FindByNameAsync(username) ?? await _userManager.FindByEmailAsync(username);
             if (user == null)
                 return (false, "");
 
@@ -41,15 +39,16 @@ namespace WorkshopBackend.Services
 
         public async Task<string> GenerateJwtTokenAsync(User user, string role, IEnumerable<Claim> claims)
         {
-            var claimsList = claims.ToList();
+            var enumerable = claims.ToList();
+            var claimsList = enumerable.ToList();
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"] ?? _configuration.GetValue<string>("Jwt_Key") ?? throw new NullReferenceException()));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"],
-                audience: _configuration["Jwt:Issuer"],
-                claims: claims,
+                issuer: _configuration["Jwt:Issuer"] ?? _configuration.GetValue<string>("Jwt_Issuer"),
+                audience: _configuration["Jwt:Issuer"] ?? _configuration.GetValue<string>("Jwt_Issuer"),
+                claims: claimsList,
                 expires: DateTime.Now.AddHours(1),
                 signingCredentials: creds
             );

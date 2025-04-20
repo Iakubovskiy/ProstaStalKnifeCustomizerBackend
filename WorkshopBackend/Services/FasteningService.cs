@@ -1,15 +1,14 @@
 ﻿using WorkshopBackend.Interfaces;
 using WorkshopBackend.Models;
-using WorkshopBackend.Repositories;
 
 namespace WorkshopBackend.Services
 {
     public class FasteningService
     {
-        private readonly Repository<Fastening, Guid> _fasteningRepository;
+        private readonly IRepository<Fastening, Guid> _fasteningRepository;
         private readonly IFileService _fileService;
 
-        public FasteningService(Repository<Fastening, Guid> fasteningRepository, IFileService fileService)
+        public FasteningService(IRepository<Fastening, Guid> fasteningRepository, IFileService fileService)
         {
             _fasteningRepository = fasteningRepository;
             _fileService = fileService;

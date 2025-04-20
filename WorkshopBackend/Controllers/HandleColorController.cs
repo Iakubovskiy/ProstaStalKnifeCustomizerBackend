@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using WorkshopBackend.DTO;
+﻿using Microsoft.AspNetCore.Mvc;
 using WorkshopBackend.Models;
 using WorkshopBackend.Services;
 
@@ -32,7 +30,14 @@ namespace WorkshopBackend.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetHandleColorsById(Guid id)
         {
-            return Ok(await _handleColorService.GetHandleColorById(id));
+            try
+            {
+                return Ok(await _handleColorService.GetHandleColorById(id));
+            }
+            catch (Exception)
+            {
+                return BadRequest("Can't find handel color");
+            }
         }
 
         [HttpPost]
@@ -58,35 +63,63 @@ namespace WorkshopBackend.Controllers
             [FromForm] HandleColor updateHandleColor,
             IFormFile? colorMap,
             IFormFile? normalMap,
-            IFormFile? roughnesMap
+            IFormFile? roughnessMap
             )
         {
-            return Ok(await _handleColorService.UpdateHandleColor(
-                    id, 
-                    updateHandleColor, 
-                    colorMap,
-                    normalMap, 
-                    roughnesMap
-                ) 
-            );
+            try
+            {
+                return Ok(await _handleColorService.UpdateHandleColor(
+                        id, 
+                        updateHandleColor, 
+                        colorMap,
+                        normalMap, 
+                        roughnessMap
+                    ) 
+                );
+            }
+            catch (Exception)
+            {
+                return BadRequest("Can't find handel color");
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteHandleColor(Guid id)
         {
-            return Ok(new { isDeleted = await _handleColorService.DeleteHandleColor(id) });
+            try
+            {
+                return Ok(new { isDeleted = await _handleColorService.DeleteHandleColor(id) });
+            }
+            catch (Exception)
+            {
+                return BadRequest("Can't find handel color");
+            }
         }
 
         [HttpPatch("deactivate/{id}")]
         public async Task<IActionResult> Deactivate(Guid id)
         {
-            return Ok(await _handleColorService.ChangeActive(id, false));
+            try
+            {
+                return Ok(await _handleColorService.ChangeActive(id, false));
+            }
+            catch (Exception)
+            {
+                return BadRequest("Can't find handel color");
+            }
         }
 
         [HttpPatch("activate/{id}")]
         public async Task<IActionResult> Activate(Guid id)
         {
-            return Ok(await _handleColorService.ChangeActive(id, true));
+            try
+            {
+                return Ok(await _handleColorService.ChangeActive(id, true));
+            }
+            catch (Exception)
+            {
+                return BadRequest("Can't find handel color");
+            }
         }
     }
 }

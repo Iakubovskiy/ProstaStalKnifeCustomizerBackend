@@ -26,7 +26,14 @@ namespace WorkshopBackend.Controllers
         [HttpGet ("{id}")]
         public async Task<IActionResult> GetEngravingsById(Guid id)
         {
-            return Ok( await _engravingService.GetEngravingById(id));
+            try
+            {
+                return Ok( await _engravingService.GetEngravingById(id));
+            }
+            catch (Exception)
+            {
+                return BadRequest("Can't find engraving");
+            }
         }
 
         [HttpPost]
@@ -38,13 +45,27 @@ namespace WorkshopBackend.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateEngraving(Guid id, [FromForm] Engraving engraving, IFormFile? engravingPicrutre)
         {
-            return Ok(await _engravingService.UpdateEngraving(id, engraving, engravingPicrutre));
+            try
+            {
+                return Ok(await _engravingService.UpdateEngraving(id, engraving, engravingPicrutre));
+            }
+            catch (Exception)
+            {
+                return BadRequest("Can't find engraving");
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEngraving(Guid id)
         {
-            return Ok(new { isDeleted = await _engravingService.DeleteEngraving(id) });
+            try
+            {
+                return Ok(new { isDeleted = await _engravingService.DeleteEngraving(id) });
+            }
+            catch (Exception)
+            {
+                return BadRequest("Can't find engraving");
+            }
         }
     }
 }

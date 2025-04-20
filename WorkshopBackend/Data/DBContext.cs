@@ -23,7 +23,7 @@ namespace WorkshopBackend.Data
         public DbSet<Knife> Knives { get; set; }
         public DbSet<OrderStatuses> OrderStatuses { get; set; }
         public DbSet<Order> Orders { get; set; }
-        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<OrderItem?> OrderItems { get; set; }
         public DbSet<SheathColor> SheathColors { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

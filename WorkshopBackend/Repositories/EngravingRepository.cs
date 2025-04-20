@@ -5,7 +5,7 @@ using WorkshopBackend.Models;
 
 namespace WorkshopBackend.Repositories
 {
-    public class EngravingRepository : Repository<Engraving, Guid>
+    public class EngravingRepository : IRepository<Engraving, Guid>
     {
         private readonly DBContext _context;
         public EngravingRepository(DBContext context)
@@ -19,19 +19,21 @@ namespace WorkshopBackend.Repositories
 
         public async Task<Engraving> GetById(Guid id)
         {
-            return await _context.Engravings.FirstOrDefaultAsync(a => a.Id == id);
+            return await _context.Engravings.FirstOrDefaultAsync(a => a.Id == id)
+                ?? throw new Exception("Engraving not found");
         }
 
-        public async Task<Engraving> Create(Engraving Engraving)
+        public async Task<Engraving> Create(Engraving order)
         {
-            _context.Engravings.Add(Engraving);
+            _context.Engravings.Add(order);
             await _context.SaveChangesAsync();
-            return Engraving;
+            return order;
         }
 
         public async Task<Engraving> Update(Guid id, Engraving newEngraving)
         {
-            var existingEngraving = await _context.Engravings.FirstOrDefaultAsync(a => a.Id == id);
+            Engraving existingEngraving = await _context.Engravings.FirstOrDefaultAsync(a => a.Id == id)
+                ?? throw new Exception("Engraving not found");
 
             existingEngraving.Name = newEngraving.Name;
             existingEngraving.Side = newEngraving.Side;
@@ -57,8 +59,9 @@ namespace WorkshopBackend.Repositories
 
         public async Task<bool> Delete(Guid id)
         {
-            var Engraving = await _context.Engravings.FirstOrDefaultAsync(a => a.Id == id);
-            _context.Engravings.Remove(Engraving);
+            Engraving engraving = await _context.Engravings.FirstOrDefaultAsync(a => a.Id == id)
+                ?? throw new Exception("Engraving not found");
+            _context.Engravings.Remove(engraving);
             await _context.SaveChangesAsync();
             return true;
         }

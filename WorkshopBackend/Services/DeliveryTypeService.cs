@@ -1,14 +1,13 @@
 ﻿using WorkshopBackend.Interfaces;
 using WorkshopBackend.Models;
-using WorkshopBackend.Repositories;
 
 namespace WorkshopBackend.Services
 {
     public class DeliveryTypeService
     {
-        private readonly Repository<DeliveryType, Guid> _deliveryTypeRepository;
+        private readonly IRepository<DeliveryType, Guid> _deliveryTypeRepository;
 
-        public DeliveryTypeService(Repository<DeliveryType, Guid> deliveryTypeRepository)
+        public DeliveryTypeService(IRepository<DeliveryType, Guid> deliveryTypeRepository)
         {
             _deliveryTypeRepository = deliveryTypeRepository;
         }

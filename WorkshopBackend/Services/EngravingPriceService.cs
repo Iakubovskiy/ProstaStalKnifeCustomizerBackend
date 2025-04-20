@@ -5,9 +5,9 @@ namespace WorkshopBackend.Services
 {
     public class EngravingPriceService
     {
-        private readonly Repository<EngravingPrice, Guid> _engravingPriceRepository;
+        private readonly IRepository<EngravingPrice, Guid> _engravingPriceRepository;
 
-        public EngravingPriceService(Repository<EngravingPrice, Guid> engravingPriceRepository)
+        public EngravingPriceService(IRepository<EngravingPrice, Guid> engravingPriceRepository)
         {
             _engravingPriceRepository = engravingPriceRepository;
         }

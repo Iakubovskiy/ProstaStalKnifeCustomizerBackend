@@ -32,7 +32,14 @@ namespace WorkshopBackend.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetFasteningsById(Guid id)
         {
-            return Ok(await _fasteningService.GetFasteningById(id));
+            try
+            {
+                return Ok(await _fasteningService.GetFasteningById(id));
+            }
+            catch (Exception)
+            {
+                return BadRequest("Can't find fastening");
+            }
         }
 
         [HttpPost]
@@ -48,25 +55,53 @@ namespace WorkshopBackend.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateFastening(Guid id, [FromForm] Fastening updateFastening, IFormFile? model)
         {
-            return Ok(await _fasteningService.UpdateFastening(id, updateFastening, model));
+            try
+            {
+                return Ok(await _fasteningService.UpdateFastening(id, updateFastening, model));
+            }
+            catch (Exception)
+            {
+                return BadRequest("Can't find fastening");
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteFastening(Guid id)
         {
-            return Ok(new { isDeleted = await _fasteningService.DeleteFastening(id) });
+            try
+            {
+                return Ok(new { isDeleted = await _fasteningService.DeleteFastening(id) });
+            }
+            catch (Exception)
+            {
+                return BadRequest("Can't find fastening");
+            }
         }
 
         [HttpPatch("deactivate/{id}")]
         public async Task<IActionResult> Deactivate(Guid id)
         {
-            return Ok(await _fasteningService.ChangeActive(id, false));
+            try
+            {
+                return Ok(await _fasteningService.ChangeActive(id, false));
+            }
+            catch (Exception)
+            {
+                return BadRequest("Can't find fastening");
+            }
         }
 
         [HttpPatch("activate/{id}")]
         public async Task<IActionResult> Activate(Guid id)
         {
-            return Ok(await _fasteningService.ChangeActive(id, true));
+            try
+            {
+                return Ok(await _fasteningService.ChangeActive(id, true));
+            }
+            catch (Exception)
+            {
+                return BadRequest("Can't find fastening");
+            }
         }
     }
 }

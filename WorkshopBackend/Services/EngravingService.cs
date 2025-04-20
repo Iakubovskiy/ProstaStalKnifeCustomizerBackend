@@ -5,10 +5,10 @@ namespace WorkshopBackend.Services
 {
     public class EngravingService
     {
-        private readonly Repository<Engraving, Guid> _engravingRepository;
+        private readonly IRepository<Engraving, Guid> _engravingRepository;
         private readonly IFileService _fileService;
 
-        public EngravingService(Repository<Engraving, Guid> engravingRepository, IFileService fileService)
+        public EngravingService(IRepository<Engraving, Guid> engravingRepository, IFileService fileService)
         {
             _engravingRepository = engravingRepository;
             _fileService = fileService;

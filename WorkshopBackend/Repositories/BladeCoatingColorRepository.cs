@@ -5,7 +5,7 @@ using WorkshopBackend.Models;
 
 namespace WorkshopBackend.Repositories
 {
-    public class BladeCoatingColorRepository : Repository<BladeCoatingColor, Guid>
+    public class BladeCoatingColorRepository : IRepository<BladeCoatingColor, Guid>
     {
         private readonly DBContext _context;
         public BladeCoatingColorRepository(DBContext context)
@@ -19,19 +19,21 @@ namespace WorkshopBackend.Repositories
 
         public async Task<BladeCoatingColor> GetById(Guid id)
         {
-            return await _context.BladeCoatingColors.FirstOrDefaultAsync(a => a.Id == id);
+            return await _context.BladeCoatingColors.FirstOrDefaultAsync(a => a.Id == id) 
+                   ?? throw new Exception("Blade Coating Color not found");
         }
 
-        public async Task<BladeCoatingColor> Create(BladeCoatingColor BladeCoatingColor)
+        public async Task<BladeCoatingColor> Create(BladeCoatingColor order)
         {
-            _context.BladeCoatingColors.Add(BladeCoatingColor);
+            _context.BladeCoatingColors.Add(order);
             await _context.SaveChangesAsync();
-            return BladeCoatingColor;
+            return order;
         }
 
         public async Task<BladeCoatingColor> Update(Guid id, BladeCoatingColor newBladeCoatingColor)
         {
-            var existingBladeCoatingColor = await _context.BladeCoatingColors.FirstOrDefaultAsync(a => a.Id == id);
+            BladeCoatingColor existingBladeCoatingColor = await _context.BladeCoatingColors.FirstOrDefaultAsync(a => a.Id == id) 
+                                                          ?? throw new Exception("Blade Coating Color not found");
             existingBladeCoatingColor.Color = newBladeCoatingColor.Color;
             existingBladeCoatingColor.ColorCode = newBladeCoatingColor.ColorCode;
             existingBladeCoatingColor.EngravingColorCode = newBladeCoatingColor.EngravingColorCode;
@@ -54,8 +56,9 @@ namespace WorkshopBackend.Repositories
 
         public async Task<bool> Delete(Guid id)
         {
-            var BladeCoatingColor = await _context.BladeCoatingColors.FirstOrDefaultAsync(a => a.Id == id);
-            _context.BladeCoatingColors.Remove(BladeCoatingColor);
+            BladeCoatingColor bladeCoatingColor = await _context.BladeCoatingColors.FirstOrDefaultAsync(a => a.Id == id) 
+                                                  ?? throw new Exception("Blade Coating Color not found");
+            _context.BladeCoatingColors.Remove(bladeCoatingColor);
             await _context.SaveChangesAsync();
             return true;
         }

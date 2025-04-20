@@ -5,7 +5,7 @@ using WorkshopBackend.Models;
 
 namespace WorkshopBackend.Repositories
 {
-    public class DeliveryTypeRepository : Repository<DeliveryType, Guid>
+    public class DeliveryTypeRepository : IRepository<DeliveryType, Guid>
     {
         private readonly DBContext _context;
         public DeliveryTypeRepository(DBContext context)
@@ -19,19 +19,21 @@ namespace WorkshopBackend.Repositories
 
         public async Task<DeliveryType> GetById(Guid id)
         {
-            return await _context.DeliveryTypes.FirstOrDefaultAsync(a => a.Id == id);
+            return await _context.DeliveryTypes.FirstOrDefaultAsync(a => a.Id == id) 
+                   ?? throw new Exception("DeliveryType not found");
         }
 
-        public async Task<DeliveryType> Create(DeliveryType DeliveryType)
+        public async Task<DeliveryType> Create(DeliveryType order)
         {
-            _context.DeliveryTypes.Add(DeliveryType);
+            _context.DeliveryTypes.Add(order);
             await _context.SaveChangesAsync();
-            return DeliveryType;
+            return order;
         }
 
         public async Task<DeliveryType> Update(Guid id, DeliveryType newDeliveryType)
         {
-            var existingDeliveryType = await _context.DeliveryTypes.FirstOrDefaultAsync(a => a.Id == id);
+            DeliveryType existingDeliveryType = await _context.DeliveryTypes.FirstOrDefaultAsync(a => a.Id == id) 
+                                                ?? throw new Exception("DeliveryType not found");
             existingDeliveryType.Name = newDeliveryType.Name;
             existingDeliveryType.Price = newDeliveryType.Price;
             existingDeliveryType.Comment = newDeliveryType.Comment;
@@ -42,8 +44,9 @@ namespace WorkshopBackend.Repositories
 
         public async Task<bool> Delete(Guid id)
         {
-            var DeliveryType = await _context.DeliveryTypes.FirstOrDefaultAsync(a => a.Id == id);
-            _context.DeliveryTypes.Remove(DeliveryType);
+            DeliveryType deliveryType = await _context.DeliveryTypes.FirstOrDefaultAsync(a => a.Id == id) 
+                                        ?? throw new Exception("DeliveryType not found");
+            _context.DeliveryTypes.Remove(deliveryType);
             await _context.SaveChangesAsync();
             return true;
         }

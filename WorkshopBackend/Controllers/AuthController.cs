@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using WorkshopBackend.Models;
-using Microsoft.AspNetCore.Authorization;
 using WorkshopBackend.Services;
 using WorkshopBackend.DTO;
 
@@ -48,7 +46,7 @@ namespace WorkshopBackend.Controllers
                 {
                     new Claim(ClaimTypes.Name, user.UserName),
                     new Claim(ClaimTypes.Role, role),
-                    new Claim("UserId", user.Id.ToString()),
+                    new Claim("UserId", user.Id),
                 };
                 var token = await _authService.GenerateJwtTokenAsync(user, role, claims);
                 return Ok(new { Token = token });

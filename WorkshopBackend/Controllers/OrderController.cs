@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using WorkshopBackend.DTO;
 using WorkshopBackend.Models;
@@ -14,14 +13,12 @@ namespace WorkshopBackend.Controllers
         private readonly OrderService _orderService;
         private readonly KnifeService _knifeService;
         private readonly FasteningService _fasteningService;
-        private readonly OrderStatusesService _statusService;
         private readonly DeliveryTypeService _deliveryTypeService;
 
-        public OrderController(OrderService service, KnifeService knifeService, OrderStatusesService statusService, DeliveryTypeService deliveryTypeService, FasteningService fasteningService)
+        public OrderController(OrderService service, KnifeService knifeService, DeliveryTypeService deliveryTypeService, FasteningService fasteningService)
         {
             _orderService = service;
             _knifeService = knifeService;
-            _statusService = statusService;
             _deliveryTypeService = deliveryTypeService;
             _fasteningService = fasteningService;
         }
@@ -35,7 +32,14 @@ namespace WorkshopBackend.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetOrdersById(Guid id)
         {
-            return Ok( await _orderService.GetOrderById(id));
+            try
+            {
+                return Ok( await _orderService.GetOrderById(id));
+            }
+            catch (Exception)
+            {
+                return BadRequest("Can't find order");
+            }
         }
 
         [HttpPost]
@@ -91,25 +95,53 @@ namespace WorkshopBackend.Controllers
         [HttpPatch("update/status/{id}")]
         public async Task<IActionResult> UpdateOrderStatus(Guid id, [FromForm] string status)
         {
-            return Ok(await _orderService.ChangeStatus(id, status));
+            try
+            {
+                return Ok(await _orderService.ChangeStatus(id, status));
+            }
+            catch (Exception)
+            {
+                return BadRequest("Can't find order");
+            }
         }
 
         [HttpPatch("update/delivery-data/{id}")]
         public async Task<IActionResult> UpdateOrderDeliveryData(Guid id, [FromForm] DeliveryDataDTO data)
         {
-            return Ok(await _orderService.ChangeDeliveryData(id, data));
+            try
+            {
+                return Ok(await _orderService.ChangeDeliveryData(id, data));
+            }
+            catch (Exception)
+            {
+                return BadRequest("Can't find order");
+            }
         }
 
         [HttpPatch("update/delivery-type/{id}")]
         public async Task<IActionResult> UpdateOrderDeliveryType(Guid id, [FromForm] DeliveryType type)
         {
-            return Ok(await _orderService.ChangeDeliveryType(id, type));
+            try
+            {
+                return Ok(await _orderService.ChangeDeliveryType(id, type));
+            }
+            catch (Exception)
+            {
+                return BadRequest("Can't find order");
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOrder(Guid id)
         {
-            return Ok(new { isDeleted = await _orderService.DeleteOrder(id) });
+            try
+            {
+                return Ok(new { isDeleted = await _orderService.DeleteOrder(id) });
+            }
+            catch (Exception)
+            {
+                return BadRequest("Can't find order");
+            }
         }
     }
 }

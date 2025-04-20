@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using WorkshopBackend.DTO;
+﻿using Microsoft.AspNetCore.Mvc;
 using WorkshopBackend.Models;
 using WorkshopBackend.Services;
 
@@ -32,7 +30,14 @@ namespace WorkshopBackend.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetSheathColorsById(Guid id)
         {
-            return Ok(await _sheathColorService.GetSheathColorById(id));
+            try
+            {
+                return Ok(await _sheathColorService.GetSheathColorById(id));
+            }
+            catch (Exception)
+            {
+                return BadRequest("Can't find sheath color");
+            }
         }
 
         [HttpPost]
@@ -40,14 +45,14 @@ namespace WorkshopBackend.Controllers
             [FromForm] SheathColor newColor,
             IFormFile? colorMap,
             IFormFile? normalMap,
-            IFormFile? roughnesMap
+            IFormFile? roughnessMap
             )
         {
             return Ok(await _sheathColorService.CreateSheathColor(
                 newColor, 
                 colorMap,
                 normalMap,
-                roughnesMap
+                roughnessMap
              ));
         }
 
@@ -57,28 +62,56 @@ namespace WorkshopBackend.Controllers
             [FromForm] SheathColor updatedColor,
             IFormFile? colorMap,
             IFormFile? normalMap,
-            IFormFile? roughnesMap
+            IFormFile? roughnessMap
             )
         {
-            return Ok(await _sheathColorService.UpdateSheathColor(id, updatedColor, colorMap,normalMap,roughnesMap));
+            try
+            {
+                return Ok(await _sheathColorService.UpdateSheathColor(id, updatedColor, colorMap,normalMap,roughnessMap));
+            }
+            catch (Exception)
+            {
+                return BadRequest("Can't find sheath color");
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSheathColor(Guid id)
         {
-            return Ok(new { isDeleted = await _sheathColorService.DeleteSheathColor(id) });
+            try
+            {
+                return Ok(new { isDeleted = await _sheathColorService.DeleteSheathColor(id) });
+            }
+            catch (Exception)
+            {
+                return BadRequest("Can't find sheath color");
+            }
         }
 
         [HttpPatch("deactivate/{id}")]
         public async Task<IActionResult> Deactivate(Guid id)
         {
-            return Ok(await _sheathColorService.ChangeActive(id, false));
+            try
+            {
+                return Ok(await _sheathColorService.ChangeActive(id, false));
+            }
+            catch (Exception)
+            {
+                return BadRequest("Can't find sheath color");
+            }
         }
 
         [HttpPatch("activate/{id}")]
         public async Task<IActionResult> Activate(Guid id)
         {
-            return Ok(await _sheathColorService.ChangeActive(id, true));
+            try
+            {
+                return Ok(await _sheathColorService.ChangeActive(id, true));
+            }
+            catch (Exception)
+            {
+                return BadRequest("Can't find sheath color");
+            }
         }
     }
 }

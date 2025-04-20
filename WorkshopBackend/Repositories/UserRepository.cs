@@ -5,7 +5,7 @@ using WorkshopBackend.Models;
 
 namespace WorkshopBackend.Repositories
 {
-    public class UserRepository : Repository<User, string>
+    public class UserRepository : IRepository<User, string>
     {
         private readonly DBContext _context;
         public UserRepository(DBContext context)
@@ -19,19 +19,21 @@ namespace WorkshopBackend.Repositories
 
         public async Task<User> GetById(string id)
         {
-            return await _context.Users.FirstOrDefaultAsync(a => a.Id == id);
+            return await _context.Users.FirstOrDefaultAsync(a => a.Id == id)
+                ?? throw new Exception($"User with id {id} not found");
         }
 
-        public async Task<User> Create(User User)
+        public async Task<User> Create(User order)
         {
-            _context.Users.Add(User);
+            _context.Users.Add(order);
             await _context.SaveChangesAsync();
-            return User;
+            return order;
         }
 
         public async Task<User> Update(string id, User newUser)
         {
-            var existingUser = await _context.Users.FirstOrDefaultAsync(a => a.Id == id);
+            User existingUser = await _context.Users.FirstOrDefaultAsync(a => a.Id == id)
+                ?? throw new Exception($"User with id {id} not found");
             existingUser.Email = newUser.Email;
             existingUser.UserName = newUser.UserName;
             existingUser.PhoneNumber = newUser.PhoneNumber;
@@ -41,8 +43,9 @@ namespace WorkshopBackend.Repositories
 
         public async Task<bool> Delete(string id)
         {
-            var User = await _context.Users.FirstOrDefaultAsync(a => a.Id == id);
-            _context.Users.Remove(User);
+            User user = await _context.Users.FirstOrDefaultAsync(a => a.Id == id)
+                ?? throw new Exception($"User with id {id} not found");
+            _context.Users.Remove(user);
             await _context.SaveChangesAsync();
             return true;
         }

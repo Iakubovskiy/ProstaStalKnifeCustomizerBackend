@@ -1,21 +1,18 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using WorkshopBackend.DTO;
 using WorkshopBackend.Services;
 
-namespace APILR9.Controllers
+namespace WorkshopBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class RegistrationController : ControllerBase
     {
         private readonly UserService _userService;
-        private readonly HttpClient _httpClient;
 
-        public RegistrationController(UserService userService, IHttpClientFactory httpClientFactory)
+        public RegistrationController(UserService userService)
         {
             _userService = userService;
-            _httpClient = httpClientFactory.CreateClient("Api");
         }
 
         [HttpPost("register")]

@@ -1,39 +1,38 @@
 using Amazon.S3;
 using Amazon.S3.Model;
 using Amazon.S3.Transfer;
-using Amazon.Util;
-using Microsoft.EntityFrameworkCore.Scaffolding.Metadata;
 using WorkshopBackend.Interfaces;
 
 namespace WorkshopBackend.Services;
 
-public class AWSService:IFileService
+public class AwsService:IFileService
 {
-    private readonly IConfiguration _configuration;
-    private AmazonS3Client _client;
-    private readonly string bucketName;
+    private readonly AmazonS3Client _client;
+    private readonly string _bucketName;
+    private readonly string _domainName;
 
-    public AWSService(IConfiguration configuration)
+    public AwsService(IConfiguration iConfiguration)
     {
-        _configuration = configuration;
-        string accessKey = _configuration.GetValue<string>("S3_ACCESS_KEY");
-        string secretKey = _configuration.GetValue<string>("S3_SECRET_KET");
-        bucketName = _configuration.GetValue<string>("S3_BUCKET");
-        string region = "eu-north-1";
-
-        if (string.IsNullOrEmpty(accessKey) || string.IsNullOrEmpty(secretKey) || string.IsNullOrEmpty(bucketName))
-        {
-            accessKey = _configuration.GetSection("AWS:S3_ACCESS_KEY").Value;
-            secretKey = _configuration.GetSection("AWS:S3_SECRET_KET").Value;
-            bucketName = _configuration.GetSection("AWS:S3_BUCKET").Value;
-        }
+        IConfiguration configuration = iConfiguration;
+        string accessKey = configuration.GetValue<string>("S3_ACCESS_KEY") ?? 
+                           configuration.GetSection("AWS:S3_ACCESS_KEY").Value ?? 
+                           throw new ArgumentException("not access key provided");
+        string secretKey = configuration.GetValue<string>("S3_SECRET_KET") ?? 
+                           configuration.GetSection("AWS:S3_SECRET_KET").Value ??
+                           throw new ArgumentException("not secret key provided");
+        _bucketName = configuration.GetValue<string>("S3_BUCKET") ?? 
+                      configuration.GetSection("AWS:S3_BUCKET").Value ?? 
+                      throw new ArgumentException("not bucket name provided");
+        _domainName = configuration.GetValue<string>("CDN_DOMAIN") ?? 
+                      configuration.GetSection("AWS:CDN_DOMAIN").Value ??
+                      throw new ArgumentException("not domain name provided");
         
         _client = new AmazonS3Client(accessKey, secretKey, Amazon.RegionEndpoint.EUNorth1);
     }
 
-    private string GenerateFileUrl(string FileName)
+    private string GenerateFileUrl(string fileName)
     {
-        return $"https://{bucketName}.s3.amazonaws.com/{FileName}";
+        return $"https://{_domainName}/{fileName}";
     }
 
     public async Task<string> SaveFile(IFormFile file)
@@ -41,15 +40,15 @@ public class AWSService:IFileService
         string fileName = file.FileName;
         using var stream = file.OpenReadStream();
 
-        TransferUtilityUploadRequest UploadRequest = new TransferUtilityUploadRequest
+        TransferUtilityUploadRequest uploadRequest = new TransferUtilityUploadRequest
         {
             InputStream = stream,
-            BucketName = bucketName,
+            BucketName = _bucketName,
             Key = fileName,
             ContentType = file.ContentType,
         };
-        TransferUtility TransferUtility = new TransferUtility(_client);
-        await TransferUtility.UploadAsync(UploadRequest);
+        TransferUtility transferUtility = new TransferUtility(_client);
+        await transferUtility.UploadAsync(uploadRequest);
         return GenerateFileUrl(file.FileName);
     }
 
@@ -57,7 +56,7 @@ public class AWSService:IFileService
     {
         string[] elements = url.Split('/');
         
-        return elements[elements.Length - 1];
+        return elements[^1];
     }
 
     public async Task<bool> DeleteFile(string key)
@@ -68,13 +67,13 @@ public class AWSService:IFileService
                 return false;
             var deleteRequest = new DeleteObjectRequest
             {
-                BucketName = bucketName,
+                BucketName = _bucketName,
                 Key = key
             };
             await _client.DeleteObjectAsync(deleteRequest);
             return true;
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return false;
         }

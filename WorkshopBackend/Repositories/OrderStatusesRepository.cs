@@ -5,7 +5,7 @@ using WorkshopBackend.Models;
 
 namespace WorkshopBackend.Repositories
 {
-    public class OrderStatusesRepository : Repository<OrderStatuses, Guid>
+    public class OrderStatusesRepository : IRepository<OrderStatuses, Guid>
     {
         private readonly DBContext _context;
         public OrderStatusesRepository(DBContext context)
@@ -19,19 +19,21 @@ namespace WorkshopBackend.Repositories
 
         public async Task<OrderStatuses> GetById(Guid id)
         {
-            return await _context.OrderStatuses.FirstOrDefaultAsync(a => a.Id == id);
+            return await _context.OrderStatuses.FirstOrDefaultAsync(a => a.Id == id)
+                ?? throw new Exception($"OrderStatuses with id {id} not found");
         }
 
-        public async Task<OrderStatuses> Create(OrderStatuses OrderStatuses)
+        public async Task<OrderStatuses> Create(OrderStatuses order)
         {
-            _context.OrderStatuses.Add(OrderStatuses);
+            _context.OrderStatuses.Add(order);
             await _context.SaveChangesAsync();
-            return OrderStatuses;
+            return order;
         }
 
         public async Task<OrderStatuses> Update(Guid id, OrderStatuses newOrderStatuses)
         {
-            var existingOrderStatuses = await _context.OrderStatuses.FirstOrDefaultAsync(a => a.Id == id);
+            OrderStatuses existingOrderStatuses = await _context.OrderStatuses.FirstOrDefaultAsync(a => a.Id == id)
+                ?? throw new Exception($"OrderStatuses with id {id} not found");
             existingOrderStatuses.Status = newOrderStatuses.Status;
             await _context.SaveChangesAsync();
             return existingOrderStatuses;
@@ -39,8 +41,9 @@ namespace WorkshopBackend.Repositories
 
         public async Task<bool> Delete(Guid id)
         {
-            var OrderStatuses = await _context.OrderStatuses.FirstOrDefaultAsync(a => a.Id == id);
-            _context.OrderStatuses.Remove(OrderStatuses);
+            OrderStatuses orderStatuses = await _context.OrderStatuses.FirstOrDefaultAsync(a => a.Id == id)
+                ?? throw new Exception($"OrderStatuses with id {id} not found");
+            _context.OrderStatuses.Remove(orderStatuses);
             await _context.SaveChangesAsync();
             return true;
         }

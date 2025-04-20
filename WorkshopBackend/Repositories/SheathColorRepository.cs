@@ -5,7 +5,7 @@ using WorkshopBackend.Models;
 
 namespace WorkshopBackend.Repositories
 {
-    public class SheathColorRepository : Repository<SheathColor, Guid>
+    public class SheathColorRepository : IRepository<SheathColor, Guid>
     {
         private readonly DBContext _context;
         public SheathColorRepository(DBContext context)
@@ -19,19 +19,21 @@ namespace WorkshopBackend.Repositories
 
         public async Task<SheathColor> GetById(Guid id)
         {
-            return await _context.SheathColors.FirstOrDefaultAsync(a => a.Id == id);
+            return await _context.SheathColors.FirstOrDefaultAsync(a => a.Id == id)
+                ?? throw new Exception($"Sheath Color with Id {id} not found");
         }
 
-        public async Task<SheathColor> Create(SheathColor SheathColor)
+        public async Task<SheathColor> Create(SheathColor order)
         {
-            _context.SheathColors.Add(SheathColor);
+            _context.SheathColors.Add(order);
             await _context.SaveChangesAsync();
-            return SheathColor;
+            return order;
         }
 
         public async Task<SheathColor> Update(Guid id, SheathColor newSheathColor)
         {
-            var existingSheathColor = await _context.SheathColors.FirstOrDefaultAsync(a => a.Id == id);
+            SheathColor existingSheathColor = await _context.SheathColors.FirstOrDefaultAsync(a => a.Id == id)
+                ?? throw new Exception($"Sheath Color with Id {id} not found");
             existingSheathColor.Color = newSheathColor.Color;
             existingSheathColor.ColorCode = newSheathColor.ColorCode;
             existingSheathColor.Material = newSheathColor.Material;
@@ -55,8 +57,9 @@ namespace WorkshopBackend.Repositories
 
         public async Task<bool> Delete(Guid id)
         {
-            var SheathColor = await _context.SheathColors.FirstOrDefaultAsync(a => a.Id == id);
-            _context.SheathColors.Remove(SheathColor);
+            SheathColor sheathColor = await _context.SheathColors.FirstOrDefaultAsync(a => a.Id == id)
+                ?? throw new Exception($"Sheath Color with Id {id} not found");
+            _context.SheathColors.Remove(sheathColor);
             await _context.SaveChangesAsync();
             return true;
         }

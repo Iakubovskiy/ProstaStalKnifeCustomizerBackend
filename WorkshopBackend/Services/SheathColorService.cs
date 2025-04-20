@@ -1,15 +1,14 @@
 ﻿using WorkshopBackend.Interfaces;
 using WorkshopBackend.Models;
-using WorkshopBackend.Repositories;
 
 namespace WorkshopBackend.Services
 {
     public class SheathColorService
     {
-        private readonly Repository<SheathColor, Guid> _sheathColorRepository;
+        private readonly IRepository<SheathColor, Guid> _sheathColorRepository;
         private readonly IFileService _fileService;
 
-        public SheathColorService(Repository<SheathColor, Guid> sheathColorRepository, IFileService fileService)
+        public SheathColorService(IRepository<SheathColor, Guid> sheathColorRepository, IFileService fileService)
         {
             _sheathColorRepository = sheathColorRepository;
             _fileService = fileService;
@@ -108,17 +107,17 @@ namespace WorkshopBackend.Services
             SheathColor color = await _sheathColorRepository.GetById(id);
             List<SheathColor> colors = await _sheathColorRepository.GetAll();
             int quantity = colors.Count(c => c.ColorMapUrl == color.ColorMapUrl);
-            if (quantity <= 1)
+            if (quantity <= 1 && !string.IsNullOrEmpty(color.ColorMapUrl))
             {
                 await _fileService.DeleteFile(_fileService.GetIdFromUrl(color.ColorMapUrl));
             }
             quantity = colors.Count(c => c.RoughnessMapUrl == color.RoughnessMapUrl);
-            if (quantity <= 1)
+            if (quantity <= 1 && !string.IsNullOrEmpty(color.RoughnessMapUrl))
             {
                 await _fileService.DeleteFile(_fileService.GetIdFromUrl(color.RoughnessMapUrl));
             }
             quantity = colors.Count(c => c.NormalMapUrl == color.NormalMapUrl);
-            if (quantity <= 1)
+            if (quantity <= 1 && !string.IsNullOrEmpty(color.NormalMapUrl))
             {
                 await _fileService.DeleteFile(_fileService.GetIdFromUrl(color.NormalMapUrl));
             }

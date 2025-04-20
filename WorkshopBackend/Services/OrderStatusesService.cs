@@ -5,9 +5,9 @@ namespace WorkshopBackend.Services
 {
     public class OrderStatusesService
     {
-        private readonly Repository<OrderStatuses, Guid> _orderStatusesRepository;
+        private readonly IRepository<OrderStatuses, Guid> _orderStatusesRepository;
 
-        public OrderStatusesService(Repository<OrderStatuses, Guid> orderStatusesRepository)
+        public OrderStatusesService(IRepository<OrderStatuses, Guid> orderStatusesRepository)
         {
             _orderStatusesRepository = orderStatusesRepository;
         }

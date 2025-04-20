@@ -5,7 +5,7 @@ using WorkshopBackend.Models;
 
 namespace WorkshopBackend.Repositories
 {
-    public class EngravingPriceRepository : Repository<EngravingPrice, Guid>
+    public class EngravingPriceRepository : IRepository<EngravingPrice, Guid>
     {
         private readonly DBContext _context;
         public EngravingPriceRepository(DBContext context)
@@ -19,19 +19,21 @@ namespace WorkshopBackend.Repositories
 
         public async Task<EngravingPrice> GetById(Guid id)
         {
-            return await _context.EngravingPrices.FirstOrDefaultAsync(a => a.Id == id);
+            return await _context.EngravingPrices.FirstOrDefaultAsync(a => a.Id == id)
+                ?? throw new Exception("EngravingPrice not found");
         }
 
-        public async Task<EngravingPrice> Create(EngravingPrice EngravingPrice)
+        public async Task<EngravingPrice> Create(EngravingPrice order)
         {
-            _context.EngravingPrices.Add(EngravingPrice);
+            _context.EngravingPrices.Add(order);
             await _context.SaveChangesAsync();
-            return EngravingPrice;
+            return order;
         }
 
         public async Task<EngravingPrice> Update(Guid id, EngravingPrice newEngravingPrice)
         {
-            var existingEngravingPrice = await _context.EngravingPrices.FirstOrDefaultAsync(a => a.Id == id);
+            EngravingPrice existingEngravingPrice = await _context.EngravingPrices.FirstOrDefaultAsync(a => a.Id == id)
+                ?? throw new Exception("EngravingPrice not found");
             existingEngravingPrice.Price = newEngravingPrice.Price;
             await _context.SaveChangesAsync();
             return existingEngravingPrice;
@@ -39,8 +41,9 @@ namespace WorkshopBackend.Repositories
 
         public async Task<bool> Delete(Guid id)
         {
-            var EngravingPrice = await _context.EngravingPrices.FirstOrDefaultAsync(a => a.Id == id);
-            _context.EngravingPrices.Remove(EngravingPrice);
+            EngravingPrice engravingPrice = await _context.EngravingPrices.FirstOrDefaultAsync(a => a.Id == id)
+                ?? throw new Exception("EngravingPrice not found");
+            _context.EngravingPrices.Remove(engravingPrice);
             await _context.SaveChangesAsync();
             return true;
         }

@@ -142,19 +142,19 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 #region interfaces
-builder.Services.AddScoped<Repository<BladeCoatingColor, Guid>, BladeCoatingColorRepository>();
-builder.Services.AddScoped<Repository<BladeShape, Guid>, BladeShapeRepository>();
-builder.Services.AddScoped<Repository<DeliveryType, Guid>, DeliveryTypeRepository>();
-builder.Services.AddScoped<Repository<Engraving, Guid>, EngravingRepository>();
-builder.Services.AddScoped<Repository<EngravingPrice, Guid>, EngravingPriceRepository>();
-builder.Services.AddScoped<Repository<Fastening, Guid>, FasteningRepository>();
-builder.Services.AddScoped<Repository<HandleColor, Guid>, HandleColorRepository>();
-builder.Services.AddScoped<Repository<Knife, Guid>, KnifeRepository>();
-builder.Services.AddScoped<Repository<Order, Guid>, OrderRepository>();
-builder.Services.AddScoped<Repository<OrderStatuses, Guid>, OrderStatusesRepository>();
-builder.Services.AddScoped<Repository<SheathColor, Guid>, SheathColorRepository>();
+builder.Services.AddScoped<IRepository<BladeCoatingColor, Guid>, BladeCoatingColorRepository>();
+builder.Services.AddScoped<IRepository<BladeShape, Guid>, BladeShapeRepository>();
+builder.Services.AddScoped<IRepository<DeliveryType, Guid>, DeliveryTypeRepository>();
+builder.Services.AddScoped<IRepository<Engraving, Guid>, EngravingRepository>();
+builder.Services.AddScoped<IRepository<EngravingPrice, Guid>, EngravingPriceRepository>();
+builder.Services.AddScoped<IRepository<Fastening, Guid>, FasteningRepository>();
+builder.Services.AddScoped<IRepository<HandleColor, Guid>, HandleColorRepository>();
+builder.Services.AddScoped<IRepository<Knife, Guid>, KnifeRepository>();
+builder.Services.AddScoped<IRepository<Order, Guid>, OrderRepository>();
+builder.Services.AddScoped<IRepository<OrderStatuses, Guid>, OrderStatusesRepository>();
+builder.Services.AddScoped<IRepository<SheathColor, Guid>, SheathColorRepository>();
 builder.Services.AddScoped<ICustomEmailSender, EmailSenderService>();
-builder.Services.AddScoped<IFileService, AWSService>();
+builder.Services.AddScoped<IFileService, AwsService>();
 #endregion
 
 #region services

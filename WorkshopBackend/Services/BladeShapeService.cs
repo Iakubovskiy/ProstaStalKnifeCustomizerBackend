@@ -1,17 +1,14 @@
-﻿using Microsoft.AspNetCore.Http.Metadata;
-using System.Drawing;
-using WorkshopBackend.Interfaces;
+﻿using WorkshopBackend.Interfaces;
 using WorkshopBackend.Models;
-using WorkshopBackend.Repositories;
 
 namespace WorkshopBackend.Services
 {
     public class BladeShapeService
     {
-        private readonly Repository<BladeShape, Guid> _bladeShapeRepository;
+        private readonly IRepository<BladeShape, Guid> _bladeShapeRepository;
         private readonly IFileService _fileService;
 
-        public BladeShapeService(Repository<BladeShape, Guid> bladeShapeRepository, IFileService fileService)
+        public BladeShapeService(IRepository<BladeShape, Guid> bladeShapeRepository, IFileService fileService)
         {
             _bladeShapeRepository = bladeShapeRepository;
             _fileService = fileService;
@@ -37,7 +34,7 @@ namespace WorkshopBackend.Services
         {
             BladeShape bladeShape = await _bladeShapeRepository.GetById(id);
             if (bladeShape is null)
-                return null;
+                throw new KeyNotFoundException("Blade shape not found");
             bladeShape.IsActive = active;
             return await _bladeShapeRepository.Update(id, bladeShape);
         }

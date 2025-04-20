@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Infrastructure;
-using WorkshopBackend.DTO;
+﻿using WorkshopBackend.DTO;
 using WorkshopBackend.Interfaces;
 using WorkshopBackend.Models;
 using WorkshopBackend.Data;
@@ -9,13 +8,13 @@ namespace WorkshopBackend.Services
 {
     public class OrderService
     {
-        private readonly Repository<Order, Guid> _orderRepository;
-        private readonly Repository<OrderStatuses, Guid> _orderStatusesRepository;
+        private readonly IRepository<Order, Guid> _orderRepository;
+        private readonly IRepository<OrderStatuses, Guid> _orderStatusesRepository;
         private readonly ICustomEmailSender _customEmailSender;
         private readonly DBContext _context;
 
-        public OrderService(Repository<Order, Guid> orderRepository, 
-            Repository<OrderStatuses, Guid> orderStatusesRepository, ICustomEmailSender customEmailSender,
+        public OrderService(IRepository<Order, Guid> orderRepository, 
+            IRepository<OrderStatuses, Guid> orderStatusesRepository, ICustomEmailSender customEmailSender,
             DBContext context)
         {
             _orderRepository = orderRepository;
@@ -32,9 +31,8 @@ namespace WorkshopBackend.Services
         public async Task<OrderReturnDTO> GetOrderById(Guid id)
         {
             var order = await _orderRepository.GetById(id);
-            var orderItems = await _context.OrderItems
-                //.Include(oi => oi.Order)
-                .Include(oi => oi.Product)
+            var orderItems = await EntityFrameworkQueryableExtensions
+                .Include(_context.OrderItems, oi => oi.Product)
                 .Where(oi => oi.Order.Id == id)
                 .ToListAsync();
             List<OrderProductDto> orderProducts = orderItems.Select(oi => new OrderProductDto
@@ -69,6 +67,8 @@ namespace WorkshopBackend.Services
             foreach (var (product, quantity) in productsWithQuantities)
             {
                 OrderItem orderItem = await _context.OrderItems.FirstOrDefaultAsync(oi => oi.Order.Id == createdOrder.Id && oi.Product.Id == product.Id);
+                if (orderItem == null)
+                    throw new Exception($"Product with id {product.Id} does not exist");
                 orderItem.Quantity = quantity;               
             }
             await _context.SaveChangesAsync();

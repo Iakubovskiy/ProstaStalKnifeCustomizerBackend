@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using WorkshopBackend.Models;
 using WorkshopBackend.Services;
 
@@ -25,7 +24,14 @@ namespace WorkshopBackend.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetOrderStatusessById(Guid id)
         {
-            return Ok(new { status = await _orderStatusService.GetOrderStatusesById(id) });
+            try
+            {
+                return Ok(new { status = await _orderStatusService.GetOrderStatusesById(id) });
+            }
+            catch (Exception)
+            {
+                return BadRequest("Can't find order status");
+            }
         }
 
         [HttpPost]
@@ -37,13 +43,27 @@ namespace WorkshopBackend.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateOrderStatuses(Guid id, [FromForm] OrderStatuses updatedStatus)
         {
-            return Ok(new { updatedStatus = await _orderStatusService.UpdateOrderStatuses(id, updatedStatus) });
+            try
+            {
+                return Ok(new { updatedStatus = await _orderStatusService.UpdateOrderStatuses(id, updatedStatus) });
+            }
+            catch (Exception)
+            {
+                return BadRequest("Can't find order");
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOrderStatuses(Guid id)
         {
-            return Ok(new { isDeleted = await _orderStatusService.DeleteOrderStatuses(id) });
+            try
+            {
+                return Ok(new { isDeleted = await _orderStatusService.DeleteOrderStatuses(id) });
+            }
+            catch (Exception)
+            {
+                return BadRequest("Can't find order");
+            }
         }
     }
 }

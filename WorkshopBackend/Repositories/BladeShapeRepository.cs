@@ -5,7 +5,7 @@ using WorkshopBackend.Models;
 
 namespace WorkshopBackend.Repositories
 {
-    public class BladeShapeRepository : Repository<BladeShape, Guid>
+    public class BladeShapeRepository : IRepository<BladeShape, Guid>
     {
         private readonly DBContext _context;
         public BladeShapeRepository(DBContext context)
@@ -19,20 +19,22 @@ namespace WorkshopBackend.Repositories
 
         public async Task<BladeShape> GetById(Guid id)
         {
-            return await _context.BladeShapes.FirstOrDefaultAsync(a => a.Id == id);
+            return await _context.BladeShapes.FirstOrDefaultAsync(a => a.Id == id) 
+                   ?? throw new Exception("Blade shape not found");
         }
 
-        public async Task<BladeShape> Create(BladeShape BladeShape)
+        public async Task<BladeShape> Create(BladeShape order)
         {
-            _context.BladeShapes.Add(BladeShape);
+            _context.BladeShapes.Add(order);
             await _context.SaveChangesAsync();
-            return BladeShape;
+            return order;
         }
 
         public async Task<BladeShape> Update(Guid id, BladeShape newBladeShape)
         {
-            var existingBladeShape = await _context.BladeShapes.FirstOrDefaultAsync(a => a.Id == id);
-            existingBladeShape.Name = newBladeShape.Name ?? existingBladeShape.Name;
+            BladeShape existingBladeShape = await _context.BladeShapes.FirstOrDefaultAsync(a => a.Id == id) 
+                                            ?? throw new Exception("Blade shape not found");
+            existingBladeShape.Name = newBladeShape.Name;
             existingBladeShape.Price = newBladeShape.Price;
             existingBladeShape.totalLength = newBladeShape.totalLength;
             existingBladeShape.bladeLength = newBladeShape.bladeLength;
@@ -54,8 +56,9 @@ namespace WorkshopBackend.Repositories
 
         public async Task<bool> Delete(Guid id)
         {
-            var BladeShape = await _context.BladeShapes.FirstOrDefaultAsync(a => a.Id == id);
-            _context.BladeShapes.Remove(BladeShape);
+            BladeShape bladeShape = await _context.BladeShapes.FirstOrDefaultAsync(a => a.Id == id) 
+                                    ?? throw new Exception("Blade shape not found");
+            _context.BladeShapes.Remove(bladeShape);
             await _context.SaveChangesAsync();
             return true;
         }

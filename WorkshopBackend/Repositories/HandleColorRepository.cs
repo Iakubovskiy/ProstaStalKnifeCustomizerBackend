@@ -5,7 +5,7 @@ using WorkshopBackend.Models;
 
 namespace WorkshopBackend.Repositories
 {
-    public class HandleColorRepository : Repository<HandleColor, Guid>
+    public class HandleColorRepository : IRepository<HandleColor, Guid>
     {
         private readonly DBContext _context;
         public HandleColorRepository(DBContext context)
@@ -19,19 +19,21 @@ namespace WorkshopBackend.Repositories
 
         public async Task<HandleColor> GetById(Guid id)
         {
-            return await _context.HandleColors.FirstOrDefaultAsync(a => a.Id == id);
+            return await _context.HandleColors.FirstOrDefaultAsync(a => a.Id == id)
+                ?? throw new Exception("HandleColor not found");
         }
 
-        public async Task<HandleColor> Create(HandleColor handleColor)
+        public async Task<HandleColor> Create(HandleColor order)
         {
-            _context.HandleColors.Add(handleColor);
+            _context.HandleColors.Add(order);
             await _context.SaveChangesAsync();
-            return handleColor;
+            return order;
         }
 
         public async Task<HandleColor> Update(Guid id, HandleColor newHandleColor)
         {
-            var existingHandleColor = await _context.HandleColors.FirstOrDefaultAsync(a => a.Id == id);
+            HandleColor existingHandleColor = await _context.HandleColors.FirstOrDefaultAsync(a => a.Id == id)
+                ?? throw new Exception("HandleColor not found");
             existingHandleColor.ColorName = newHandleColor.ColorName;
             existingHandleColor.ColorCode = newHandleColor.ColorCode;
             existingHandleColor.Material = newHandleColor.Material;
@@ -54,7 +56,8 @@ namespace WorkshopBackend.Repositories
 
         public async Task<bool> Delete(Guid id)
         {
-            var handleColor = await _context.HandleColors.FirstOrDefaultAsync(a => a.Id == id);
+            HandleColor handleColor = await _context.HandleColors.FirstOrDefaultAsync(a => a.Id == id)
+                ?? throw new Exception("HandleColor not found");
             _context.HandleColors.Remove(handleColor);
             await _context.SaveChangesAsync();
             return true;

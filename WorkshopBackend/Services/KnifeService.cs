@@ -1,15 +1,14 @@
 ﻿using WorkshopBackend.Interfaces;
 using WorkshopBackend.Models;
-using WorkshopBackend.Repositories;
 
 namespace WorkshopBackend.Services
 {
     public class KnifeService
     {
-        public Repository<Knife, Guid> _knifeRepository;
-        public EngravingPriceService _engravingPriceService;
+        private readonly IRepository<Knife, Guid> _knifeRepository;
+        private readonly EngravingPriceService _engravingPriceService;
 
-        public KnifeService(Repository<Knife, Guid> knifeRepository, EngravingPriceService engravingPriceService)
+        public KnifeService(IRepository<Knife, Guid> knifeRepository, EngravingPriceService engravingPriceService)
         {
             _knifeRepository = knifeRepository;
             _engravingPriceService = engravingPriceService;
@@ -62,7 +61,7 @@ namespace WorkshopBackend.Services
             List<EngravingPrice> prices = await _engravingPriceService.GetAllEngravingPrices();
             double oneSidePrice = prices[0].Price;
             double engravingPrice = uniqueSides.Count * oneSidePrice;
-            double price = knife.Shape.Price + knife.BladeCoatingColor.Price + knife.SheathColor.Price + knife.Fastening.Price + engravingPrice;
+            double price = knife.Shape.Price + knife.BladeCoatingColor.Price + knife.SheathColor.Price + (knife.Fastening?.Price ?? 0) + engravingPrice;
             return price;
         }
 

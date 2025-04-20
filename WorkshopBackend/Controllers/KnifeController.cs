@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using WorkshopBackend.DTO;
 using WorkshopBackend.Models;
@@ -54,7 +53,14 @@ namespace WorkshopBackend.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetKnifesById(Guid id)
         {
-            return Ok(await _knifeService.GetKnifeById(id));
+            try
+            {
+                return Ok(await _knifeService.GetKnifeById(id));
+            }
+            catch (Exception)
+            {
+                return BadRequest("Can't find knife");
+            }
         }
 
         [HttpPost]
@@ -102,33 +108,69 @@ namespace WorkshopBackend.Controllers
             {
                 knife.Fastening = await _fasteningService.GetFasteningById(knifeDto.FasteningId.Value);
             }
-            var updatedKnife = await _knifeService.UpdateKnife(id, knife);
 
-            return Ok(updatedKnife);
+            try
+            {
+                var updatedKnife = await _knifeService.UpdateKnife(id, knife);
+
+                return Ok(updatedKnife);
+            }
+            catch (Exception)
+            {
+                return BadRequest("Can't find knife");
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteKnife(Guid id)
         {
-            return Ok(new { isDeleted = await _knifeService.DeleteKnife(id) });
+            try
+            {
+                return Ok(new { isDeleted = await _knifeService.DeleteKnife(id) });
+            }
+            catch (Exception)
+            {
+                return BadRequest("Can't find knife");
+            }
         }
 
         [HttpGet("price/{id}")]
         public async Task<IActionResult> GetKnifePrice(Guid id)
         {
-            return Ok(new { price = await _knifeService.KnifePrice(id)});
+            try
+            {
+                return Ok(new { price = await _knifeService.KnifePrice(id)});
+            }
+            catch (Exception)
+            {
+                return BadRequest("Can't find knife");
+            }
         }
 
         [HttpPatch("deactivate/{id}")]
         public async Task<IActionResult> Deactivate(Guid id)
         {
-            return Ok(await _knifeService.ChangeActive(id, false));
+            try
+            {
+                return Ok(await _knifeService.ChangeActive(id, false));
+            }
+            catch (Exception)
+            {
+                return BadRequest("Can't find knife");
+            }
         }
 
         [HttpPatch("activate/{id}")]
         public async Task<IActionResult> Activate(Guid id)
         {
-            return Ok(await _knifeService.ChangeActive(id, true));
+            try
+            {
+                return Ok(await _knifeService.ChangeActive(id, true));
+            }
+            catch (Exception)
+            {
+                return BadRequest("Can't find knife");
+            }
         }
     }
 }
