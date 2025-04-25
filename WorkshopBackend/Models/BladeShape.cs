@@ -7,6 +7,7 @@ namespace WorkshopBackend.Models
         [BindNever]
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public string? BladeShapePhotoUrl { get; set; }
         public double Price { get; set; }
         public double totalLength { get; set; }
         public double bladeLength { get; set; }
