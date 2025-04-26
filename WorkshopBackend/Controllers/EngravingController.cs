@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using WorkshopBackend.DTO;
+﻿using Microsoft.AspNetCore.Mvc;
 using WorkshopBackend.Models;
 using WorkshopBackend.Services;
 
@@ -23,7 +21,7 @@ namespace WorkshopBackend.Controllers
             return Ok(await _engravingService.GetAllEngravings());
         }
 
-        [HttpGet ("{id}")]
+        [HttpGet ("{id:guid}")]
         public async Task<IActionResult> GetEngravingsById(Guid id)
         {
             try
@@ -42,7 +40,7 @@ namespace WorkshopBackend.Controllers
             return Ok(await _engravingService.CreateEngraving(engraving, engravingPicrutre));
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id:guid}")]
         public async Task<IActionResult> UpdateEngraving(Guid id, [FromForm] Engraving engraving, IFormFile? engravingPicrutre)
         {
             try
@@ -55,7 +53,7 @@ namespace WorkshopBackend.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteEngraving(Guid id)
         {
             try

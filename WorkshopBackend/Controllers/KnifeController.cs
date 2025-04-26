@@ -50,7 +50,7 @@ namespace WorkshopBackend.Controllers
             return Ok(await _knifeService.GetAllActiveKnives());
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetKnifesById(Guid id)
         {
             try
@@ -67,7 +67,8 @@ namespace WorkshopBackend.Controllers
         public async Task<IActionResult> CreateKnife([FromForm] KnifeDTO knife)
         {
             var engravings = !string.IsNullOrEmpty(knife.EngravingsJson)
-            ? JsonSerializer.Deserialize<List<Guid>>(knife.EngravingsJson)
+            ? (JsonSerializer.Deserialize<List<Guid>>(knife.EngravingsJson) ??
+               throw new NullReferenceException("EngravingsJson")) 
                 .Select(id => _engravingService.GetEngravingById(id).Result)
                 .ToList()
             : new List<Engraving>();
@@ -86,12 +87,13 @@ namespace WorkshopBackend.Controllers
             return Ok(await _knifeService.CreateKnife(newKnife));
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id:guid}")]
         public async Task<IActionResult> UpdateKnife(Guid id, [FromForm] KnifeDTO knifeDto)
         {
             var engravings = !string.IsNullOrEmpty(knifeDto.EngravingsJson)
-            ? JsonSerializer.Deserialize<List<Guid>>(knifeDto.EngravingsJson)
-                .Select(id => _engravingService.GetEngravingById(id).Result)
+            ? (JsonSerializer.Deserialize<List<Guid>>(knifeDto.EngravingsJson) ?? 
+               throw new NullReferenceException("EngravingsJson"))
+                .Select(engravingId => _engravingService.GetEngravingById(engravingId).Result)
                 .ToList()
             : new List<Engraving>();
 
@@ -121,7 +123,7 @@ namespace WorkshopBackend.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteKnife(Guid id)
         {
             try
@@ -134,7 +136,7 @@ namespace WorkshopBackend.Controllers
             }
         }
 
-        [HttpGet("price/{id}")]
+        [HttpGet("price/{id:guid}")]
         public async Task<IActionResult> GetKnifePrice(Guid id)
         {
             try
@@ -147,7 +149,7 @@ namespace WorkshopBackend.Controllers
             }
         }
 
-        [HttpPatch("deactivate/{id}")]
+        [HttpPatch("deactivate/{id:guid}")]
         public async Task<IActionResult> Deactivate(Guid id)
         {
             try
@@ -160,7 +162,7 @@ namespace WorkshopBackend.Controllers
             }
         }
 
-        [HttpPatch("activate/{id}")]
+        [HttpPatch("activate/{id:guid}")]
         public async Task<IActionResult> Activate(Guid id)
         {
             try

@@ -27,7 +27,7 @@ namespace WorkshopBackend.Controllers
             return Ok(await _bladeShapeService.GetAllActiveBladeShapes());
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetBladeShapesById(Guid id)
         {
             return Ok(await _bladeShapeService.GetBladeShapeById(id));
@@ -37,25 +37,28 @@ namespace WorkshopBackend.Controllers
         public async Task<IActionResult> CreateBladeShape(
                 [FromForm] BladeShape shape, 
                 IFormFile bladeShapeModel,
-                IFormFile sheathModel
+                IFormFile sheathModel,
+                IFormFile bladeShapePhoto
             )
         {
             return Ok(
                 await _bladeShapeService.CreateBladeShape(
                     shape,
                     bladeShapeModel,  
-                    sheathModel
+                    sheathModel,
+                    bladeShapePhoto
                 )
             );
 
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id:guid}")]
         public async Task<IActionResult> UpdateBladeShape(
                 Guid id, 
                 [FromForm] BladeShape updateBladeShape,
                 IFormFile? bladeShapeModel,
-                IFormFile? sheathModel
+                IFormFile? sheathModel,
+                IFormFile? bladeShapePhoto
             )
         {
             return Ok(
@@ -63,18 +66,19 @@ namespace WorkshopBackend.Controllers
                     id,
                     updateBladeShape, 
                     bladeShapeModel, 
-                    sheathModel
+                    sheathModel,
+                    bladeShapePhoto
                 ) 
             );
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteBladeShape(Guid id)
         {
             return Ok(new { isDeleted = await _bladeShapeService.DeleteBladeShape(id) });
         }
 
-        [HttpPatch("deactivate/{id}")]
+        [HttpPatch("deactivate/{id:guid}")]
         public async Task<IActionResult> Deactivate(Guid id)
         {
             try
@@ -88,7 +92,7 @@ namespace WorkshopBackend.Controllers
             }
         }
 
-        [HttpPatch("activate/{id}")]
+        [HttpPatch("activate/{id:guid}")]
         public async Task<IActionResult> Activate(Guid id)
         {
             try

@@ -23,7 +23,7 @@ namespace WorkshopBackend.Services
             return await _knifeRepository.GetAll();
         }
 
-        public async Task<Knife> GetKnifeById(Guid id)
+        public async Task<Knife?> GetKnifeById(Guid id)
         {
             return await _knifeRepository.GetById(id);
         }

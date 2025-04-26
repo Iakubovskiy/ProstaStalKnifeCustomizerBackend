@@ -29,7 +29,7 @@ namespace WorkshopBackend.Controllers
             return Ok(await _orderService.GetAllOrders());
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetOrdersById(Guid id)
         {
             try
@@ -45,11 +45,9 @@ namespace WorkshopBackend.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateOrder([FromForm] OrderDTO orderDto)
         {
-            var productsId = !string.IsNullOrEmpty(orderDto.ProductIdsJson)
-            ? JsonSerializer.Deserialize<List<Guid>>(orderDto.ProductIdsJson):new List<Guid>();
+            List<Guid> productsId = JsonSerializer.Deserialize<List<Guid>>(orderDto.ProductIdsJson) ?? new List<Guid>();
 
-            var productQuantities = !string.IsNullOrEmpty(orderDto.ProductIdsJson)
-            ? JsonSerializer.Deserialize<List<int>>(orderDto.ProductQuantitiesJson) : new List<int>();
+            List<int> productQuantities = JsonSerializer.Deserialize<List<int>>(orderDto.ProductQuantitiesJson) ?? new List<int>();
 
             if(productsId.Count != productQuantities.Count)
             {
@@ -60,11 +58,10 @@ namespace WorkshopBackend.Controllers
 
             foreach(var productId in productsId)
             {
-                Product product = await _knifeService.GetKnifeById(productId);
-                if(product == null)
-                {
-                    product = await _fasteningService.GetFasteningById(productId);
-                }
+                Product product = await _knifeService.GetKnifeById(productId) 
+                                  ?? (Product?)await _fasteningService.GetFasteningById(productId) 
+                                  ?? throw new ArgumentException("Not valid Id");
+                
                 products.Add(product);
             }
             List<(Product, int)> items = new List<(Product, int)> ();
@@ -92,7 +89,7 @@ namespace WorkshopBackend.Controllers
             return Ok(new { createdColor = await _orderService.CreateOrder(order,items) });
         }
 
-        [HttpPatch("update/status/{id}")]
+        [HttpPatch("update/status/{id:guid}")]
         public async Task<IActionResult> UpdateOrderStatus(Guid id, [FromForm] string status)
         {
             try
@@ -105,7 +102,7 @@ namespace WorkshopBackend.Controllers
             }
         }
 
-        [HttpPatch("update/delivery-data/{id}")]
+        [HttpPatch("update/delivery-data/{id:guid}")]
         public async Task<IActionResult> UpdateOrderDeliveryData(Guid id, [FromForm] DeliveryDataDTO data)
         {
             try
@@ -118,7 +115,7 @@ namespace WorkshopBackend.Controllers
             }
         }
 
-        [HttpPatch("update/delivery-type/{id}")]
+        [HttpPatch("update/delivery-type/{id:guid}")]
         public async Task<IActionResult> UpdateOrderDeliveryType(Guid id, [FromForm] DeliveryType type)
         {
             try
@@ -131,7 +128,7 @@ namespace WorkshopBackend.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteOrder(Guid id)
         {
             try

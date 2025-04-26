@@ -27,7 +27,7 @@ namespace WorkshopBackend.Controllers
             return Ok(await _sheathColorService.GetAllActiveSheathColors());
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetSheathColorsById(Guid id)
         {
             try
@@ -56,7 +56,7 @@ namespace WorkshopBackend.Controllers
              ));
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id:guid}")]
         public async Task<IActionResult> UpdateSheathColor(
             Guid id, 
             [FromForm] SheathColor updatedColor,
@@ -75,7 +75,7 @@ namespace WorkshopBackend.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteSheathColor(Guid id)
         {
             try
@@ -88,7 +88,7 @@ namespace WorkshopBackend.Controllers
             }
         }
 
-        [HttpPatch("deactivate/{id}")]
+        [HttpPatch("deactivate/{id:guid}")]
         public async Task<IActionResult> Deactivate(Guid id)
         {
             try
@@ -101,7 +101,7 @@ namespace WorkshopBackend.Controllers
             }
         }
 
-        [HttpPatch("activate/{id}")]
+        [HttpPatch("activate/{id:guid}")]
         public async Task<IActionResult> Activate(Guid id)
         {
             try

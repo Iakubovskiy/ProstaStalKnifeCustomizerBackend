@@ -25,7 +25,7 @@ namespace WorkshopBackend.Services
             return fastenings.Where(c => c.IsActive).ToList();
         }
 
-        public async Task<Fastening> GetFasteningById(Guid id)
+        public async Task<Fastening?> GetFasteningById(Guid id)
         {
             return await _fasteningRepository.GetById(id);
         }

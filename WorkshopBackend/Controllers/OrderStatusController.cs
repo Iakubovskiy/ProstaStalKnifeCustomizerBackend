@@ -21,7 +21,7 @@ namespace WorkshopBackend.Controllers
             return Ok(new { orderStatuss = await _orderStatusService.GetAllOrderStatusess() });
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetOrderStatusessById(Guid id)
         {
             try
@@ -40,7 +40,7 @@ namespace WorkshopBackend.Controllers
             return Ok(new { createdStatus = await _orderStatusService.CreateOrderStatuses(newStatus) });
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id:guid}")]
         public async Task<IActionResult> UpdateOrderStatuses(Guid id, [FromForm] OrderStatuses updatedStatus)
         {
             try
@@ -53,7 +53,7 @@ namespace WorkshopBackend.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteOrderStatuses(Guid id)
         {
             try

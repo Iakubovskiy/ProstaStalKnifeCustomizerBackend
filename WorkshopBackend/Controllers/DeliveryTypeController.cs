@@ -27,7 +27,7 @@ namespace WorkshopBackend.Controllers
             return Ok(await _deliveryTypeService.GetAllActiveDeliveryTypes());
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetDeliveryTypesById(Guid id)
         {
             try
@@ -46,7 +46,7 @@ namespace WorkshopBackend.Controllers
             return Ok(await _deliveryTypeService.CreateDeliveryType(type));
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id:guid}")]
         public async Task<IActionResult> UpdateDeliveryType(Guid id, [FromForm] DeliveryType type)
         {
             try
@@ -59,7 +59,7 @@ namespace WorkshopBackend.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteDeliveryType(Guid id)
         {
             try
@@ -72,7 +72,7 @@ namespace WorkshopBackend.Controllers
             }
         }
 
-        [HttpPatch("deactivate/{id}")]
+        [HttpPatch("deactivate/{id:guid}")]
         public async Task<IActionResult> Deactivate(Guid id)
         {
             try
@@ -85,7 +85,7 @@ namespace WorkshopBackend.Controllers
             }
         }
 
-        [HttpPatch("activate/{id}")]
+        [HttpPatch("activate/{id:guid}")]
         public async Task<IActionResult> Activate(Guid id)
         {
             try

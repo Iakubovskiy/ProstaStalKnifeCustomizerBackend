@@ -27,7 +27,7 @@ namespace WorkshopBackend.Controllers
             return Ok(await _handleColorService.GetAllActiveHandleColors());
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetHandleColorsById(Guid id)
         {
             try
@@ -45,19 +45,19 @@ namespace WorkshopBackend.Controllers
             [FromForm] HandleColor handleColor,
              IFormFile? colorMap,
             IFormFile? normalMap,
-            IFormFile? roughnesMap
+            IFormFile? roughnessMap
             )
         {
             return Ok(await _handleColorService.CreateHandleColor(
                     handleColor, 
                     colorMap, 
                     normalMap, 
-                    roughnesMap
+                    roughnessMap
                 ) 
             );
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id:guid}")]
         public async Task<IActionResult> UpdateHandleColor(
             Guid id, 
             [FromForm] HandleColor updateHandleColor,
@@ -83,7 +83,7 @@ namespace WorkshopBackend.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteHandleColor(Guid id)
         {
             try
@@ -96,7 +96,7 @@ namespace WorkshopBackend.Controllers
             }
         }
 
-        [HttpPatch("deactivate/{id}")]
+        [HttpPatch("deactivate/{id:guid}")]
         public async Task<IActionResult> Deactivate(Guid id)
         {
             try
@@ -109,7 +109,7 @@ namespace WorkshopBackend.Controllers
             }
         }
 
-        [HttpPatch("activate/{id}")]
+        [HttpPatch("activate/{id:guid}")]
         public async Task<IActionResult> Activate(Guid id)
         {
             try

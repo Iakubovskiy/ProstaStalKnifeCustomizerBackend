@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using WorkshopBackend.DTO;
+﻿using Microsoft.AspNetCore.Mvc;
 using WorkshopBackend.Models;
 using WorkshopBackend.Services;
 
@@ -29,7 +27,7 @@ namespace WorkshopBackend.Controllers
             return Ok(await _fasteningService.GetAllActiveFastenings());
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetFasteningsById(Guid id)
         {
             try
@@ -52,7 +50,7 @@ namespace WorkshopBackend.Controllers
             );
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id:guid}")]
         public async Task<IActionResult> UpdateFastening(Guid id, [FromForm] Fastening updateFastening, IFormFile? model)
         {
             try
@@ -65,7 +63,7 @@ namespace WorkshopBackend.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteFastening(Guid id)
         {
             try
@@ -78,7 +76,7 @@ namespace WorkshopBackend.Controllers
             }
         }
 
-        [HttpPatch("deactivate/{id}")]
+        [HttpPatch("deactivate/{id:guid}")]
         public async Task<IActionResult> Deactivate(Guid id)
         {
             try
@@ -91,7 +89,7 @@ namespace WorkshopBackend.Controllers
             }
         }
 
-        [HttpPatch("activate/{id}")]
+        [HttpPatch("activate/{id:guid}")]
         public async Task<IActionResult> Activate(Guid id)
         {
             try

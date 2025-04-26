@@ -42,11 +42,13 @@ namespace WorkshopBackend.Services
         public async Task<BladeShape> CreateBladeShape(
             BladeShape bladeShape, 
             IFormFile bladeShapeModel, 
-            IFormFile sheathModel
+            IFormFile sheathModel,
+            IFormFile bladeShapePhoto
             )
         {
             bladeShape.bladeShapeModelUrl = await _fileService.SaveFile(bladeShapeModel);
             bladeShape.sheathModelUrl = await _fileService.SaveFile(sheathModel);
+            bladeShape.BladeShapePhotoUrl = await _fileService.SaveFile(bladeShapePhoto);
             return await _bladeShapeRepository.Create(bladeShape);
         }
 
@@ -54,7 +56,8 @@ namespace WorkshopBackend.Services
             Guid id, 
             BladeShape bladeShape,
             IFormFile? bladeShapeModel,
-            IFormFile? sheathModel
+            IFormFile? sheathModel,
+            IFormFile? bladeShapePhoto
             )
         {
             if (bladeShapeModel != null)
@@ -82,6 +85,19 @@ namespace WorkshopBackend.Services
                     }
                 }
                 bladeShape.sheathModelUrl = await _fileService.SaveFile(sheathModel);
+            }
+            if (bladeShapePhoto != null)
+            {
+                if (!string.IsNullOrEmpty(bladeShape.BladeShapePhotoUrl))
+                {
+                    List<BladeShape> shapes = await _bladeShapeRepository.GetAll();
+                    int quantity = shapes.Count(c => c.BladeShapePhotoUrl == bladeShape.BladeShapePhotoUrl);
+                    if (quantity <= 1)
+                    {
+                        await _fileService.DeleteFile(_fileService.GetIdFromUrl(bladeShape.BladeShapePhotoUrl));
+                    }
+                }
+                bladeShape.BladeShapePhotoUrl = await _fileService.SaveFile(bladeShapePhoto);
             }
             return await _bladeShapeRepository.Update(id, bladeShape);
         }

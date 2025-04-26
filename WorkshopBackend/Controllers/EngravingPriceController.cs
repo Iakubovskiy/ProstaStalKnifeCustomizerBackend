@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using WorkshopBackend.Models;
 using WorkshopBackend.Services;
 
@@ -22,7 +21,7 @@ namespace WorkshopBackend.Controllers
             return Ok(await _engravingPriceService.GetAllEngravingPrices());
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetEngravingPricesById(Guid id)
         {
             try
@@ -41,7 +40,7 @@ namespace WorkshopBackend.Controllers
             return Ok(await _engravingPriceService.CreateEngravingPrice(engravingPrice));
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id:guid}")]
         public async Task<IActionResult> UpdateEngravingPrice(Guid id, [FromForm] EngravingPrice engravingPrice)
         {
             try
@@ -54,7 +53,7 @@ namespace WorkshopBackend.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteEngravingPrice(Guid id)
         {
             try
