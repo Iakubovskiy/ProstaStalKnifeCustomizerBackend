@@ -34,7 +34,7 @@ namespace WorkshopBackend.Services
             HandleColor handleColor,
             IFormFile? colorMap,
             IFormFile? normalMap,
-            IFormFile? roughnesMap
+            IFormFile? roughnessMap
             )
         {
             if (colorMap != null)
@@ -48,7 +48,7 @@ namespace WorkshopBackend.Services
                         await _fileService.DeleteFile(_fileService.GetIdFromUrl(handleColor.ColorMapUrl));
                     }
                 }
-                handleColor.ColorMapUrl = await _fileService.SaveFile(colorMap);
+                handleColor.ColorMapUrl = await _fileService.SaveFile(colorMap, colorMap.FileName);
             }
             if (normalMap != null)
             {
@@ -61,9 +61,9 @@ namespace WorkshopBackend.Services
                         await _fileService.DeleteFile(_fileService.GetIdFromUrl(handleColor.NormalMapUrl));
                     }
                 }
-                handleColor.NormalMapUrl = await _fileService.SaveFile(normalMap);
+                handleColor.NormalMapUrl = await _fileService.SaveFile(normalMap, normalMap.FileName);
             }
-            if (roughnesMap != null)
+            if (roughnessMap != null)
             {
                 if (!string.IsNullOrEmpty(handleColor.RoughnessMapUrl))
                 {
@@ -74,7 +74,7 @@ namespace WorkshopBackend.Services
                         await _fileService.DeleteFile(_fileService.GetIdFromUrl(handleColor.RoughnessMapUrl));
                     }
                 }
-                handleColor.RoughnessMapUrl = await _fileService.SaveFile(roughnesMap);
+                handleColor.RoughnessMapUrl = await _fileService.SaveFile(roughnessMap, roughnessMap.FileName);
             }
             return await _handleColorRepository.Create(handleColor);
         }
@@ -84,20 +84,20 @@ namespace WorkshopBackend.Services
             HandleColor handleColor,
             IFormFile? colorMap,
             IFormFile? normalMap,
-            IFormFile? roughnesMap
+            IFormFile? roughnessMap
             )
         {
             if (colorMap != null)
             {
-                handleColor.ColorMapUrl = await _fileService.SaveFile(colorMap);
+                handleColor.ColorMapUrl = await _fileService.SaveFile(colorMap, colorMap.FileName);
             }
             if (normalMap != null)
             {
-                handleColor.NormalMapUrl = await _fileService.SaveFile(normalMap);
+                handleColor.NormalMapUrl = await _fileService.SaveFile(normalMap, normalMap.FileName);
             }
-            if (roughnesMap != null)
+            if (roughnessMap != null)
             {
-                handleColor.RoughnessMapUrl = await _fileService.SaveFile(roughnesMap);
+                handleColor.RoughnessMapUrl = await _fileService.SaveFile(roughnessMap, roughnessMap.FileName);
             }
             return await _handleColorRepository.Update(id, handleColor);
         }

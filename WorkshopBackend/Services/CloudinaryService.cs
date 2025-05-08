@@ -21,7 +21,7 @@ namespace WorkshopBackend.Services
             cloudinary = new Cloudinary(cloudinaryUrl);
         }
 
-        public async Task<string> SaveFile(IFormFile file)
+        public async Task<string> SaveFile(IFormFile file, string name)
         {            
             Stream stream = file.OpenReadStream();
             ImageUploadParams uploadParams = new ImageUploadParams

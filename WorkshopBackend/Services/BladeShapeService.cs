@@ -46,9 +46,9 @@ namespace WorkshopBackend.Services
             IFormFile bladeShapePhoto
             )
         {
-            bladeShape.bladeShapeModelUrl = await _fileService.SaveFile(bladeShapeModel);
-            bladeShape.sheathModelUrl = await _fileService.SaveFile(sheathModel);
-            bladeShape.BladeShapePhotoUrl = await _fileService.SaveFile(bladeShapePhoto);
+            bladeShape.bladeShapeModelUrl = await _fileService.SaveFile(bladeShapeModel, bladeShapeModel.FileName);
+            bladeShape.sheathModelUrl = await _fileService.SaveFile(sheathModel, sheathModel.FileName);
+            bladeShape.BladeShapePhotoUrl = await _fileService.SaveFile(bladeShapePhoto, bladeShapePhoto.FileName);
             return await _bladeShapeRepository.Create(bladeShape);
         }
 
@@ -71,7 +71,7 @@ namespace WorkshopBackend.Services
                         await _fileService.DeleteFile(_fileService.GetIdFromUrl(bladeShape.bladeShapeModelUrl));
                     }
                 }
-                bladeShape.bladeShapeModelUrl = await _fileService.SaveFile(bladeShapeModel);
+                bladeShape.bladeShapeModelUrl = await _fileService.SaveFile(bladeShapeModel, bladeShapeModel.FileName);
             }
             if (sheathModel != null)
             {
@@ -84,7 +84,7 @@ namespace WorkshopBackend.Services
                         await _fileService.DeleteFile(_fileService.GetIdFromUrl(bladeShape.sheathModelUrl));
                     }
                 }
-                bladeShape.sheathModelUrl = await _fileService.SaveFile(sheathModel);
+                bladeShape.sheathModelUrl = await _fileService.SaveFile(sheathModel, sheathModel.FileName);
             }
             if (bladeShapePhoto != null)
             {
@@ -97,7 +97,7 @@ namespace WorkshopBackend.Services
                         await _fileService.DeleteFile(_fileService.GetIdFromUrl(bladeShape.BladeShapePhotoUrl));
                     }
                 }
-                bladeShape.BladeShapePhotoUrl = await _fileService.SaveFile(bladeShapePhoto);
+                bladeShape.BladeShapePhotoUrl = await _fileService.SaveFile(bladeShapePhoto, bladeShapePhoto.FileName);
             }
             return await _bladeShapeRepository.Update(id, bladeShape);
         }

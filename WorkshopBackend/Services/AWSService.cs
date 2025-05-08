@@ -35,9 +35,9 @@ public class AwsService:IFileService
         return $"https://{_domainName}/{fileName}";
     }
 
-    public async Task<string> SaveFile(IFormFile file)
+    public async Task<string> SaveFile(IFormFile file, string key)
     {
-        string fileName = file.FileName;
+        string fileName = key;
         using var stream = file.OpenReadStream();
 
         TransferUtilityUploadRequest uploadRequest = new TransferUtilityUploadRequest
@@ -49,7 +49,7 @@ public class AwsService:IFileService
         };
         TransferUtility transferUtility = new TransferUtility(_client);
         await transferUtility.UploadAsync(uploadRequest);
-        return GenerateFileUrl(file.FileName);
+        return GenerateFileUrl(fileName);
     }
 
     public string GetIdFromUrl(string url)

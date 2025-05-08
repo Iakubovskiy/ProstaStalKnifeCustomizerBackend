@@ -39,15 +39,15 @@ namespace WorkshopBackend.Services
         {
             if (colorMap != null)
             {
-                bladeCoatingColor.ColorMapUrl = await _fileService.SaveFile(colorMap);
+                bladeCoatingColor.ColorMapUrl = await _fileService.SaveFile(colorMap, colorMap.FileName);
             }
             if (normalMap != null)
             {
-                bladeCoatingColor.NormalMapUrl = await _fileService.SaveFile(normalMap);
+                bladeCoatingColor.NormalMapUrl = await _fileService.SaveFile(normalMap, normalMap.FileName);
             }
             if (roughnessMap != null)
             {
-                bladeCoatingColor.RoughnessMapUrl = await _fileService.SaveFile(roughnessMap);
+                bladeCoatingColor.RoughnessMapUrl = await _fileService.SaveFile(roughnessMap, roughnessMap.FileName);
             }
             return await _bladeCoatingColorRepository.Create(bladeCoatingColor);
         }
@@ -71,7 +71,7 @@ namespace WorkshopBackend.Services
                         await _fileService.DeleteFile(_fileService.GetIdFromUrl(bladeCoatingColor.ColorMapUrl));
                     }
                 }
-                bladeCoatingColor.ColorMapUrl = await _fileService.SaveFile(colorMap);
+                bladeCoatingColor.ColorMapUrl = await _fileService.SaveFile(colorMap, colorMap.FileName);
             }
             if (normalMap != null)
             {
@@ -84,7 +84,7 @@ namespace WorkshopBackend.Services
                         await _fileService.DeleteFile(_fileService.GetIdFromUrl(bladeCoatingColor.NormalMapUrl));
                     }
                 }
-                bladeCoatingColor.NormalMapUrl = await _fileService.SaveFile(normalMap);
+                bladeCoatingColor.NormalMapUrl = await _fileService.SaveFile(normalMap, normalMap.FileName);
             }
             if (roughnessMap != null)
             {
@@ -97,7 +97,7 @@ namespace WorkshopBackend.Services
                         await _fileService.DeleteFile(_fileService.GetIdFromUrl(bladeCoatingColor.RoughnessMapUrl));
                     }
                 }
-                bladeCoatingColor.RoughnessMapUrl = await _fileService.SaveFile(roughnessMap);
+                bladeCoatingColor.RoughnessMapUrl = await _fileService.SaveFile(roughnessMap, roughnessMap.FileName);
             }
             return await _bladeCoatingColorRepository.Update(id, bladeCoatingColor);
         }

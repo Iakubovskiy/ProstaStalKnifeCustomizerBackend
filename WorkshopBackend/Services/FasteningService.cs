@@ -32,7 +32,7 @@ namespace WorkshopBackend.Services
 
         public async Task<Fastening> CreateFastening(Fastening fastening, IFormFile model)
         {
-            fastening.ModelUrl = await _fileService.SaveFile(model);
+            fastening.ModelUrl = await _fileService.SaveFile(model, model.FileName);
             return await _fasteningRepository.Create(fastening);
         }
 
@@ -49,7 +49,7 @@ namespace WorkshopBackend.Services
                         await _fileService.DeleteFile(_fileService.GetIdFromUrl(fastening.ModelUrl));
                     }
                 }
-                fastening.ModelUrl = await _fileService.SaveFile(model);
+                fastening.ModelUrl = await _fileService.SaveFile(model, model.FileName);
             }
             return await _fasteningRepository.Update(id, fastening);
         }

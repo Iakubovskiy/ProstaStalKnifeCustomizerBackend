@@ -28,7 +28,7 @@ namespace WorkshopBackend.Services
         {
             if (file != null)
             {
-                engraving.pictureUrl = await _fileService.SaveFile(file);
+                engraving.pictureUrl = await _fileService.SaveFile(file, $"{Guid.NewGuid().ToString()} - {file.FileName}");
             }
             return await _engravingRepository.Create(engraving);
         }
@@ -41,7 +41,7 @@ namespace WorkshopBackend.Services
                 {
                     await _fileService.DeleteFile(_fileService.GetIdFromUrl(engraving.pictureUrl));
                 }
-                engraving.pictureUrl = await _fileService.SaveFile(file);
+                engraving.pictureUrl = await _fileService.SaveFile(file, $"{Guid.NewGuid()} - {file.FileName}");
             }
             return await _engravingRepository.Update(id, engraving);
         }

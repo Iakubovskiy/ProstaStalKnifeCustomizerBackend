@@ -34,20 +34,20 @@ namespace WorkshopBackend.Services
             SheathColor sheathColor,
             IFormFile? colorMap,
             IFormFile? normalMap,
-            IFormFile? roughnesMap
+            IFormFile? roughnessMap
             )
         {
             if (colorMap != null)
             {
-                sheathColor.ColorMapUrl = await _fileService.SaveFile(colorMap);
+                sheathColor.ColorMapUrl = await _fileService.SaveFile(colorMap, colorMap.FileName);
             }
             if (normalMap != null)
             {
-                sheathColor.NormalMapUrl = await _fileService.SaveFile(normalMap);
+                sheathColor.NormalMapUrl = await _fileService.SaveFile(normalMap, normalMap.FileName);
             }
-            if (roughnesMap != null)
+            if (roughnessMap != null)
             {
-                sheathColor.RoughnessMapUrl = await _fileService.SaveFile(roughnesMap);
+                sheathColor.RoughnessMapUrl = await _fileService.SaveFile(roughnessMap, roughnessMap.FileName);
             }
             return await _sheathColorRepository.Create(sheathColor);
         }
@@ -57,7 +57,7 @@ namespace WorkshopBackend.Services
             SheathColor sheathColor, 
             IFormFile? colorMap,
             IFormFile? normalMap,
-            IFormFile? roughnesMap
+            IFormFile? roughnessMap
             )
         {
             if (colorMap != null)
@@ -71,7 +71,7 @@ namespace WorkshopBackend.Services
                         await _fileService.DeleteFile(_fileService.GetIdFromUrl(sheathColor.ColorMapUrl));
                     }
                 }
-                sheathColor.ColorMapUrl = await _fileService.SaveFile(colorMap);
+                sheathColor.ColorMapUrl = await _fileService.SaveFile(colorMap, colorMap.FileName);
             }
             if (normalMap != null)
             {
@@ -84,9 +84,9 @@ namespace WorkshopBackend.Services
                         await _fileService.DeleteFile(_fileService.GetIdFromUrl(sheathColor.NormalMapUrl));
                     }
                 }
-                sheathColor.NormalMapUrl = await _fileService.SaveFile(normalMap);
+                sheathColor.NormalMapUrl = await _fileService.SaveFile(normalMap, normalMap.FileName);
             }
-            if (roughnesMap != null)
+            if (roughnessMap != null)
             {
                 if (!string.IsNullOrEmpty(sheathColor.RoughnessMapUrl))
                 {
@@ -97,7 +97,7 @@ namespace WorkshopBackend.Services
                         await _fileService.DeleteFile(_fileService.GetIdFromUrl(sheathColor.RoughnessMapUrl));
                     }
                 }
-                sheathColor.RoughnessMapUrl = await _fileService.SaveFile(roughnesMap);
+                sheathColor.RoughnessMapUrl = await _fileService.SaveFile(roughnessMap, roughnessMap.FileName);
             }
             return await _sheathColorRepository.Update(id, sheathColor);
         }
