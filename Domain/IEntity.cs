@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Domain.Models
+namespace Domain
 {
     public interface IEntity
     {
         [BindNever]
-        Guid Id { get; set; }
+        Guid Id { get; }
     }
 }

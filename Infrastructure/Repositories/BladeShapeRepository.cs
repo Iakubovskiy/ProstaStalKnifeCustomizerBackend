@@ -36,19 +36,19 @@ namespace Infrastructure.Repositories
                                             ?? throw new Exception("Blade shape not found");
             existingBladeShape.Name = newBladeShape.Name;
             existingBladeShape.Price = newBladeShape.Price;
-            existingBladeShape.totalLength = newBladeShape.totalLength;
-            existingBladeShape.bladeLength = newBladeShape.bladeLength;
-            existingBladeShape.bladeWidth = newBladeShape.bladeWidth;
-            existingBladeShape.bladeWeight = newBladeShape.bladeWeight;
-            existingBladeShape.sharpeningAngle = newBladeShape.sharpeningAngle;
-            existingBladeShape.rockwellHardnessUnits = newBladeShape.rockwellHardnessUnits;
+            existingBladeShape.TotalLength = newBladeShape.TotalLength;
+            existingBladeShape.BladeLength = newBladeShape.BladeLength;
+            existingBladeShape.BladeWidth = newBladeShape.BladeWidth;
+            existingBladeShape.BladeWeight = newBladeShape.BladeWeight;
+            existingBladeShape.SharpeningAngle = newBladeShape.SharpeningAngle;
+            existingBladeShape.RockwellHardnessUnits = newBladeShape.RockwellHardnessUnits;
             existingBladeShape.IsActive = newBladeShape.IsActive;
 
-            if (!string.IsNullOrEmpty(newBladeShape.bladeShapeModelUrl))
-                existingBladeShape.bladeShapeModelUrl = newBladeShape.bladeShapeModelUrl;
+            if (!string.IsNullOrEmpty(newBladeShape.BladeShapeModelUrl))
+                existingBladeShape.BladeShapeModelUrl = newBladeShape.BladeShapeModelUrl;
 
-            if (!string.IsNullOrEmpty(newBladeShape.sheathModelUrl))
-                existingBladeShape.sheathModelUrl = newBladeShape.sheathModelUrl;
+            if (!string.IsNullOrEmpty(newBladeShape.SheathModelUrl))
+                existingBladeShape.SheathModelUrl = newBladeShape.SheathModelUrl;
             
             await _context.SaveChangesAsync();
             return existingBladeShape;

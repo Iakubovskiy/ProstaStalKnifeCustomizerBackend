@@ -48,8 +48,8 @@ namespace Application.Services
             IFormFile bladeShapePhoto
             )
         {
-            bladeShape.bladeShapeModelUrl = await _fileService.SaveFile(bladeShapeModel, bladeShapeModel.FileName);
-            bladeShape.sheathModelUrl = await _fileService.SaveFile(sheathModel, sheathModel.FileName);
+            bladeShape.BladeShapeModelUrl = await _fileService.SaveFile(bladeShapeModel, bladeShapeModel.FileName);
+            bladeShape.SheathModelUrl = await _fileService.SaveFile(sheathModel, sheathModel.FileName);
             bladeShape.BladeShapePhotoUrl = await _fileService.SaveFile(bladeShapePhoto, bladeShapePhoto.FileName);
             return await _bladeShapeRepository.Create(bladeShape);
         }
@@ -64,29 +64,29 @@ namespace Application.Services
         {
             if (bladeShapeModel != null)
             {
-                if (!string.IsNullOrEmpty(bladeShape.bladeShapeModelUrl))
+                if (!string.IsNullOrEmpty(bladeShape.BladeShapeModelUrl))
                 {
                     List<BladeShape> shapes = await _bladeShapeRepository.GetAll();
-                    int quantity = shapes.Count(c => c.bladeShapeModelUrl == bladeShape.bladeShapeModelUrl);
+                    int quantity = shapes.Count(c => c.BladeShapeModelUrl == bladeShape.BladeShapeModelUrl);
                     if (quantity <= 1)
                     {
-                        await _fileService.DeleteFile(_fileService.GetIdFromUrl(bladeShape.bladeShapeModelUrl));
+                        await _fileService.DeleteFile(_fileService.GetIdFromUrl(bladeShape.BladeShapeModelUrl));
                     }
                 }
-                bladeShape.bladeShapeModelUrl = await _fileService.SaveFile(bladeShapeModel, bladeShapeModel.FileName);
+                bladeShape.BladeShapeModelUrl = await _fileService.SaveFile(bladeShapeModel, bladeShapeModel.FileName);
             }
             if (sheathModel != null)
             {
-                if (!string.IsNullOrEmpty(bladeShape.bladeShapeModelUrl))
+                if (!string.IsNullOrEmpty(bladeShape.BladeShapeModelUrl))
                 {
                     List<BladeShape> shapes = await _bladeShapeRepository.GetAll();
-                    int quantity = shapes.Count(c => c.sheathModelUrl == bladeShape.sheathModelUrl);
+                    int quantity = shapes.Count(c => c.SheathModelUrl == bladeShape.SheathModelUrl);
                     if (quantity <= 1)
                     {
-                        await _fileService.DeleteFile(_fileService.GetIdFromUrl(bladeShape.sheathModelUrl));
+                        await _fileService.DeleteFile(_fileService.GetIdFromUrl(bladeShape.SheathModelUrl));
                     }
                 }
-                bladeShape.sheathModelUrl = await _fileService.SaveFile(sheathModel, sheathModel.FileName);
+                bladeShape.SheathModelUrl = await _fileService.SaveFile(sheathModel, sheathModel.FileName);
             }
             if (bladeShapePhoto != null)
             {
@@ -107,8 +107,8 @@ namespace Application.Services
         public async Task<bool> DeleteBladeShape(Guid id)
         {
             BladeShape bladeShape = await _bladeShapeRepository.GetById(id);
-            string shapeFileId = _fileService.GetIdFromUrl(bladeShape.bladeShapeModelUrl);
-            string sheathFileId = _fileService.GetIdFromUrl(bladeShape.sheathModelUrl);
+            string shapeFileId = _fileService.GetIdFromUrl(bladeShape.BladeShapeModelUrl);
+            string sheathFileId = _fileService.GetIdFromUrl(bladeShape.SheathModelUrl);
             await _fileService.DeleteFile(shapeFileId);
             await _fileService.DeleteFile(sheathFileId);
 
