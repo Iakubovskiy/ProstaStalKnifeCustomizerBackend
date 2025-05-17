@@ -12,52 +12,40 @@ namespace Domain.Component.BladeShape
         }
         public BladeShape(
             Guid id,
+            BladeShapeType.BladeShapeType type,
             Translations name,
             string? bladeShapePhotoUrl,
             double price,
-            double totalLength,
-            double bladeLength,
-            double bladeWidth,
-            double bladeWeight,
-            double sharpeningAngle,
-            double rockwellHardnessUnits,
+            BladeCharacteristics.BladeCharacteristics bladeCharacteristics,
             string bladeShapeModelUrl,
             string sheathModelUrl,
-            bool isActive
-        )
+            bool isActive)
         {
             this.Id = id;
+            Type = type;
             this.Name = name;
             this.BladeShapePhotoUrl = bladeShapePhotoUrl;
             this.Price = price;
-            this.TotalLength = totalLength;
-            this.BladeLength = bladeLength;
-            this.BladeWidth = bladeWidth;
-            this.BladeWeight = bladeWeight;
-            this.SharpeningAngle = sharpeningAngle;
-            this.RockwellHardnessUnits = rockwellHardnessUnits;
+            this.BladeCharacteristics = bladeCharacteristics;
             this.BladeShapeModelUrl = bladeShapeModelUrl;
             this.SheathModelUrl = sheathModelUrl;
             this.IsActive = isActive;
         }
         [BindNever]
         public Guid Id { get;  private set; }
+        public BladeShapeType.BladeShapeType Type { get;  private set; }
         public Translations Name { get;  private set; }
         [MaxLength(255)]
         public string? BladeShapePhotoUrl { get;  private set; }
         public double Price { get;  private set; }
-        public double TotalLength { get;  private set; }
-        public double BladeLength { get;  private set; }
-        public double BladeWidth { get;  private set; }
-        public double BladeWeight { get;  private set; }
-        public double SharpeningAngle { get;  private set; }
-        public double RockwellHardnessUnits { get;  private set; }    
+        public BladeCharacteristics.BladeCharacteristics BladeCharacteristics { get;  private set; }
         [MaxLength(255)]
         public string BladeShapeModelUrl { get;  private set; }
         [MaxLength(255)]
         public string SheathModelUrl { get;  private set; }
-        public bool IsActive { get;  private set; }
-        
+
+        public bool IsActive { get; set; }
+
         public double GetPrice()
         {
             return this.Price;
