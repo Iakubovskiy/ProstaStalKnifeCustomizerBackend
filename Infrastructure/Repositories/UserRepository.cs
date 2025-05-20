@@ -2,13 +2,14 @@
 using Domain.Interfaces;
 using Domain.Models;
 using Infrastructure.Data;
+using DbContext = Infrastructure.Data.DbContext;
 
 namespace Infrastructure.Repositories
 {
     public class UserRepository : IRepository<User, string>
     {
-        private readonly DBContext _context;
-        public UserRepository(DBContext context)
+        private readonly DbContext _context;
+        public UserRepository(DbContext context)
         {
             _context = context;
         }

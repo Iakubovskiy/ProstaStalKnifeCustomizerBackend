@@ -2,6 +2,7 @@
 using Infrastructure.Data;
 using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using DbContext = Infrastructure.Data.DbContext;
 
 namespace Application.Services
 {
@@ -10,11 +11,11 @@ namespace Application.Services
         private readonly IRepository<Order, Guid> _orderRepository;
         private readonly IRepository<OrderStatuses, Guid> _orderStatusesRepository;
         private readonly ICustomEmailSender _customEmailSender;
-        private readonly DBContext _context;
+        private readonly DbContext _context;
 
         public OrderService(IRepository<Order, Guid> orderRepository, 
             IRepository<OrderStatuses, Guid> orderStatusesRepository, ICustomEmailSender customEmailSender,
-            DBContext context)
+            DbContext context)
         {
             _orderRepository = orderRepository;
             _orderStatusesRepository = orderStatusesRepository;

@@ -2,13 +2,14 @@
 using Domain.Interfaces;
 using Domain.Models;
 using Infrastructure.Data;
+using Infrastructure.Data;
 
 namespace Infrastructure.Repositories
 {
     public class EngravingPriceRepository : IRepository<EngravingPrice, Guid>
     {
-        private readonly DBContext _context;
-        public EngravingPriceRepository(DBContext context)
+        private readonly DbContext _context;
+        public EngravingPriceRepository(DbContext context)
         {
             _context = context;
         }

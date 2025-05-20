@@ -1,14 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Domain.Component.Product.Attachments;
+using Microsoft.EntityFrameworkCore;
 using Domain.Interfaces;
 using Domain.Models;
 using Infrastructure.Data;
+using DbContext = Infrastructure.Data.DbContext;
 
 namespace Infrastructure.Repositories
 {
-    public class FasteningRepository : IRepository<Fastening, Guid>
+    public class FasteningRepository : IRepository<Attachment, Guid>
     {
-        private readonly DBContext _context;
-        public FasteningRepository(DBContext context)
+        private readonly DbContext _context;
+        public FasteningRepository(DbContext context)
         {
             _context = context;
         }

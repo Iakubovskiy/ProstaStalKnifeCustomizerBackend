@@ -2,13 +2,14 @@
 using Domain.Interfaces;
 using Domain.Models;
 using Infrastructure.Data;
+using DbContext = Infrastructure.Data.DbContext;
 
 namespace Infrastructure.Repositories
 {
     public class BladeShapeRepository : IRepository<BladeShape, Guid>
     {
-        private readonly DBContext _context;
-        public BladeShapeRepository(DBContext context)
+        private readonly DbContext _context;
+        public BladeShapeRepository(DbContext context)
         {
             _context = context;
         }

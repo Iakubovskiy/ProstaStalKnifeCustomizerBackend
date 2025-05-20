@@ -2,13 +2,14 @@
 using Domain.Interfaces;
 using Domain.Models;
 using Infrastructure.Data;
+using DbContext = Infrastructure.Data.DbContext;
 
 namespace Infrastructure.Repositories
 {
     public class OrderRepository: IRepository<Order, Guid> 
     {
-        private readonly DBContext _context;
-        public OrderRepository(DBContext context)
+        private readonly DbContext _context;
+        public OrderRepository(DbContext context)
         {
             _context = context;
         }

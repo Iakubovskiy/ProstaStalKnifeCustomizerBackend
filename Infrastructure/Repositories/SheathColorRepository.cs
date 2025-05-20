@@ -2,13 +2,14 @@
 using Domain.Interfaces;
 using Domain.Models;
 using Infrastructure.Data;
+using DbContext = Infrastructure.Data.DbContext;
 
 namespace Infrastructure.Repositories
 {
     public class SheathColorRepository : IRepository<SheathColor, Guid>
     {
-        private readonly DBContext _context;
-        public SheathColorRepository(DBContext context)
+        private readonly DbContext _context;
+        public SheathColorRepository(DbContext context)
         {
             _context = context;
         }

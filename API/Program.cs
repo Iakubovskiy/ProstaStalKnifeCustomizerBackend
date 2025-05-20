@@ -1,17 +1,18 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using Domain.Interfaces;
-using Domain.Models;
-using Infrastructure.Repositories;
-using Domain.Services;
 using Infrastructure.Data;
-using Application;
-using Application.Interfaces;
-using Application.Services;
+using Domain.Component.BladeCoatingColors;
+using Domain.Component.BladeShapes;
+using Domain.Component.Engravings;
+using Domain.Component.Engravings.Support;
+using Domain.Component.Handles;
+using Domain.Component.Product.Attachments;
+using Domain.Component.Product.Knife;
+using Domain.Component.Sheaths.Color;
+using Domain.Order;
+using Domain.Order.Suppport;
+using Domain.Users;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,7 +51,7 @@ builder.WebHost.ConfigureKestrel(options =>
 });
 
 var secretKey = builder.Configuration["Jwt:Key"];
-builder.Services.AddAuthentication(options =>
+/*builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -90,7 +91,7 @@ builder.Services.AddAuthentication(options =>
         }
     };
 
-});
+});*/
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
@@ -127,9 +128,6 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequiredLength = 1;
 });
 
-var clodinaryUrl = builder.Configuration["Cloudinary:CLOUDINARY_URL"];
-builder.Services.Configure<IOptions<CloudinarySettings>>(builder.Configuration.GetSection("Cloudinary"));
-
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<DBContext>()
     .AddDefaultTokenProviders();
@@ -143,23 +141,23 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-#region interfaces
+/*#region interfaces
 builder.Services.AddScoped<IRepository<BladeCoatingColor, Guid>, BladeCoatingColorRepository>();
 builder.Services.AddScoped<IRepository<BladeShape, Guid>, BladeShapeRepository>();
 builder.Services.AddScoped<IRepository<DeliveryType, Guid>, DeliveryTypeRepository>();
 builder.Services.AddScoped<IRepository<Engraving, Guid>, EngravingRepository>();
 builder.Services.AddScoped<IRepository<EngravingPrice, Guid>, EngravingPriceRepository>();
-builder.Services.AddScoped<IRepository<Fastening, Guid>, FasteningRepository>();
-builder.Services.AddScoped<IRepository<HandleColor, Guid>, HandleColorRepository>();
+builder.Services.AddScoped<IRepository<Attachment, Guid>, FasteningRepository>();
+builder.Services.AddScoped<IRepository<Handle, Guid>, HandleRepository>();
 builder.Services.AddScoped<IRepository<Knife, Guid>, KnifeRepository>();
 builder.Services.AddScoped<IRepository<Order, Guid>, OrderRepository>();
 builder.Services.AddScoped<IRepository<OrderStatuses, Guid>, OrderStatusesRepository>();
 builder.Services.AddScoped<IRepository<SheathColor, Guid>, SheathColorRepository>();
 builder.Services.AddScoped<ICustomEmailSender, EmailSenderService>();
 builder.Services.AddScoped<IFileService, AwsService>();
-#endregion
+#endregion*/
 
-#region services
+/*#region services
 builder.Services.AddScoped<BladeCoatingColorService>();
 builder.Services.AddScoped<BladeShapeService>();
 builder.Services.AddScoped<CloudinarySettings>();
@@ -174,7 +172,7 @@ builder.Services.AddScoped<OrderStatusesService>();
 builder.Services.AddScoped<SheathColorService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<UserService>();
-#endregion
+#endregion*/
 
 var app = builder.Build();
 

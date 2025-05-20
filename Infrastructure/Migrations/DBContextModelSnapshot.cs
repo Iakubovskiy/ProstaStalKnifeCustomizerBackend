@@ -17,10 +17,465 @@ namespace Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.0")
+                .HasAnnotation("ProductVersion", "9.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("Domain.Component.BladeCoatingColors.BladeCoatingColor", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ColorCode")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ColorMapUrl")
+                        .HasColumnType("text");
+
+                    b.Property<string>("EngravingColorCode")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
+                    b.Property<double>("Price")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("double precision")
+                        .HasDefaultValue(0.0);
+
+                    b.Property<Guid?>("TextureId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TextureId");
+
+                    b.ToTable("BladeCoatingColors");
+                });
+
+            modelBuilder.Entity("Domain.Component.BladeShapeTypes.BladeShapeType", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BladeShapeTypes");
+                });
+
+            modelBuilder.Entity("Domain.Component.BladeShapes.BladeShape", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("BladeShapeModelUrl")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("BladeShapePhotoUrl")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
+                    b.Property<double>("Price")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("double precision")
+                        .HasDefaultValue(0.0);
+
+                    b.Property<string>("SheathModelUrl")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<Guid>("TypeId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TypeId");
+
+                    b.ToTable("BladeShapes");
+                });
+
+            modelBuilder.Entity("Domain.Component.Engravings.Engraving", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Font")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PictureUrl")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Side")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Text")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Engravings");
+                });
+
+            modelBuilder.Entity("Domain.Component.Engravings.Support.EngravingPrice", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("double precision");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EngravingPrices");
+                });
+
+            modelBuilder.Entity("Domain.Component.Engravings.Support.EngravingTag", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("EngravingId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EngravingId");
+
+                    b.ToTable("EngravingTags");
+                });
+
+            modelBuilder.Entity("Domain.Component.Handles.Handle", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ColorCode")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ColorMapUrl")
+                        .HasColumnType("text");
+
+                    b.Property<string>("HandleModelUrl")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
+                    b.Property<double>("Price")
+                        .HasColumnType("double precision");
+
+                    b.Property<Guid?>("TextureId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TextureId");
+
+                    b.ToTable("Handles");
+                });
+
+            modelBuilder.Entity("Domain.Component.Product.Product", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(13)
+                        .HasColumnType("character varying(13)");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Product");
+
+                    b.HasDiscriminator().HasValue("Product");
+
+                    b.UseTphMappingStrategy();
+                });
+
+            modelBuilder.Entity("Domain.Component.Sheaths.Color.SheathColor", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ColorMapUrl")
+                        .HasColumnType("text");
+
+                    b.Property<string>("EngravingColorCode")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Material")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("TextureId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TextureId");
+
+                    b.ToTable("SheathColors");
+                });
+
+            modelBuilder.Entity("Domain.Component.Sheaths.Color.SheathColorPriceByType", b =>
+                {
+                    b.Property<Guid>("TypeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("SheathColorId")
+                        .HasColumnType("uuid");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("double precision");
+
+                    b.HasKey("TypeId", "SheathColorId");
+
+                    b.HasIndex("SheathColorId");
+
+                    b.ToTable("SheathColorPriceByType");
+                });
+
+            modelBuilder.Entity("Domain.Component.Sheaths.Sheath", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("ModelUrl")
+                        .HasColumnType("text");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("double precision");
+
+                    b.Property<Guid>("TypeId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TypeId");
+
+                    b.ToTable("Sheaths");
+                });
+
+            modelBuilder.Entity("Domain.Component.Textures.Texture", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("NormalMapUrl")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("RoughnessMapUrl")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Textures");
+                });
+
+            modelBuilder.Entity("Domain.Order.Order", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("DeliveryTypeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Number")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("PaymentMethodId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<double>("Total")
+                        .HasColumnType("double precision");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DeliveryTypeId");
+
+                    b.HasIndex("PaymentMethodId");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("Domain.Order.OrderItem", b =>
+                {
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.HasKey("OrderId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("OrderItems");
+                });
+
+            modelBuilder.Entity("Domain.Order.Suppport.DeliveryType", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("double precision");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DeliveryTypes");
+                });
+
+            modelBuilder.Entity("Domain.Order.Suppport.PaymentMethod", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PaymentMethods");
+                });
+
+            modelBuilder.Entity("Domain.Users.User", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(5)
+                        .HasColumnType("character varying(5)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex");
+
+                    b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasDiscriminator().HasValue("User");
+
+                    b.UseTphMappingStrategy();
+                });
 
             modelBuilder.Entity("EngravingKnife", b =>
                 {
@@ -169,543 +624,725 @@ namespace Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("API.Models.BladeCoatingColor", b =>
+            modelBuilder.Entity("Domain.Component.Product.Attachments.Attachment", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.HasBaseType("Domain.Component.Product.Product");
+
+                    b.Property<Guid?>("KnifeId")
                         .HasColumnType("uuid");
-
-                    b.Property<string>("Color")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("ColorCode")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ColorMapUrl")
-                        .HasColumnType("text");
-
-                    b.Property<string>("EngravingColorCode")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(true);
-
-                    b.Property<string>("NormalMapUrl")
-                        .HasColumnType("text");
-
-                    b.Property<double>("Price")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("double precision")
-                        .HasDefaultValue(0.0);
-
-                    b.Property<string>("RoughnessMapUrl")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ColorCode");
-
-                    b.ToTable("BladeCoatingColors");
-                });
-
-            modelBuilder.Entity("API.Models.BladeShape", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("BladeShapePhotoUrl")
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(true);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<double>("Price")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("double precision")
-                        .HasDefaultValue(0.0);
-
-                    b.Property<double>("bladeLength")
-                        .HasColumnType("double precision");
-
-                    b.Property<string>("bladeShapeModelUrl")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<double>("bladeWeight")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("bladeWidth")
-                        .HasColumnType("double precision");
-
-                    b.Property<double?>("rockwellHardnessUnits")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("sharpeningAngle")
-                        .HasColumnType("double precision");
-
-                    b.Property<string>("sheathModelUrl")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<double>("totalLength")
-                        .HasColumnType("double precision");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("BladeShapes");
-                });
-
-            modelBuilder.Entity("API.Models.DeliveryType", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Comment")
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<double>("Price")
-                        .HasColumnType("double precision");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("DeliveryTypes");
-                });
-
-            modelBuilder.Entity("API.Models.Engraving", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Font")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.Property<int>("Side")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Text")
-                        .HasColumnType("text");
-
-                    b.Property<double>("locationX")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("locationY")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("locationZ")
-                        .HasColumnType("double precision");
-
-                    b.Property<string>("pictureUrl")
-                        .HasColumnType("text");
-
-                    b.Property<double>("rotationX")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("rotationY")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("rotationZ")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("scaleX")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("scaleY")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("scaleZ")
-                        .HasColumnType("double precision");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Engravings");
-                });
-
-            modelBuilder.Entity("API.Models.EngravingPrice", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<double>("Price")
-                        .HasColumnType("double precision");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("EngravingPrices");
-                });
-
-            modelBuilder.Entity("API.Models.HandleColor", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("ColorCode")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ColorMapUrl")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ColorName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(true);
-
-                    b.Property<string>("Material")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("NormalMapUrl")
-                        .HasColumnType("text");
-
-                    b.Property<string>("RoughnessMapUrl")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("HandleColors");
-                });
-
-            modelBuilder.Entity("API.Models.Order", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("ClientFullName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("ClientPhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Comment")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CountryForDelivery")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("DeliveryTypeId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Number")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<double>("Total")
-                        .HasColumnType("double precision");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DeliveryTypeId");
-
-                    b.ToTable("Orders");
-                });
-
-            modelBuilder.Entity("API.Models.OrderItem", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("OrderId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("OrderItems");
-                });
-
-            modelBuilder.Entity("API.Models.OrderStatuses", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("OrderStatuses");
-                });
-
-            modelBuilder.Entity("API.Models.Product", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(13)
-                        .HasColumnType("character varying(13)");
-
-                    b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(true);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Product");
-
-                    b.HasDiscriminator().HasValue("Product");
-
-                    b.UseTphMappingStrategy();
-                });
-
-            modelBuilder.Entity("API.Models.SheathColor", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Color")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("ColorCode")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("ColorMapUrl")
-                        .HasColumnType("text");
-
-                    b.Property<string>("EngravingColorCode")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(true);
-
-                    b.Property<string>("Material")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("NormalMapUrl")
-                        .HasColumnType("text");
-
-                    b.Property<double>("Price")
-                        .HasColumnType("double precision");
-
-                    b.Property<string>("RoughnessMapUrl")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SheathColors");
-                });
-
-            modelBuilder.Entity("API.Models.User", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(5)
-                        .HasColumnType("character varying(5)");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("text");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("text");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("text");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedEmail")
-                        .HasDatabaseName("EmailIndex");
-
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasDatabaseName("UserNameIndex");
-
-                    b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasDiscriminator().HasValue("User");
-
-                    b.UseTphMappingStrategy();
-                });
-
-            modelBuilder.Entity("API.Models.Fastening", b =>
-                {
-                    b.HasBaseType("API.Models.Product");
-
-                    b.Property<string>("Color")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("ColorCode")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Material")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("ModelUrl")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<double>("Price")
                         .HasColumnType("double precision");
 
-                    b.HasDiscriminator().HasValue("Fastening");
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
+                    b.HasIndex("KnifeId");
+
+                    b.HasDiscriminator().HasValue("Attachment");
                 });
 
-            modelBuilder.Entity("API.Models.Knife", b =>
+            modelBuilder.Entity("Domain.Component.Product.Knife.Knife", b =>
                 {
-                    b.HasBaseType("API.Models.Product");
+                    b.HasBaseType("Domain.Component.Product.Product");
 
-                    b.Property<Guid>("BladeCoatingColorId")
+                    b.Property<Guid>("BladeId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("FasteningId")
+                    b.Property<Guid>("ColorId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("HandleColorId")
+                    b.Property<Guid?>("HandleId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("ShapeId")
+                    b.Property<Guid?>("SheathColorId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("SheathColorId")
+                    b.Property<Guid?>("SheathId")
                         .HasColumnType("uuid");
 
-                    b.HasIndex("BladeCoatingColorId");
+                    b.HasIndex("BladeId");
 
-                    b.HasIndex("FasteningId");
+                    b.HasIndex("ColorId");
 
-                    b.HasIndex("HandleColorId");
-
-                    b.HasIndex("ShapeId");
+                    b.HasIndex("HandleId");
 
                     b.HasIndex("SheathColorId");
+
+                    b.HasIndex("SheathId");
 
                     b.HasDiscriminator().HasValue("Knife");
                 });
 
-            modelBuilder.Entity("API.Models.Admin", b =>
+            modelBuilder.Entity("Domain.Users.Admin", b =>
                 {
-                    b.HasBaseType("API.Models.User");
+                    b.HasBaseType("Domain.Users.User");
 
                     b.HasDiscriminator().HasValue("Admin");
                 });
 
+            modelBuilder.Entity("Domain.Component.BladeCoatingColors.BladeCoatingColor", b =>
+                {
+                    b.HasOne("Domain.Component.Textures.Texture", "Texture")
+                        .WithMany()
+                        .HasForeignKey("TextureId");
+
+                    b.OwnsOne("Domain.Component.Translation.Translations", "Color", b1 =>
+                        {
+                            b1.Property<Guid>("BladeCoatingColorId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("TranslationDictionary")
+                                .IsRequired()
+                                .HasColumnType("jsonb");
+
+                            b1.HasKey("BladeCoatingColorId");
+
+                            b1.ToTable("BladeCoatingColors");
+
+                            b1.WithOwner()
+                                .HasForeignKey("BladeCoatingColorId");
+                        });
+
+                    b.OwnsOne("Domain.Component.Translation.Translations", "Type", b1 =>
+                        {
+                            b1.Property<Guid>("BladeCoatingColorId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("TranslationDictionary")
+                                .IsRequired()
+                                .HasColumnType("jsonb");
+
+                            b1.HasKey("BladeCoatingColorId");
+
+                            b1.ToTable("BladeCoatingColors");
+
+                            b1.WithOwner()
+                                .HasForeignKey("BladeCoatingColorId");
+                        });
+
+                    b.Navigation("Color")
+                        .IsRequired();
+
+                    b.Navigation("Texture");
+
+                    b.Navigation("Type")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.Component.BladeShapes.BladeShape", b =>
+                {
+                    b.HasOne("Domain.Component.BladeShapeTypes.BladeShapeType", "Type")
+                        .WithMany()
+                        .HasForeignKey("TypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.OwnsOne("Domain.Component.BladeShapes.BladeCharacteristic.BladeCharacteristics", "BladeCharacteristics", b1 =>
+                        {
+                            b1.Property<Guid>("BladeShapeId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<double>("BladeLength")
+                                .HasColumnType("double precision");
+
+                            b1.Property<double>("BladeWeight")
+                                .HasColumnType("double precision");
+
+                            b1.Property<double>("BladeWidth")
+                                .HasColumnType("double precision");
+
+                            b1.Property<double>("RockwellHardnessUnits")
+                                .HasColumnType("double precision");
+
+                            b1.Property<double>("SharpeningAngle")
+                                .HasColumnType("double precision");
+
+                            b1.Property<double>("TotalLength")
+                                .HasColumnType("double precision");
+
+                            b1.HasKey("BladeShapeId");
+
+                            b1.ToTable("BladeShapes");
+
+                            b1.WithOwner()
+                                .HasForeignKey("BladeShapeId");
+                        });
+
+                    b.OwnsOne("Domain.Component.Translation.Translations", "Name", b1 =>
+                        {
+                            b1.Property<Guid>("BladeShapeId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("TranslationDictionary")
+                                .IsRequired()
+                                .HasColumnType("jsonb");
+
+                            b1.HasKey("BladeShapeId");
+
+                            b1.ToTable("BladeShapes");
+
+                            b1.WithOwner()
+                                .HasForeignKey("BladeShapeId");
+                        });
+
+                    b.Navigation("BladeCharacteristics")
+                        .IsRequired();
+
+                    b.Navigation("Name")
+                        .IsRequired();
+
+                    b.Navigation("Type");
+                });
+
+            modelBuilder.Entity("Domain.Component.Engravings.Engraving", b =>
+                {
+                    b.OwnsOne("Domain.Component.Translation.Translations", "Description", b1 =>
+                        {
+                            b1.Property<Guid>("EngravingId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("TranslationDictionary")
+                                .IsRequired()
+                                .HasColumnType("jsonb");
+
+                            b1.HasKey("EngravingId");
+
+                            b1.ToTable("Engravings");
+
+                            b1.WithOwner()
+                                .HasForeignKey("EngravingId");
+                        });
+
+                    b.OwnsOne("Domain.Component.Translation.Translations", "Name", b1 =>
+                        {
+                            b1.Property<Guid>("EngravingId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("TranslationDictionary")
+                                .IsRequired()
+                                .HasColumnType("jsonb");
+
+                            b1.HasKey("EngravingId");
+
+                            b1.ToTable("Engravings");
+
+                            b1.WithOwner()
+                                .HasForeignKey("EngravingId");
+                        });
+
+                    b.OwnsOne("Domain.Component.Engravings.Parameters.EngravingPosition", "EngravingPosition", b1 =>
+                        {
+                            b1.Property<Guid>("EngravingId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<double>("LocationX")
+                                .HasColumnType("double precision");
+
+                            b1.Property<double>("LocationY")
+                                .HasColumnType("double precision");
+
+                            b1.Property<double>("LocationZ")
+                                .HasColumnType("double precision");
+
+                            b1.HasKey("EngravingId");
+
+                            b1.ToTable("Engravings");
+
+                            b1.WithOwner()
+                                .HasForeignKey("EngravingId");
+                        });
+
+                    b.OwnsOne("Domain.Component.Engravings.Parameters.EngravingRotation", "EngravingRotation", b1 =>
+                        {
+                            b1.Property<Guid>("EngravingId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<double>("RotationX")
+                                .HasColumnType("double precision");
+
+                            b1.Property<double>("RotationY")
+                                .HasColumnType("double precision");
+
+                            b1.Property<double>("RotationZ")
+                                .HasColumnType("double precision");
+
+                            b1.HasKey("EngravingId");
+
+                            b1.ToTable("Engravings");
+
+                            b1.WithOwner()
+                                .HasForeignKey("EngravingId");
+                        });
+
+                    b.OwnsOne("Domain.Component.Engravings.Parameters.EngravingScale", "EngravingScale", b1 =>
+                        {
+                            b1.Property<Guid>("EngravingId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<double>("ScaleX")
+                                .HasColumnType("double precision");
+
+                            b1.Property<double>("ScaleY")
+                                .HasColumnType("double precision");
+
+                            b1.Property<double>("ScaleZ")
+                                .HasColumnType("double precision");
+
+                            b1.HasKey("EngravingId");
+
+                            b1.ToTable("Engravings");
+
+                            b1.WithOwner()
+                                .HasForeignKey("EngravingId");
+                        });
+
+                    b.Navigation("Description")
+                        .IsRequired();
+
+                    b.Navigation("EngravingPosition")
+                        .IsRequired();
+
+                    b.Navigation("EngravingRotation")
+                        .IsRequired();
+
+                    b.Navigation("EngravingScale")
+                        .IsRequired();
+
+                    b.Navigation("Name")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.Component.Engravings.Support.EngravingTag", b =>
+                {
+                    b.HasOne("Domain.Component.Engravings.Engraving", null)
+                        .WithMany("Tags")
+                        .HasForeignKey("EngravingId");
+
+                    b.OwnsOne("Domain.Component.Translation.Translations", "Name", b1 =>
+                        {
+                            b1.Property<Guid>("EngravingTagId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("TranslationDictionary")
+                                .IsRequired()
+                                .HasColumnType("jsonb");
+
+                            b1.HasKey("EngravingTagId");
+
+                            b1.ToTable("EngravingTags");
+
+                            b1.WithOwner()
+                                .HasForeignKey("EngravingTagId");
+                        });
+
+                    b.Navigation("Name")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.Component.Handles.Handle", b =>
+                {
+                    b.HasOne("Domain.Component.Textures.Texture", "Texture")
+                        .WithMany()
+                        .HasForeignKey("TextureId");
+
+                    b.OwnsOne("Domain.Component.Translation.Translations", "Material", b1 =>
+                        {
+                            b1.Property<Guid>("HandleId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("TranslationDictionary")
+                                .IsRequired()
+                                .HasColumnType("jsonb");
+
+                            b1.HasKey("HandleId");
+
+                            b1.ToTable("Handles");
+
+                            b1.WithOwner()
+                                .HasForeignKey("HandleId");
+                        });
+
+                    b.OwnsOne("Domain.Component.Translation.Translations", "Name", b1 =>
+                        {
+                            b1.Property<Guid>("HandleId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("TranslationDictionary")
+                                .IsRequired()
+                                .HasColumnType("jsonb");
+
+                            b1.HasKey("HandleId");
+
+                            b1.ToTable("Handles");
+
+                            b1.WithOwner()
+                                .HasForeignKey("HandleId");
+                        });
+
+                    b.Navigation("Material")
+                        .IsRequired();
+
+                    b.Navigation("Name")
+                        .IsRequired();
+
+                    b.Navigation("Texture");
+                });
+
+            modelBuilder.Entity("Domain.Component.Product.Product", b =>
+                {
+                    b.OwnsOne("Domain.Component.Translation.Translations", "Description", b1 =>
+                        {
+                            b1.Property<Guid>("ProductId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("TranslationDictionary")
+                                .IsRequired()
+                                .HasColumnType("jsonb");
+
+                            b1.HasKey("ProductId");
+
+                            b1.ToTable("Product");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ProductId");
+                        });
+
+                    b.OwnsOne("Domain.Component.Translation.Translations", "MetaDescription", b1 =>
+                        {
+                            b1.Property<Guid>("ProductId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("TranslationDictionary")
+                                .IsRequired()
+                                .HasColumnType("jsonb");
+
+                            b1.HasKey("ProductId");
+
+                            b1.ToTable("Product");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ProductId");
+                        });
+
+                    b.OwnsOne("Domain.Component.Translation.Translations", "MetaTitle", b1 =>
+                        {
+                            b1.Property<Guid>("ProductId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("TranslationDictionary")
+                                .IsRequired()
+                                .HasColumnType("jsonb");
+
+                            b1.HasKey("ProductId");
+
+                            b1.ToTable("Product");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ProductId");
+                        });
+
+                    b.OwnsOne("Domain.Component.Translation.Translations", "Name", b1 =>
+                        {
+                            b1.Property<Guid>("ProductId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("TranslationDictionary")
+                                .IsRequired()
+                                .HasColumnType("jsonb");
+
+                            b1.HasKey("ProductId");
+
+                            b1.ToTable("Product");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ProductId");
+                        });
+
+                    b.OwnsOne("Domain.Component.Translation.Translations", "Title", b1 =>
+                        {
+                            b1.Property<Guid>("ProductId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("TranslationDictionary")
+                                .IsRequired()
+                                .HasColumnType("jsonb");
+
+                            b1.HasKey("ProductId");
+
+                            b1.ToTable("Product");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ProductId");
+                        });
+
+                    b.Navigation("Description")
+                        .IsRequired();
+
+                    b.Navigation("MetaDescription")
+                        .IsRequired();
+
+                    b.Navigation("MetaTitle")
+                        .IsRequired();
+
+                    b.Navigation("Name")
+                        .IsRequired();
+
+                    b.Navigation("Title")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.Component.Sheaths.Color.SheathColor", b =>
+                {
+                    b.HasOne("Domain.Component.Textures.Texture", "Texture")
+                        .WithMany()
+                        .HasForeignKey("TextureId");
+
+                    b.OwnsOne("Domain.Component.Translation.Translations", "Color", b1 =>
+                        {
+                            b1.Property<Guid>("SheathColorId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("TranslationDictionary")
+                                .IsRequired()
+                                .HasColumnType("jsonb");
+
+                            b1.HasKey("SheathColorId");
+
+                            b1.ToTable("SheathColors");
+
+                            b1.WithOwner()
+                                .HasForeignKey("SheathColorId");
+                        });
+
+                    b.Navigation("Color")
+                        .IsRequired();
+
+                    b.Navigation("Texture");
+                });
+
+            modelBuilder.Entity("Domain.Component.Sheaths.Color.SheathColorPriceByType", b =>
+                {
+                    b.HasOne("Domain.Component.Sheaths.Color.SheathColor", "SheathColor")
+                        .WithMany("Prices")
+                        .HasForeignKey("SheathColorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Component.BladeShapeTypes.BladeShapeType", "Type")
+                        .WithMany()
+                        .HasForeignKey("TypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("SheathColor");
+
+                    b.Navigation("Type");
+                });
+
+            modelBuilder.Entity("Domain.Component.Sheaths.Sheath", b =>
+                {
+                    b.HasOne("Domain.Component.BladeShapeTypes.BladeShapeType", "Type")
+                        .WithMany()
+                        .HasForeignKey("TypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.OwnsOne("Domain.Component.Translation.Translations", "Name", b1 =>
+                        {
+                            b1.Property<Guid>("SheathId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("TranslationDictionary")
+                                .IsRequired()
+                                .HasColumnType("jsonb");
+
+                            b1.HasKey("SheathId");
+
+                            b1.ToTable("Sheaths");
+
+                            b1.WithOwner()
+                                .HasForeignKey("SheathId");
+                        });
+
+                    b.Navigation("Name")
+                        .IsRequired();
+
+                    b.Navigation("Type");
+                });
+
+            modelBuilder.Entity("Domain.Order.Order", b =>
+                {
+                    b.HasOne("Domain.Order.Suppport.DeliveryType", "DeliveryType")
+                        .WithMany()
+                        .HasForeignKey("DeliveryTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Order.Suppport.PaymentMethod", "PaymentMethod")
+                        .WithMany()
+                        .HasForeignKey("PaymentMethodId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.OwnsOne("Domain.Order.Suppport.ClientData", "ClientData", b1 =>
+                        {
+                            b1.Property<Guid>("OrderId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("City")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.Property<string>("ClientFullName")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.Property<string>("ClientPhoneNumber")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.Property<string>("CountryForDelivery")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.Property<string>("Email")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.HasKey("OrderId");
+
+                            b1.ToTable("Orders");
+
+                            b1.WithOwner()
+                                .HasForeignKey("OrderId");
+                        });
+
+                    b.Navigation("ClientData")
+                        .IsRequired();
+
+                    b.Navigation("DeliveryType");
+
+                    b.Navigation("PaymentMethod");
+                });
+
+            modelBuilder.Entity("Domain.Order.OrderItem", b =>
+                {
+                    b.HasOne("Domain.Order.Order", "Order")
+                        .WithMany()
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Component.Product.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("Domain.Order.Suppport.DeliveryType", b =>
+                {
+                    b.OwnsOne("Domain.Component.Translation.Translations", "Comment", b1 =>
+                        {
+                            b1.Property<Guid>("DeliveryTypeId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("TranslationDictionary")
+                                .IsRequired()
+                                .HasColumnType("jsonb");
+
+                            b1.HasKey("DeliveryTypeId");
+
+                            b1.ToTable("DeliveryTypes");
+
+                            b1.WithOwner()
+                                .HasForeignKey("DeliveryTypeId");
+                        });
+
+                    b.OwnsOne("Domain.Component.Translation.Translations", "Name", b1 =>
+                        {
+                            b1.Property<Guid>("DeliveryTypeId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("TranslationDictionary")
+                                .IsRequired()
+                                .HasColumnType("jsonb");
+
+                            b1.HasKey("DeliveryTypeId");
+
+                            b1.ToTable("DeliveryTypes");
+
+                            b1.WithOwner()
+                                .HasForeignKey("DeliveryTypeId");
+                        });
+
+                    b.Navigation("Comment");
+
+                    b.Navigation("Name")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.Order.Suppport.PaymentMethod", b =>
+                {
+                    b.OwnsOne("Domain.Component.Translation.Translations", "Description", b1 =>
+                        {
+                            b1.Property<Guid>("PaymentMethodId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("TranslationDictionary")
+                                .IsRequired()
+                                .HasColumnType("jsonb");
+
+                            b1.HasKey("PaymentMethodId");
+
+                            b1.ToTable("PaymentMethods");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PaymentMethodId");
+                        });
+
+                    b.OwnsOne("Domain.Component.Translation.Translations", "Name", b1 =>
+                        {
+                            b1.Property<Guid>("PaymentMethodId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("TranslationDictionary")
+                                .IsRequired()
+                                .HasColumnType("jsonb");
+
+                            b1.HasKey("PaymentMethodId");
+
+                            b1.ToTable("PaymentMethods");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PaymentMethodId");
+                        });
+
+                    b.Navigation("Description")
+                        .IsRequired();
+
+                    b.Navigation("Name")
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("EngravingKnife", b =>
                 {
-                    b.HasOne("API.Models.Engraving", null)
+                    b.HasOne("Domain.Component.Engravings.Engraving", null)
                         .WithMany()
                         .HasForeignKey("EngravingsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("API.Models.Knife", null)
+                    b.HasOne("Domain.Component.Product.Knife.Knife", null)
                         .WithMany()
                         .HasForeignKey("KnifeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -723,7 +1360,7 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("API.Models.User", null)
+                    b.HasOne("Domain.Users.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -732,7 +1369,7 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("API.Models.User", null)
+                    b.HasOne("Domain.Users.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -747,7 +1384,7 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("API.Models.User", null)
+                    b.HasOne("Domain.Users.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -756,82 +1393,110 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("API.Models.User", null)
+                    b.HasOne("Domain.Users.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("API.Models.Order", b =>
+            modelBuilder.Entity("Domain.Component.Product.Attachments.Attachment", b =>
                 {
-                    b.HasOne("API.Models.DeliveryType", "DeliveryType")
-                        .WithMany()
-                        .HasForeignKey("DeliveryTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.HasOne("Domain.Component.Product.Knife.Knife", null)
+                        .WithMany("Attachments")
+                        .HasForeignKey("KnifeId");
+
+                    b.OwnsOne("Domain.Component.Translation.Translations", "Color", b1 =>
+                        {
+                            b1.Property<Guid>("AttachmentId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("TranslationDictionary")
+                                .IsRequired()
+                                .HasColumnType("jsonb");
+
+                            b1.HasKey("AttachmentId");
+
+                            b1.ToTable("Product");
+
+                            b1.WithOwner()
+                                .HasForeignKey("AttachmentId");
+                        });
+
+                    b.OwnsOne("Domain.Component.Translation.Translations", "Material", b1 =>
+                        {
+                            b1.Property<Guid>("AttachmentId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("TranslationDictionary")
+                                .IsRequired()
+                                .HasColumnType("jsonb");
+
+                            b1.HasKey("AttachmentId");
+
+                            b1.ToTable("Product");
+
+                            b1.WithOwner()
+                                .HasForeignKey("AttachmentId");
+                        });
+
+                    b.Navigation("Color")
                         .IsRequired();
 
-                    b.Navigation("DeliveryType");
+                    b.Navigation("Material")
+                        .IsRequired();
                 });
 
-            modelBuilder.Entity("API.Models.OrderItem", b =>
+            modelBuilder.Entity("Domain.Component.Product.Knife.Knife", b =>
                 {
-                    b.HasOne("API.Models.Order", "Order")
+                    b.HasOne("Domain.Component.BladeShapes.BladeShape", "Blade")
                         .WithMany()
-                        .HasForeignKey("OrderId")
+                        .HasForeignKey("BladeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("API.Models.Product", "Product")
+                    b.HasOne("Domain.Component.BladeCoatingColors.BladeCoatingColor", "Color")
                         .WithMany()
-                        .HasForeignKey("ProductId")
+                        .HasForeignKey("ColorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Order");
-
-                    b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("API.Models.Knife", b =>
-                {
-                    b.HasOne("API.Models.BladeCoatingColor", "BladeCoatingColor")
+                    b.HasOne("Domain.Component.Handles.Handle", "Handle")
                         .WithMany()
-                        .HasForeignKey("BladeCoatingColorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("HandleId");
 
-                    b.HasOne("API.Models.Fastening", "Fastening")
+                    b.HasOne("Domain.Component.Sheaths.Color.SheathColor", "SheathColor")
                         .WithMany()
-                        .HasForeignKey("FasteningId");
+                        .HasForeignKey("SheathColorId");
 
-                    b.HasOne("API.Models.HandleColor", "HandleColor")
+                    b.HasOne("Domain.Component.Sheaths.Sheath", "Sheath")
                         .WithMany()
-                        .HasForeignKey("HandleColorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SheathId");
 
-                    b.HasOne("API.Models.BladeShape", "Shape")
-                        .WithMany()
-                        .HasForeignKey("ShapeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Blade");
 
-                    b.HasOne("API.Models.SheathColor", "SheathColor")
-                        .WithMany()
-                        .HasForeignKey("SheathColorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Color");
 
-                    b.Navigation("BladeCoatingColor");
+                    b.Navigation("Handle");
 
-                    b.Navigation("Fastening");
-
-                    b.Navigation("HandleColor");
-
-                    b.Navigation("Shape");
+                    b.Navigation("Sheath");
 
                     b.Navigation("SheathColor");
+                });
+
+            modelBuilder.Entity("Domain.Component.Engravings.Engraving", b =>
+                {
+                    b.Navigation("Tags");
+                });
+
+            modelBuilder.Entity("Domain.Component.Sheaths.Color.SheathColor", b =>
+                {
+                    b.Navigation("Prices");
+                });
+
+            modelBuilder.Entity("Domain.Component.Product.Knife.Knife", b =>
+                {
+                    b.Navigation("Attachments");
                 });
 #pragma warning restore 612, 618
         }
