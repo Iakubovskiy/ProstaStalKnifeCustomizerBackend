@@ -2,7 +2,7 @@ using Domain.Component.Translation;
 
 namespace Domain.Order.Suppport;
 
-public class PaymentMethod : IEntity
+public class PaymentMethod : IEntity, IUpdatable<PaymentMethod>
 {
     private PaymentMethod()
     {

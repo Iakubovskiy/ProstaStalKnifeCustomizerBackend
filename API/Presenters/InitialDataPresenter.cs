@@ -1,4 +1,7 @@
-using Domain.Models;
+using Domain.Component.BladeCoatingColors;
+using Domain.Component.BladeShapes;
+using Domain.Component.Handles;
+using Domain.Component.Sheaths.Color;
 
 namespace API.Presenters;
 
@@ -8,7 +11,7 @@ public class InitialDataPresenter
     
     public BladeCoatingColor? BladeCoatingColor { get; set; }
     
-    public HandleColor? HandleColor { get; set; }
+    public Handle? HandleColor { get; set; }
     
     public SheathColor? SheathColor { get; set; }
 }

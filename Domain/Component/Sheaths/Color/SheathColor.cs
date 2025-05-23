@@ -5,7 +5,7 @@ using Domain.Component.Translation;
 
 namespace Domain.Component.Sheaths.Color;
 
-public class SheathColor : IEntity, IComponentWithTypeDependency
+public class SheathColor : IEntity, IComponentWithTypeDependency, IUpdatable<SheathColor>, ITextured
 {
     private SheathColor()
     {
@@ -43,9 +43,9 @@ public class SheathColor : IEntity, IComponentWithTypeDependency
     public string? ColorMapUrl { get; private set; }
     public List<SheathColorPriceByType> Prices { get; private set; }
 
-    public double GetPrice(BladeShapeType type)
+    public double GetPrice(BladeShapeType type, double exchangerRate)
     {
-        return this.Prices.First(p => p.Type == type).Price;
+        return this.Prices.First(p => p.Type == type).Price / exchangerRate;
     }
     
     public void Update(SheathColor sheathColor)
@@ -58,5 +58,15 @@ public class SheathColor : IEntity, IComponentWithTypeDependency
         this.Texture = sheathColor.Texture;
         this.ColorMapUrl = sheathColor.ColorMapUrl;
         this.Prices = sheathColor.Prices;
+    }
+
+    public void Activate()
+    {
+        this.IsActive = true;
+    }
+
+    public void Deactivate()
+    {
+        this.IsActive = false;
     }
 }

@@ -6,7 +6,7 @@ using Domain.Component.Translation;
 
 namespace Domain.Component.Product.CompletedSheath;
 
-public class CompletedSheath : Product
+public class CompletedSheath : Product, IUpdatable<CompletedSheath>
 {
     private CompletedSheath() : base()
     {
@@ -22,6 +22,7 @@ public class CompletedSheath : Product
         Translations description,
         Translations metaTitle,
         Translations metaDescription,
+        List<ProductTag> tags,
         Sheath sheath, 
         SheathColor sheathColor, 
         List<Engraving>? engravings, 
@@ -34,7 +35,8 @@ public class CompletedSheath : Product
         title, 
         description, 
         metaTitle, 
-        metaDescription
+        metaDescription,
+        tags
     )
     {
         this.Sheath = sheath;
@@ -48,13 +50,13 @@ public class CompletedSheath : Product
     public List<Engraving>? Engravings { get; private set; }
     public List<Attachment>? Attachments { get; private set; }
 
-    public override double GetPrice()
+    public override double GetPrice(double exchangerRate)
     {
         double price = 0;
-        price += this.Sheath.GetPrice();
-        price += this.SheathColor.GetPrice(this.Sheath.Type);
-        price += this.Engravings?.Sum(x => x.GetPrice()) ?? 0;
-        price += this.Attachments?.Sum(x => x.GetPrice()) ?? 0;
+        price += this.Sheath.GetPrice(exchangerRate);
+        price += this.SheathColor.GetPrice(this.Sheath.Type, exchangerRate);
+        price += this.Engravings?.Sum(x => x.GetPrice(exchangerRate)) ?? 0;
+        price += this.Attachments?.Sum(x => x.GetPrice(exchangerRate)) ?? 0;
         
         return price;
     }

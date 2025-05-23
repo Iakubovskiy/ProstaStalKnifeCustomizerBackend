@@ -2,7 +2,7 @@ using Domain.Component.Translation;
 
 namespace Domain.Component.Engravings.Support;
 
-public class EngravingTag : IEntity
+public class EngravingTag : IEntity, IUpdatable<EngravingTag>
 {
     private EngravingTag()
     {
@@ -21,8 +21,8 @@ public class EngravingTag : IEntity
     public Guid Id { get; private set; }
     public Translations Name { get; private set; }
 
-    public void Update(Translations name)
+    public void Update(EngravingTag tag)
     {
-        this.Name = name;
+        this.Name = tag.Name;
     }
 }

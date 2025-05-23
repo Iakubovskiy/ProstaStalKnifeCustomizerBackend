@@ -1,10 +1,11 @@
-﻿using Domain.Component.Handles.Validators;
+﻿using System.ComponentModel.DataAnnotations;
+using Domain.Component.Handles.Validators;
 using Domain.Component.Textures;
 using Domain.Component.Translation;
 
 namespace Domain.Component.Handles;
 
-public class Handle : IComponent, IEntity
+public class Handle : IComponent, IEntity, IUpdatable<Handle>, ITextured
 {
     private Handle()
     {
@@ -37,18 +38,20 @@ public class Handle : IComponent, IEntity
 
     public Guid Id { get; private set; }
     public Translations Name { get; private set; }
+    [MaxLength(255)]
     public string? ColorCode { get; private set; }
     public bool IsActive { get; set; }
     public Translations Material { get; private set; }
     public Texture? Texture { get; private set; }
+    [MaxLength(255)]
     public string? ColorMapUrl { get; private set; }
     public double Price { get; private set; }
     
     public string? HandleModelUrl { get; private set; }
     
-    public double GetPrice()
+    public double GetPrice(double exchangerRate)
     {
-        return this.Price;
+        return this.Price / exchangerRate;
     }
 
     public void Update(Handle handle)
@@ -61,5 +64,15 @@ public class Handle : IComponent, IEntity
         this.Texture = handle.Texture;
         this.ColorMapUrl = handle.ColorMapUrl;
         this.Price = handle.Price;
+    }
+
+    public void Activate()
+    {
+        this.IsActive = true;
+    }
+
+    public void Deactivate()
+    {
+        this.IsActive = false;
     }
 }

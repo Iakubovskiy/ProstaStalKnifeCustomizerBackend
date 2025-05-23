@@ -4,10 +4,11 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Domain.Component.BladeShapes.BladeCharacteristic;
 using Domain.Component.BladeShapes.Validators;
 using Domain.Component.BladeShapeTypes;
+using Domain.Component.Sheaths;
 
 namespace Domain.Component.BladeShapes; 
 
-public class BladeShape : IEntity, IComponent
+public class BladeShape : IEntity, IComponent, IUpdatable<BladeShape>
 {
     private const int UrlMaxLength = 255;
 
@@ -23,8 +24,8 @@ public class BladeShape : IEntity, IComponent
         string? bladeShapePhotoUrl,
         double price,
         BladeCharacteristics bladeCharacteristics,
+        Sheath? sheath,
         string bladeShapeModelUrl,
-        string sheathModelUrl,
         bool isActive
     )
     {
@@ -32,8 +33,7 @@ public class BladeShape : IEntity, IComponent
         BladeShapeValidator.Validate(
             bladeShapePhotoUrl, 
             price,
-            bladeShapeModelUrl, 
-            sheathModelUrl
+            bladeShapeModelUrl
         );
         this.Type = type;
         this.Name = name;
@@ -41,8 +41,8 @@ public class BladeShape : IEntity, IComponent
         this.Price = price;
         this.BladeCharacteristics = bladeCharacteristics;
         this.BladeShapeModelUrl = bladeShapeModelUrl;
-        this.SheathModelUrl = sheathModelUrl;
         this.IsActive = isActive;
+        this.Sheath = sheath;
     }
 
     [BindNever]
@@ -58,15 +58,12 @@ public class BladeShape : IEntity, IComponent
 
     [MaxLength(UrlMaxLength)]
     public string BladeShapeModelUrl { get; private set; }
-
-    [MaxLength(UrlMaxLength)]
-    public string SheathModelUrl { get; private set; }
-
     public bool IsActive { get; private set; } 
+    public Sheath? Sheath { get; private set; } 
 
-    public double GetPrice()
+    public double GetPrice(double exchangerRate)
     {
-        return this.Price;
+        return this.Price / exchangerRate;
     }
 
     public void Update(BladeShape bladeShape)
@@ -74,8 +71,7 @@ public class BladeShape : IEntity, IComponent
         BladeShapeValidator.Validate(
             bladeShape.BladeShapePhotoUrl, 
             bladeShape.Price, 
-            bladeShape.BladeShapeModelUrl, 
-            bladeShape.SheathModelUrl
+            bladeShape.BladeShapeModelUrl
         );
         this.Type = bladeShape.Type;
         this.Name = bladeShape.Name;
@@ -83,12 +79,16 @@ public class BladeShape : IEntity, IComponent
         this.Price = bladeShape.Price;
         this.BladeCharacteristics = bladeShape.BladeCharacteristics;
         this.BladeShapeModelUrl = bladeShape.BladeShapeModelUrl;
-        this.SheathModelUrl = bladeShape.SheathModelUrl;
         this.IsActive = bladeShape.IsActive;
     }
 
-    public void ChangeActive(bool isActive)
+    public void Activate()
     {
-        this.IsActive = isActive;
+        this.IsActive = true;
+    }
+    
+    public void Deactivate()
+    {
+        this.IsActive = false;
     }
 }

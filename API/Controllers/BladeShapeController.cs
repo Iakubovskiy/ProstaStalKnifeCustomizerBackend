@@ -1,6 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Domain.Models;
-using Application.Services;
+﻿using Application.Components.Activate;
+using Application.Components.Deactivate;
+using Application.Components.SimpleComponents.BladeShapes;
+using Application.Components.SimpleComponents.UseCases.Create;
+using Application.Components.SimpleComponents.UseCases.Update;
+using Microsoft.AspNetCore.Mvc;
+using Domain.Component.BladeShapes;
+using Infrastructure.Components;
 
 namespace API.Controllers;
 
@@ -8,46 +13,52 @@ namespace API.Controllers;
 [ApiController]
 public class BladeShapeController : ControllerBase
 {
-    private readonly BladeShapeService _bladeShapeService;
+    private readonly IComponentRepository<BladeShape> _bladeShapeRepository;
+    private readonly IActivate<BladeShape> _activateService;
+    private readonly IDeactivate<BladeShape> _deactivateService;
+    private readonly ICreateSimpleComponent<BladeShape, BladeShapeDto> _bladeCoatingColorCreateService;
+    private readonly IUpdateComponent<BladeShape, BladeShapeDto> _bladeCoatingColorUpdateService;
 
-    public BladeShapeController(BladeShapeService service)
+    public BladeShapeController(
+        IComponentRepository<BladeShape> bladeShapeRepository, 
+        IActivate<BladeShape> activateService,
+        IDeactivate<BladeShape> deactivateService,
+        ICreateSimpleComponent<BladeShape, BladeShapeDto> bladeShapeCreateService,
+        IUpdateComponent<BladeShape, BladeShapeDto> bladeShapeUpdateService
+    )
     {
-        _bladeShapeService = service;
+        this._bladeShapeRepository = bladeShapeRepository;
+        this._activateService = activateService;
+        this._deactivateService = deactivateService;
+        this._bladeCoatingColorCreateService = bladeShapeCreateService;
+        this._bladeCoatingColorUpdateService = bladeShapeUpdateService;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAllBladeShapes()
     {
-        return Ok(await _bladeShapeService.GetAllBladeShapes());
+        return Ok(await this._bladeShapeRepository.GetAll());
     }
 
     [HttpGet("active")]
     public async Task<IActionResult> GetAllActiveBladeShapes()
     {
-        return Ok(await _bladeShapeService.GetAllActiveBladeShapes());
+        return Ok(await this._bladeShapeRepository.GetAllActive());
     }
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetBladeShapesById(Guid id)
     {
-        return Ok(await _bladeShapeService.GetBladeShapeById(id));
+        return Ok(await this._bladeShapeRepository.GetById(id));
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateBladeShape(
-        [FromForm] BladeShape shape, 
-        IFormFile bladeShapeModel,
-        IFormFile sheathModel,
-        IFormFile bladeShapePhoto
+        [FromForm] BladeShapeDto newShape
     )
     {
         return Ok(
-            await _bladeShapeService.CreateBladeShape(
-                shape,
-                bladeShapeModel,  
-                sheathModel,
-                bladeShapePhoto
-            )
+            await this._bladeCoatingColorCreateService.Create(newShape)
         );
 
     }
@@ -55,19 +66,13 @@ public class BladeShapeController : ControllerBase
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdateBladeShape(
         Guid id, 
-        [FromForm] BladeShape updateBladeShape,
-        IFormFile? bladeShapeModel,
-        IFormFile? sheathModel,
-        IFormFile? bladeShapePhoto
+        [FromForm] BladeShapeDto newShape
     )
     {
         return Ok(
-            await _bladeShapeService.UpdateBladeShape(
+            await this._bladeCoatingColorUpdateService.Update(
                 id,
-                updateBladeShape, 
-                bladeShapeModel, 
-                sheathModel,
-                bladeShapePhoto
+                newShape
             ) 
         );
     }
@@ -75,34 +80,22 @@ public class BladeShapeController : ControllerBase
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteBladeShape(Guid id)
     {
-        return Ok(new { isDeleted = await _bladeShapeService.DeleteBladeShape(id) });
+        return Ok(new { isDeleted = await this._bladeShapeRepository.Delete(id) });
     }
 
     [HttpPatch("deactivate/{id:guid}")]
     public async Task<IActionResult> Deactivate(Guid id)
     {
-        try
-        {
-            var bladeShape = await _bladeShapeService.ChangeActive(id, false);
-            return Ok(bladeShape);
-        }
-        catch (Exception)
-        {
-            return BadRequest(new { message = "Invalid BladeShape ID." });
-        }
+        BladeShape bladeCoatingColor = await this._bladeShapeRepository.GetById(id);
+        this._deactivateService.Deactivate(bladeCoatingColor);
+        return Ok();
     }
 
     [HttpPatch("activate/{id:guid}")]
     public async Task<IActionResult> Activate(Guid id)
     {
-        try
-        {
-            BladeShape bladeShape = await _bladeShapeService.ChangeActive(id, true);
-            return Ok(bladeShape);
-        }
-        catch (Exception)
-        {
-            return BadRequest(new { message = "Invalid BladeShape ID." });
-        }
+        BladeShape bladeCoatingColor = await this._bladeShapeRepository.GetById(id);
+        this._activateService.Activate(bladeCoatingColor);
+        return Ok();
     }
 }

@@ -3,7 +3,7 @@ using Domain.Component.Translation;
 
 namespace Domain.Component.Product.Attachments;
 
-public class Attachment : Product
+public class Attachment : Product, IUpdatable<Attachment>
 {
     protected Attachment() : base()
     {
@@ -19,6 +19,7 @@ public class Attachment : Product
         Translations description,
         Translations metaTitle,
         Translations metaDescription,
+        List<ProductTag> tags,
         AttachmentType type, 
         Translations color, 
         double price, 
@@ -32,7 +33,8 @@ public class Attachment : Product
         title, 
         description, 
         metaTitle, 
-        metaDescription
+        metaDescription,
+        tags
     )
     {
         if (string.IsNullOrWhiteSpace(modelUrl) || !Uri.IsWellFormedUriString(modelUrl, UriKind.Absolute))
@@ -57,9 +59,9 @@ public class Attachment : Product
     public Translations Material { get; private set; }
     public string ModelUrl { get; private set; }
     
-    public override double GetPrice()
+    public override double GetPrice(double exchangerRate)
     {
-        return this.Price;
+        return this.Price / exchangerRate;
     }
 
     public void Update(Attachment attachment)

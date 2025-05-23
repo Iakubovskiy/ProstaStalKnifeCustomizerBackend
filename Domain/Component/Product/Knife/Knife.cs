@@ -9,7 +9,7 @@ using Domain.Component.Sheaths.Color;
 
 namespace Domain.Component.Product.Knife;
 
-public class Knife : Product
+public class Knife : Product, IUpdatable<Knife>
 {
     private Knife()
     {
@@ -25,6 +25,7 @@ public class Knife : Product
         Translations description,
         Translations metaTitle,
         Translations metaDescription,
+        List<ProductTag> tags,
         BladeShape blade,
         BladeCoatingColor color,
         Handle? handle, 
@@ -40,7 +41,8 @@ public class Knife : Product
         title, 
         description, 
         metaTitle, 
-        metaDescription
+        metaDescription,
+        tags
     )
     {
         if (sheath != null && sheathColor == null)
@@ -75,16 +77,16 @@ public class Knife : Product
     public List<Engraving>? Engravings { get; private set; }
     public List<Attachment>? Attachments { get; private set; }
 
-    public override double GetPrice()
+    public override double GetPrice(double exchangerRate)
     {
         double price = 0;
-        price += this.Blade.GetPrice();
-        price += this.Color.GetPrice();
-        price += this.Handle?.GetPrice() ?? 0;
-        price += this.Sheath?.GetPrice() ?? 0;
-        price += this.SheathColor?.GetPrice(this.Blade.Type) ?? 0;
-        price += this.Engravings?.Sum(x => x.GetPrice()) ?? 0;
-        price += this.Attachments?.Sum(x => x.GetPrice()) ?? 0;
+        price += this.Blade.GetPrice(exchangerRate);
+        price += this.Color.GetPrice(exchangerRate);
+        price += this.Handle?.GetPrice(exchangerRate) ?? 0;
+        price += this.Sheath?.GetPrice(exchangerRate) ?? 0;
+        price += this.SheathColor?.GetPrice(this.Blade.Type , exchangerRate) ?? 0;
+        price += this.Engravings?.Sum(x => x.GetPrice(exchangerRate)) ?? 0;
+        price += this.Attachments?.Sum(x => x.GetPrice(exchangerRate)) ?? 0;
         
         return price;
     }

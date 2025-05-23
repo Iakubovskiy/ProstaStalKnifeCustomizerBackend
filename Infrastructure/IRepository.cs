@@ -1,11 +1,14 @@
-﻿namespace Domain.Interfaces
+﻿using Domain;
+
+namespace Infrastructure
 {
-    public interface IRepository<T,TKey>
+    public interface IRepository<T> where T : class, IEntity, IUpdatable<T>
     {
+        IQueryable<T> List();
         Task<List<T>> GetAll();
-        Task<T> GetById(TKey id);
+        Task<T> GetById(Guid id);
         Task<T> Create(T newObject);
-        Task<T> Update(TKey id, T updatedObject);
-        Task<bool> Delete(TKey id);
+        Task<T> Update(Guid id, T updatedObject);
+        Task<bool> Delete(Guid id);
     }
 }

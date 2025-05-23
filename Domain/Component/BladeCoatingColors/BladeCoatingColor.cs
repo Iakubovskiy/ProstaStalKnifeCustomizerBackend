@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Domain.Component.BladeCoatingColors;
 
-public class BladeCoatingColor : IEntity, IComponent
+public class BladeCoatingColor : IEntity, IComponent, IUpdatable<BladeCoatingColor>, ITextured
 {
     private BladeCoatingColor()
     {
@@ -20,7 +20,6 @@ public class BladeCoatingColor : IEntity, IComponent
         Translations color, 
         string? colorCode, 
         string engravingColorCode, 
-        bool isActive, 
         Texture? texture, 
         string? colorMapUrl
     )
@@ -33,7 +32,7 @@ public class BladeCoatingColor : IEntity, IComponent
         this.EngravingColorCode = engravingColorCode;
         this.Texture = texture;
         this.ColorMapUrl = colorMapUrl;
-        this.IsActive = isActive;
+        this.IsActive = true;
     }
     [BindNever]
     public Guid Id { get; private set; }
@@ -46,9 +45,9 @@ public class BladeCoatingColor : IEntity, IComponent
     public Texture? Texture { get; private set; }
     public string? ColorMapUrl { get; private set; }
 
-    public double GetPrice()
+    public double GetPrice(double exchangerRate)
     {
-        return this.Price;
+        return this.Price / exchangerRate;
     }
     
     public void Update(BladeCoatingColor bladeCoatingColor)
@@ -74,9 +73,14 @@ public class BladeCoatingColor : IEntity, IComponent
         this.IsActive = bladeCoatingColor.IsActive;
     }
     
-    public void ChangeActive(bool isActive)
+    public void Activate()
     {
-        this.IsActive = isActive;
+        this.IsActive = true;
+    }
+
+    public void Deactivate()
+    {
+        this.IsActive = false;
     }
 
 }

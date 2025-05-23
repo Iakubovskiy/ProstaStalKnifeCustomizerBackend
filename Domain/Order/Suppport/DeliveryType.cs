@@ -2,7 +2,7 @@ using Domain.Component.Translation;
 
 namespace Domain.Order.Suppport;
 
-public class DeliveryType : IEntity
+public class DeliveryType : IEntity, IUpdatable<DeliveryType>
 {
     private DeliveryType()
     {

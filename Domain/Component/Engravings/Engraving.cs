@@ -7,7 +7,7 @@ using Domain.Component.Engravings.Validators;
 
 namespace Domain.Component.Engravings;
 
-public class Engraving : IEntity, IComponent
+public class Engraving : IEntity, IComponent, IUpdatable<Engraving>
 {
     private Engraving()
     {
@@ -68,11 +68,11 @@ public class Engraving : IEntity, IComponent
     [NotMapped]
     public double Price { get; private set; }
 
-    public bool IsActive { get; }
+    public bool IsActive { get; private set;}
     
-    public double GetPrice()
+    public double GetPrice(double exchangerRate)
     {
-        return Price;
+        return Price / exchangerRate;
     }
 
     public void Update(Engraving engraving)
@@ -92,5 +92,15 @@ public class Engraving : IEntity, IComponent
         this.EngravingRotation = engraving.EngravingRotation;
         this.EngravingScale = engraving.EngravingScale;
         this.Tags = engraving.Tags;
+    }
+
+    public void Activate()
+    {
+        this.IsActive = true;
+    }
+    
+    public void Deactivate()
+    {
+        this.IsActive = false;
     }
 }

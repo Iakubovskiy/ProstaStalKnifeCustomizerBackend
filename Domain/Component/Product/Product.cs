@@ -2,7 +2,7 @@ using Domain.Component.Translation;
 
 namespace Domain.Component.Product;
 
-public abstract class Product : IEntity, IComponent
+public abstract class Product : IEntity, IComponent, IUpdatable<Product>
 {
     protected Product()
     {
@@ -17,7 +17,8 @@ public abstract class Product : IEntity, IComponent
         Translations title,
         Translations description, 
         Translations metaTitle, 
-        Translations metaDescription
+        Translations metaDescription,
+        List<ProductTag> tags
     )
     {
         if (!Uri.IsWellFormedUriString(imageUrl, UriKind.Absolute))
@@ -32,6 +33,7 @@ public abstract class Product : IEntity, IComponent
         this.Description = description;
         this.MetaTitle = metaTitle;
         this.MetaDescription = metaDescription;
+        this.Tags = tags;
     }
     
     public Guid Id { get; private set;  }
@@ -42,8 +44,9 @@ public abstract class Product : IEntity, IComponent
     public Translations Description { get; private set; }
     public Translations MetaTitle { get; private set; }
     public Translations MetaDescription { get; private set; }
+    public List<ProductTag> Tags { get; set; }
 
-    public abstract double GetPrice();
+    public abstract double GetPrice(double exchangerRate);
 
     public void Update(Product product)
     {
@@ -58,5 +61,16 @@ public abstract class Product : IEntity, IComponent
         this.Description = product.Description;
         this.MetaTitle = product.MetaTitle;
         this.MetaDescription = product.MetaDescription;
+        this.Tags = product.Tags;
+    }
+
+    public void Activate()
+    {
+        this.IsActive = true;
+    }
+
+    public void Deactivate()
+    {
+        this.IsActive = false;
     }
 }

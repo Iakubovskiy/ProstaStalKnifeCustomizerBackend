@@ -3,7 +3,7 @@ using Domain.Order.Suppport;
 
 namespace Domain.Order;
 
-public class Order : IEntity
+public class Order : IEntity, IUpdatable<Order>
 {
 
     private Order()

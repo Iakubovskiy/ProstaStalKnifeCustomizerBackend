@@ -1,9 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Component.Textures;
 
-[Owned]
-public class Texture: IEntity
+public class Texture: IEntity, IUpdatable<Texture>
 {
     private Texture()
     {
@@ -38,8 +37,11 @@ public class Texture: IEntity
     }
     
     public Guid Id { get; private set; }
+    [MaxLength(255)]
     public string Name { get; private set; }
+    [MaxLength(255)]
     public string NormalMapUrl { get; private set; }
+    [MaxLength(255)]
     public string RoughnessMapUrl { get; private set; }
 
     public void Update(Texture texture)

@@ -1,6 +1,4 @@
-﻿using Domain.Models;
-
-namespace API.DTO
+﻿namespace API.DTO
 {
     public class KnifeDTO
     {

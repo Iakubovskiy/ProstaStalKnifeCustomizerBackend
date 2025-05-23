@@ -1,18 +1,33 @@
+using System.Text;
+using Application;
+using Application.Components.TexturedComponents.Data;
+using Application.Components.TexturedComponents.Data.Dto.BladeCoatings;
+using Application.Files;
+using Application.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Infrastructure.Data;
 using Domain.Component.BladeCoatingColors;
 using Domain.Component.BladeShapes;
+using Domain.Component.BladeShapeTypes;
 using Domain.Component.Engravings;
 using Domain.Component.Engravings.Support;
 using Domain.Component.Handles;
 using Domain.Component.Product.Attachments;
+using Domain.Component.Product.CompletedSheath;
 using Domain.Component.Product.Knife;
+using Domain.Component.Sheaths;
 using Domain.Component.Sheaths.Color;
+using Domain.Component.Textures;
 using Domain.Order;
 using Domain.Order.Suppport;
 using Domain.Users;
+using Infrastructure;
+using Infrastructure.Components;
+using Infrastructure.Components.BladeCoatingColors;
+using Infrastructure.Components.BladeShapes;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,7 +66,7 @@ builder.WebHost.ConfigureKestrel(options =>
 });
 
 var secretKey = builder.Configuration["Jwt:Key"];
-/*builder.Services.AddAuthentication(options =>
+builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -91,7 +106,7 @@ var secretKey = builder.Configuration["Jwt:Key"];
         }
     };
 
-});*/
+});
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
@@ -141,21 +156,43 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-/*#region interfaces
-builder.Services.AddScoped<IRepository<BladeCoatingColor, Guid>, BladeCoatingColorRepository>();
-builder.Services.AddScoped<IRepository<BladeShape, Guid>, BladeShapeRepository>();
-builder.Services.AddScoped<IRepository<DeliveryType, Guid>, DeliveryTypeRepository>();
-builder.Services.AddScoped<IRepository<Engraving, Guid>, EngravingRepository>();
-builder.Services.AddScoped<IRepository<EngravingPrice, Guid>, EngravingPriceRepository>();
-builder.Services.AddScoped<IRepository<Attachment, Guid>, FasteningRepository>();
-builder.Services.AddScoped<IRepository<Handle, Guid>, HandleRepository>();
-builder.Services.AddScoped<IRepository<Knife, Guid>, KnifeRepository>();
-builder.Services.AddScoped<IRepository<Order, Guid>, OrderRepository>();
-builder.Services.AddScoped<IRepository<OrderStatuses, Guid>, OrderStatusesRepository>();
-builder.Services.AddScoped<IRepository<SheathColor, Guid>, SheathColorRepository>();
-builder.Services.AddScoped<ICustomEmailSender, EmailSenderService>();
-builder.Services.AddScoped<IFileService, AwsService>();
-#endregion*/
+#region repositories
+builder.Services.AddScoped<IComponentRepository<BladeCoatingColor>, BladeCoatingColorRepository>();
+builder.Services.AddScoped<IComponentRepository<BladeShape>, BladeShapeRepository>();
+builder.Services.AddScoped<IRepository<BladeShapeType>, BaseRepository<BladeShapeType>>();
+builder.Services.AddScoped<IRepository<Engraving>, BaseRepository<Engraving>>();
+builder.Services.AddScoped<IRepository<EngravingTag>, BaseRepository<EngravingTag>>();
+builder.Services.AddScoped<IRepository<EngravingPrice>, BaseRepository<EngravingPrice>>();
+builder.Services.AddScoped<IRepository<Handle>, BaseRepository<Handle>>();
+builder.Services.AddScoped<IRepository<Sheath>, BaseRepository<Sheath>>();
+builder.Services.AddScoped<IRepository<SheathColor>, BaseRepository<SheathColor>>();
+builder.Services.AddScoped<IRepository<Attachment>, BaseRepository<Attachment>>();
+builder.Services.AddScoped<IRepository<Knife>, BaseRepository<Knife>>();
+builder.Services.AddScoped<IRepository<CompletedSheath>, BaseRepository<CompletedSheath>>();
+builder.Services.AddScoped<IRepository<Texture>, BaseRepository<Texture>>();
+builder.Services.AddScoped<IRepository<Order>, BaseRepository<Order>>();
+builder.Services.AddScoped<IRepository<DeliveryType>, BaseRepository<DeliveryType>>();
+builder.Services.AddScoped<IRepository<PaymentMethod>, BaseRepository<PaymentMethod>>();
+
+
+//it should be moved to services
+    builder.Services.AddScoped<ICustomEmailSender, EmailSenderService>();
+    builder.Services.AddScoped<IFileService, AwsService>();
+//
+#endregion
+
+#region Mappers
+
+builder.Services.AddScoped<ITexturedComponentDtoMapper<BladeCoatingColor, BladeCoatingDto>, BladeCoatingMapper>();
+
+#endregion
+
+#region Dtos
+
+builder.Services.AddScoped<ITexturedComponentDto<BladeCoatingColor>, BladeCoatingDto>();
+
+#endregion
+
 
 /*#region services
 builder.Services.AddScoped<BladeCoatingColorService>();

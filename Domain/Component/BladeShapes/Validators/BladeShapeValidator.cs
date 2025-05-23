@@ -13,8 +13,7 @@ public class BladeShapeValidator
     public static void Validate(
         string? bladeShapePhotoUrl,
         double price,
-        string bladeShapeModelUrl,
-        string sheathModelUrl
+        string bladeShapeModelUrl
     )
     {
         if (bladeShapePhotoUrl != null)
@@ -48,19 +47,5 @@ public class BladeShapeValidator
         {
             throw new ArgumentException("BladeShapeModelUrl is not a valid absolute URL.", nameof(bladeShapeModelUrl));
         }
-
-        if (string.IsNullOrWhiteSpace(sheathModelUrl))
-        {
-            throw new ArgumentException("SheathModelUrl cannot be null or whitespace.", nameof(sheathModelUrl));
-        }
-        if (sheathModelUrl.Length > UrlMaxLength)
-        {
-            throw new ArgumentException($"SheathModelUrl cannot exceed {UrlMaxLength} characters.", nameof(sheathModelUrl));
-        }
-        if (!Uri.IsWellFormedUriString(sheathModelUrl, UriKind.Absolute))
-        {
-            throw new ArgumentException("SheathModelUrl is not a valid absolute URL.", nameof(sheathModelUrl));
-        }
-        
     }
 }

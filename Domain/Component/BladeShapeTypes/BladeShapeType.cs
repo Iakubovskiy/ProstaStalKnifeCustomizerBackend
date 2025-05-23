@@ -2,7 +2,7 @@
 
 namespace Domain.Component.BladeShapeTypes;
 
-public class BladeShapeType : IEntity
+public class BladeShapeType : IEntity, IUpdatable<BladeShapeType>
 {
     private BladeShapeType()
     {
@@ -22,13 +22,13 @@ public class BladeShapeType : IEntity
     public Guid Id { get; private set;}
     public string Name { get; private set;}
     
-    public void Update(string name)
+    public void Update(BladeShapeType type)
     {
-        if (string.IsNullOrWhiteSpace(name))
+        if (string.IsNullOrWhiteSpace(type.Name))
         {
             throw new ArgumentException("Name is required");
         }
-        this.Name = name;
+        this.Name = type.Name;
     }
 
     public bool Equals(BladeShapeType other)
