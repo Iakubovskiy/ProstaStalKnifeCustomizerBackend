@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Domain.Component.BladeShapeTypes;
-using Domain.Component.Translation;
+using Domain.Files;
+using Domain.Translation;
 
 namespace Domain.Component.Sheaths;
 
@@ -14,19 +15,15 @@ public class Sheath : IEntity, IComponent, IUpdatable<Sheath>
     public Sheath(
         Guid id, 
         Translations name, 
-        string? modelUrl, 
+        FileEntity? model, 
         BladeShapeType type, 
         double price,
         bool isActive 
     )
     {
-        if (!Uri.IsWellFormedUriString(modelUrl, UriKind.Absolute))
-        {
-            throw new ArgumentException("Invalid sheath model URL");
-        }
         this.Id = id;
         this.Name = name;
-        this.ModelUrl = modelUrl;
+        this.Model = model;
         this.Type = type;
         this.Price = price;
         this.IsActive = isActive;
@@ -36,7 +33,7 @@ public class Sheath : IEntity, IComponent, IUpdatable<Sheath>
     public Translations Name { get; private set; }
     public bool IsActive { get; set; }
     [MaxLength(255)]
-    public string? ModelUrl { get; private set; }
+    public FileEntity? Model { get; private set; }
     public BladeShapeType Type { get; private set; }
     public double Price { get; private set; }
     
@@ -47,13 +44,8 @@ public class Sheath : IEntity, IComponent, IUpdatable<Sheath>
 
     public void Update(Sheath sheath)
     {
-        if (!Uri.IsWellFormedUriString(sheath.ModelUrl, UriKind.Absolute))
-        {
-            throw new ArgumentException("Invalid sheath model URL");
-        }
-        
         this.Name = sheath.Name;
-        this.ModelUrl = sheath.ModelUrl;
+        this.Model = sheath.Model;
         this.Type = sheath.Type;
         this.Price = sheath.Price;
         this.IsActive = sheath.IsActive;

@@ -18,7 +18,7 @@ public class EngravingPrice : IEntity, IUpdatable<EngravingPrice>
     }
     
     public Guid Id { get; private set; }
-    public double Price { get; set; }
+    public double Price { get; private set; }
     
     public void Update(EngravingPrice price)
     {

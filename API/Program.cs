@@ -3,7 +3,6 @@ using Application;
 using Application.Components.TexturedComponents.Data;
 using Application.Components.TexturedComponents.Data.Dto.BladeCoatings;
 using Application.Files;
-using Application.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Infrastructure.Data;
@@ -20,7 +19,7 @@ using Domain.Component.Sheaths;
 using Domain.Component.Sheaths.Color;
 using Domain.Component.Textures;
 using Domain.Order;
-using Domain.Order.Suppport;
+using Domain.Order.Support;
 using Domain.Users;
 using Infrastructure;
 using Infrastructure.Components;
@@ -193,6 +192,7 @@ builder.Services.AddScoped<ITexturedComponentDto<BladeCoatingColor>, BladeCoatin
 
 #endregion
 
+builder.Services.AddHttpContextAccessor();
 
 /*#region services
 builder.Services.AddScoped<BladeCoatingColorService>();

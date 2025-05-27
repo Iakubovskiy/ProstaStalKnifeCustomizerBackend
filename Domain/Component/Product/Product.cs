@@ -1,4 +1,5 @@
-using Domain.Component.Translation;
+using Domain.Files;
+using Domain.Translation;
 
 namespace Domain.Component.Product;
 
@@ -12,7 +13,7 @@ public abstract class Product : IEntity, IComponent, IUpdatable<Product>
     protected Product(
         Guid id, 
         bool isActive, 
-        string imageUrl, 
+        FileEntity image, 
         Translations name, 
         Translations title,
         Translations description, 
@@ -21,13 +22,9 @@ public abstract class Product : IEntity, IComponent, IUpdatable<Product>
         List<ProductTag> tags
     )
     {
-        if (!Uri.IsWellFormedUriString(imageUrl, UriKind.Absolute))
-        {
-            throw new ArgumentException("Invalid product image URL");
-        }
         this.Id = id;
         this.IsActive = isActive;
-        this.ImageUrl = imageUrl;
+        this.Image = image;
         this.Name = name;
         this.Title = title;
         this.Description = description;
@@ -38,7 +35,7 @@ public abstract class Product : IEntity, IComponent, IUpdatable<Product>
     
     public Guid Id { get; private set;  }
     public bool IsActive { get; private set; }
-    public string ImageUrl { get; private set; }
+    public FileEntity Image { get; private set; }
     public Translations Name { get; private set; }
     public Translations Title { get; private set; }
     public Translations Description { get; private set; }
@@ -50,12 +47,8 @@ public abstract class Product : IEntity, IComponent, IUpdatable<Product>
 
     public void Update(Product product)
     {
-        if (!Uri.IsWellFormedUriString(product.ImageUrl, UriKind.Absolute))
-        {
-            throw new ArgumentException("Invalid product image URL");
-        }
         this.IsActive = product.IsActive;
-        this.ImageUrl = product.ImageUrl;
+        this.Image = product.Image;
         this.Name = product.Name;
         this.Title = product.Title;
         this.Description = product.Description;

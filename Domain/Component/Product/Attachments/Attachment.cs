@@ -1,5 +1,5 @@
-using Domain.Component.Product;
-using Domain.Component.Translation;
+using Domain.Files;
+using Domain.Translation;
 
 namespace Domain.Component.Product.Attachments;
 
@@ -13,7 +13,7 @@ public class Attachment : Product, IUpdatable<Attachment>
     public Attachment(
         Guid id,
         bool isActive,
-        string imageUrl,
+        FileEntity image,
         Translations name,
         Translations title,
         Translations description,
@@ -28,7 +28,7 @@ public class Attachment : Product, IUpdatable<Attachment>
     ) : base(
         id, 
         isActive, 
-        imageUrl, 
+        image, 
         name, 
         title, 
         description, 

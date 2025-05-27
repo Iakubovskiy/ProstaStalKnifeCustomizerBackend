@@ -4,7 +4,6 @@ using Application.Components.TexturedComponents.Data.Dto.BladeCoatings;
 using Application.Components.TexturedComponents.UseCases.Create;
 using Application.Components.TexturedComponents.UseCases.Update;
 using Microsoft.AspNetCore.Mvc;
-using Application.Services;
 using Domain.Component.BladeCoatingColors;
 using Infrastructure;
 using Infrastructure.Components;
@@ -56,7 +55,7 @@ public class BladeCoatingColorController : ControllerBase
 
     [HttpPost]
     public async Task<IActionResult> CreateBladeCoatingColor(
-        [FromForm] BladeCoatingDto newColor
+        [FromBody] BladeCoatingDto newColor
     )
     {
         return Ok(await this._bladeCoatingColorCreateService.Create(newColor));
@@ -65,7 +64,7 @@ public class BladeCoatingColorController : ControllerBase
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdateBladeCoatingColor (
         Guid id, 
-        [FromForm] BladeCoatingDto newColor
+        [FromBody] BladeCoatingDto newColor
     )
     {
         return Ok(await this._bladeCoatingColorUpdateService.Update(id, newColor));

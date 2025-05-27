@@ -1,4 +1,4 @@
-using Domain.Component.Translation;
+using Domain.Translation;
 
 namespace Domain.Component.Engravings.Support;
 

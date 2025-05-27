@@ -15,7 +15,7 @@ public class NotificationController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> SendEmail([FromForm] EmailDTO emailData)
+    public async Task<IActionResult> SendEmail([FromBody] EmailDTO emailData)
     {
         if (string.IsNullOrWhiteSpace(emailData.EmailTo) || string.IsNullOrWhiteSpace(emailData.EmailSubject))
         {

@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Domain.Models;
-using Application.Services;
+﻿using Application.Components.Prices.Engravings;
+using Microsoft.AspNetCore.Mvc;
+using Domain.Component.Engravings.Support;
+using Infrastructure;
 
 namespace API.Controllers;
 
@@ -8,44 +9,55 @@ namespace API.Controllers;
 [ApiController]
 public class EngravingPriceController : ControllerBase
 {
-    private readonly EngravingPriceService _engravingPriceService;
+    private readonly IRepository<EngravingPrice> _engravingPriceRepository;
+    private readonly IGetEngravingPrice _getEngravingPriceService;
 
-    public EngravingPriceController(EngravingPriceService service)
+    public EngravingPriceController(
+        IRepository<EngravingPrice> engravingPriceRepository,
+        IGetEngravingPrice getEngravingPriceService
+    )
     {
-        _engravingPriceService = service;
+        this._engravingPriceRepository = engravingPriceRepository;
+        this._getEngravingPriceService = getEngravingPriceService;
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllEngravingPrices()
+    public async Task<IActionResult> GetEngravingPrice()
     {
-        return Ok(await _engravingPriceService.GetAllEngravingPrices());
-    }
-
-    [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetEngravingPricesById(Guid id)
-    {
+        string currencyValue;
+        EngravingPrice price;
+        if (Request.Headers.TryGetValue("Currency", out var currency))
+        {
+           currencyValue = currency.ToString();
+        }
+        else
+        {
+            return BadRequest("Currency not set in Headers");
+        }
         try
         {
-            return Ok(await _engravingPriceService.GetEngravingPriceById(id));
+            price = await this._getEngravingPriceService.GetPrice(currencyValue);
         }
-        catch (Exception)
+        catch (Exception e)
         {
-            return BadRequest("Can't find engraving price");
+            return BadRequest(e.Message);
         }
+        
+        return Ok(price);
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateEngravingPrice([FromForm] EngravingPrice engravingPrice)
+    public async Task<IActionResult> CreateEngravingPrice([FromBody] EngravingPrice engravingPrice)
     {
-        return Ok(await _engravingPriceService.CreateEngravingPrice(engravingPrice));
+        return Ok(await this._engravingPriceRepository.Create(engravingPrice));
     }
 
     [HttpPut("{id:guid}")]
-    public async Task<IActionResult> UpdateEngravingPrice(Guid id, [FromForm] EngravingPrice engravingPrice)
+    public async Task<IActionResult> UpdateEngravingPrice(Guid id, [FromBody] EngravingPrice engravingPrice)
     {
         try
         {
-            return Ok(await _engravingPriceService.UpdateEngravingPrice(id, engravingPrice));
+            return Ok(await this._engravingPriceRepository.Update(id, engravingPrice));
         }
         catch (Exception)
         {
@@ -58,7 +70,7 @@ public class EngravingPriceController : ControllerBase
     {
         try
         {
-            return Ok(new { isDeleted = await _engravingPriceService.DeleteEngravingPrice(id) });
+            return Ok(new { isDeleted = await this._engravingPriceRepository.Delete(id) });
         }
         catch (Exception)
         {

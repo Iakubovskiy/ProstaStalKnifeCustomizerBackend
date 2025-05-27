@@ -1,5 +1,4 @@
-using Domain.Component.Textures;
-using Domain.Component.Translation;
+using Domain.Files;
 
 namespace Domain.Component.Handles.Validators;
 
@@ -7,11 +6,11 @@ public static class HandleValidator
 {
     public static void Validate(
         string? colorCode,
-        string? colorMapUrl
+        FileEntity? colorMap
     )
     {
-        if (!string.IsNullOrWhiteSpace(colorMapUrl) && !Uri.IsWellFormedUriString(colorMapUrl, UriKind.Absolute))
-            throw new ArgumentException("ColorMapUrl має бути валідною URL-адресою.", nameof(colorMapUrl));
+        if (colorMap != null && !string.IsNullOrWhiteSpace(colorMap.FileUrl) && !Uri.IsWellFormedUriString(colorMap.FileUrl, UriKind.Absolute))
+            throw new ArgumentException("ColorMapUrl має бути валідною URL-адресою.", nameof(colorMap.FileUrl));
 
         if (colorCode != null && string.IsNullOrWhiteSpace(colorCode))
         {

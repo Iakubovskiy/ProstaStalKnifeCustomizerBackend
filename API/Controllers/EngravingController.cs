@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Domain.Models;
-using Application.Services;
+﻿using Application.Components.SimpleComponents.Engravings;
+using Application.Components.SimpleComponents.UseCases.Create;
+using Application.Components.SimpleComponents.UseCases.Update;
+using Microsoft.AspNetCore.Mvc;
+using Domain.Component.Engravings;
+using Infrastructure;
 
 namespace API.Controllers;
 
@@ -8,17 +11,25 @@ namespace API.Controllers;
 [ApiController]
 public class EngravingController : ControllerBase
 {
-    private readonly EngravingService _engravingService;
+    private readonly IRepository<Engraving> _engravingRepository;
+    private readonly ICreateService<Engraving, EngravingDto> _createEngravingService;
+    private readonly IUpdateService<Engraving, EngravingDto> _updateEngravingService;
 
-    public EngravingController(EngravingService service)
+    public EngravingController(
+        IRepository<Engraving> engravingRepository,
+        ICreateService<Engraving, EngravingDto> createEngravingService,
+        IUpdateService<Engraving, EngravingDto> updateEngravingService
+    )
     {
-        _engravingService = service;
+        this._engravingRepository = engravingRepository;
+        this._createEngravingService = createEngravingService;
+        this._updateEngravingService = updateEngravingService;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAllEngravings()
     {
-        return Ok(await _engravingService.GetAllEngravings());
+        return Ok(await this._engravingRepository.GetAll());
     }
 
     [HttpGet ("{id:guid}")]
@@ -26,7 +37,7 @@ public class EngravingController : ControllerBase
     {
         try
         {
-            return Ok( await _engravingService.GetEngravingById(id));
+            return Ok( await this._engravingRepository.GetById(id));
         }
         catch (Exception)
         {
@@ -35,17 +46,17 @@ public class EngravingController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateEngraving([FromForm] Engraving engraving, IFormFile? engravingPicrutre)
+    public async Task<IActionResult> CreateEngraving([FromBody] EngravingDto newEngraving)
     {
-        return Ok(await _engravingService.CreateEngraving(engraving, engravingPicrutre));
+        return Ok(await this._createEngravingService.Create(newEngraving));
     }
 
     [HttpPut("{id:guid}")]
-    public async Task<IActionResult> UpdateEngraving(Guid id, [FromForm] Engraving engraving, IFormFile? engravingPicrutre)
+    public async Task<IActionResult> UpdateEngraving(Guid id, [FromBody] EngravingDto newEngraving)
     {
         try
         {
-            return Ok(await _engravingService.UpdateEngraving(id, engraving, engravingPicrutre));
+            return Ok(await this._updateEngravingService.Update(id, newEngraving));
         }
         catch (Exception)
         {
@@ -58,7 +69,7 @@ public class EngravingController : ControllerBase
     {
         try
         {
-            return Ok(new { isDeleted = await _engravingService.DeleteEngraving(id) });
+            return Ok(new { isDeleted = await this._engravingRepository.Delete(id) });
         }
         catch (Exception)
         {

@@ -1,4 +1,5 @@
 using Domain.Component.Engravings.Support;
+using Domain.Files;
 
 namespace Domain.Component.Engravings.Validators;
 
@@ -8,7 +9,7 @@ public class EngravingVlaidator
         int side,
         string? text,
         string? font,
-        string? pictureUrl
+        FileEntity? picture
     )
     {
         if (!Enum.IsDefined(typeof(Side), side))
@@ -21,9 +22,9 @@ public class EngravingVlaidator
             throw new ArgumentException("Font is required when text is provided.", nameof(font));
         }
         
-        if (pictureUrl != null && !Uri.IsWellFormedUriString(pictureUrl, UriKind.Absolute))
+        if (picture != null && !Uri.IsWellFormedUriString(picture.FileUrl, UriKind.Absolute))
         {
-            throw new ArgumentException("Invalid picture url.", nameof(pictureUrl));
+            throw new ArgumentException("Invalid picture url.", nameof(picture.FileUrl));
         }
 
         if (text != null && string.IsNullOrWhiteSpace(text))

@@ -1,13 +1,12 @@
 using Application.Components.SimpleComponents.UseCases;
-using Application.Files;
 using Domain.Component.BladeShapes;
 using Domain.Component.BladeShapes.BladeCharacteristic;
 using Domain.Component.BladeShapeTypes;
 using Domain.Component.Sheaths;
-using Domain.Component.Translation;
+using Domain.Files;
+using Domain.Translation;
 using Infrastructure;
 using Infrastructure.Components;
-using Newtonsoft.Json;
 
 namespace Application.Components.SimpleComponents.BladeShapes;
 
@@ -15,24 +14,24 @@ public class BladeShapeDtoMapper : IComponentDtoMapper<BladeShape, BladeShapeDto
 {
     private readonly IComponentRepository<Sheath> _sheathRepository;
     private readonly IRepository<BladeShapeType> _typeRepository;
-    private readonly IFileService _fileService;
+    private readonly IRepository<FileEntity> _fileRepository;
     
     public BladeShapeDtoMapper(
         IComponentRepository<Sheath> sheathRepository,
         IRepository<BladeShapeType> typeRepository,
-        IFileService fileService
+        IRepository<FileEntity> fileRepository
     )
     {
         this._sheathRepository = sheathRepository;
         this._typeRepository = typeRepository;
-        this._fileService = fileService;
+        this._fileRepository = fileRepository;
     }
     public async Task<BladeShape> Map(BladeShapeDto dto)
     {
         Guid id = Guid.NewGuid();
         Sheath sheath = null;
         BladeShapeType type = await this._typeRepository.GetById(dto.TypeId);
-        Translations name;
+        Translations name = new Translations(dto.Name);
         BladeCharacteristics characteristics = new BladeCharacteristics(
             dto.TotalLength,
             dto.BladeLength,
@@ -42,31 +41,22 @@ public class BladeShapeDtoMapper : IComponentDtoMapper<BladeShape, BladeShapeDto
             dto.RockwellHardnessUnits
         );
         
-        if (dto.SheathId.HasValue)
+        if (dto.SheathId is not null)
         {
             sheath = await this._sheathRepository.GetById(dto.SheathId.Value);
         }
-        try
-        {
-            name = JsonConvert.DeserializeObject<Translations>(dto.NameJson)
-                   ?? throw new Exception("Name is empty");
-        }
-        catch (Exception e)
-        {
-            throw new Exception("Name is not valid");
-        }
-        string imageUrl = await this._fileService.SaveFile(dto.BladeShapePhoto, dto.BladeShapePhoto.FileName);
-        string modelUrl = await this._fileService.SaveFile(dto.BladeShapeModel, dto.BladeShapeModel.FileName);
+        FileEntity image = await this._fileRepository.GetById(dto.BladeShapePhotoId);
+        FileEntity model = await this._fileRepository.GetById(dto.BladeShapeModelId);
 
         return new BladeShape(
             id,
             type,
             name,
-            imageUrl,
+            image,
             dto.Price,
             characteristics,
             sheath,
-            modelUrl,
+            model,
            dto.IsActive 
         );
     }

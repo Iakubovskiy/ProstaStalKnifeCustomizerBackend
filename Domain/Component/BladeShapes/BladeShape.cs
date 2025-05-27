@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Domain.Component.Translation;
+using Domain.Translation;
 using Microsoft.AspNetCore.Mvc.ModelBinding; 
 using Domain.Component.BladeShapes.BladeCharacteristic;
 using Domain.Component.BladeShapes.Validators;
 using Domain.Component.BladeShapeTypes;
 using Domain.Component.Sheaths;
+using Domain.Files;
 
 namespace Domain.Component.BladeShapes; 
 
@@ -21,26 +22,26 @@ public class BladeShape : IEntity, IComponent, IUpdatable<BladeShape>
         Guid id,
         BladeShapeType type,
         Translations name,
-        string? bladeShapePhotoUrl,
+        FileEntity? bladeShapePhoto,
         double price,
         BladeCharacteristics bladeCharacteristics,
         Sheath? sheath,
-        string bladeShapeModelUrl,
+        FileEntity bladeShapeModel,
         bool isActive
     )
     {
         this.Id = id;
         BladeShapeValidator.Validate(
-            bladeShapePhotoUrl, 
+            bladeShapePhoto, 
             price,
-            bladeShapeModelUrl
+            bladeShapeModel
         );
         this.Type = type;
         this.Name = name;
-        this.BladeShapePhotoUrl = bladeShapePhotoUrl;
+        this.BladeShapePhoto = bladeShapePhoto;
         this.Price = price;
         this.BladeCharacteristics = bladeCharacteristics;
-        this.BladeShapeModelUrl = bladeShapeModelUrl;
+        this.BladeShapeModel = bladeShapeModel;
         this.IsActive = isActive;
         this.Sheath = sheath;
     }
@@ -52,12 +53,12 @@ public class BladeShape : IEntity, IComponent, IUpdatable<BladeShape>
     public Translations Name { get; private set; }
 
     [MaxLength(UrlMaxLength)]
-    public string? BladeShapePhotoUrl { get; private set; }
+    public FileEntity? BladeShapePhoto { get; private set; }
     public double Price { get; private set; }
     public BladeCharacteristics BladeCharacteristics { get; private set; }
 
     [MaxLength(UrlMaxLength)]
-    public string BladeShapeModelUrl { get; private set; }
+    public FileEntity BladeShapeModel { get; private set; }
     public bool IsActive { get; private set; } 
     public Sheath? Sheath { get; private set; } 
 
@@ -69,16 +70,16 @@ public class BladeShape : IEntity, IComponent, IUpdatable<BladeShape>
     public void Update(BladeShape bladeShape)
     {
         BladeShapeValidator.Validate(
-            bladeShape.BladeShapePhotoUrl, 
+            bladeShape.BladeShapePhoto, 
             bladeShape.Price, 
-            bladeShape.BladeShapeModelUrl
+            bladeShape.BladeShapeModel
         );
         this.Type = bladeShape.Type;
         this.Name = bladeShape.Name;
-        this.BladeShapePhotoUrl = bladeShape.BladeShapePhotoUrl;
+        this.BladeShapePhoto = bladeShape.BladeShapePhoto;
         this.Price = bladeShape.Price;
         this.BladeCharacteristics = bladeShape.BladeCharacteristics;
-        this.BladeShapeModelUrl = bladeShape.BladeShapeModelUrl;
+        this.BladeShapeModel = bladeShape.BladeShapeModel;
         this.IsActive = bladeShape.IsActive;
     }
 

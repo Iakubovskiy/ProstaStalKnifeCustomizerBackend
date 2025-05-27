@@ -2,7 +2,8 @@ using Domain.Component.Engravings;
 using Domain.Component.Product.Attachments;
 using Domain.Component.Sheaths;
 using Domain.Component.Sheaths.Color;
-using Domain.Component.Translation;
+using Domain.Files;
+using Domain.Translation;
 
 namespace Domain.Component.Product.CompletedSheath;
 
@@ -16,7 +17,7 @@ public class CompletedSheath : Product, IUpdatable<CompletedSheath>
     public CompletedSheath(
         Guid id,
         bool isActive,
-        string imageUrl,
+        FileEntity image,
         Translations name,
         Translations title,
         Translations description,
@@ -30,7 +31,7 @@ public class CompletedSheath : Product, IUpdatable<CompletedSheath>
     ) : base(
         id, 
         isActive, 
-        imageUrl, 
+        image, 
         name, 
         title, 
         description, 

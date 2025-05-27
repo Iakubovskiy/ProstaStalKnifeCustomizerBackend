@@ -16,15 +16,15 @@ public class BladeShapeController : ControllerBase
     private readonly IComponentRepository<BladeShape> _bladeShapeRepository;
     private readonly IActivate<BladeShape> _activateService;
     private readonly IDeactivate<BladeShape> _deactivateService;
-    private readonly ICreateSimpleComponent<BladeShape, BladeShapeDto> _bladeCoatingColorCreateService;
-    private readonly IUpdateComponent<BladeShape, BladeShapeDto> _bladeCoatingColorUpdateService;
+    private readonly ICreateService<BladeShape, BladeShapeDto> _bladeCoatingColorCreateService;
+    private readonly IUpdateService<BladeShape, BladeShapeDto> _bladeCoatingColorUpdateService;
 
     public BladeShapeController(
         IComponentRepository<BladeShape> bladeShapeRepository, 
         IActivate<BladeShape> activateService,
         IDeactivate<BladeShape> deactivateService,
-        ICreateSimpleComponent<BladeShape, BladeShapeDto> bladeShapeCreateService,
-        IUpdateComponent<BladeShape, BladeShapeDto> bladeShapeUpdateService
+        ICreateService<BladeShape, BladeShapeDto> bladeShapeCreateService,
+        IUpdateService<BladeShape, BladeShapeDto> bladeShapeUpdateService
     )
     {
         this._bladeShapeRepository = bladeShapeRepository;
@@ -54,7 +54,7 @@ public class BladeShapeController : ControllerBase
 
     [HttpPost]
     public async Task<IActionResult> CreateBladeShape(
-        [FromForm] BladeShapeDto newShape
+        [FromBody] BladeShapeDto newShape
     )
     {
         return Ok(
@@ -66,7 +66,7 @@ public class BladeShapeController : ControllerBase
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdateBladeShape(
         Guid id, 
-        [FromForm] BladeShapeDto newShape
+        [FromBody] BladeShapeDto newShape
     )
     {
         return Ok(

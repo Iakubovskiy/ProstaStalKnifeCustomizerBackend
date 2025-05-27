@@ -11,7 +11,7 @@ using Domain.Component.Sheaths;
 using Domain.Component.Sheaths.Color;
 using Domain.Component.Textures;
 using Domain.Order;
-using Domain.Order.Suppport;
+using Domain.Order.Support;
 using Domain.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -137,9 +137,9 @@ namespace Infrastructure.Data
             
             modelBuilder.Entity<Handle>(entity =>
             {
-                entity.OwnsOne(handle => handle.Name, name =>
+                entity.OwnsOne(handle => handle.Color, color =>
                 {
-                    name.Property(t => t.TranslationDictionary)
+                    color.Property(t => t.TranslationDictionary)
                         .HasConversion(
                             v => JsonConvert.SerializeObject(v),
                             v => JsonConvert.DeserializeObject<Dictionary<string, string>>(v) 
@@ -177,6 +177,16 @@ namespace Infrastructure.Data
             modelBuilder.Entity<SheathColor>(entity =>
             {
                 entity.OwnsOne(sheathColor => sheathColor.Color, color =>
+                {
+                    color.Property(t => t.TranslationDictionary)
+                        .HasConversion(
+                            v => JsonConvert.SerializeObject(v),
+                            v => JsonConvert.DeserializeObject<Dictionary<string, string>>(v) 
+                                 ?? new Dictionary<string, string>()
+                        )
+                        .HasColumnType("jsonb");
+                });
+                entity.OwnsOne(sheathColor => sheathColor.Material, color =>
                 {
                     color.Property(t => t.TranslationDictionary)
                         .HasConversion(

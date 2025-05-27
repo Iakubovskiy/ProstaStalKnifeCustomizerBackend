@@ -1,0 +1,58 @@
+using Domain.Component.Handles;
+using Domain.Component.Textures;
+using Domain.Files;
+using Domain.Translation;
+using Infrastructure;
+
+namespace Application.Components.TexturedComponents.Data.Dto.HandleColors;
+
+public class HandleColorDtoMapper : ITexturedComponentDtoMapper<Handle, HandleColorDto>
+{
+    private readonly IRepository<FileEntity> _fileRepository;
+    private readonly IRepository<Texture> _textureRepository;
+    
+    public HandleColorDtoMapper(
+        IRepository<FileEntity> fileRepository,
+        IRepository<Texture> textureRepository
+    )
+    {
+        this._fileRepository = fileRepository;
+        this._textureRepository = textureRepository;
+    }
+    public async Task<Handle> Map(HandleColorDto dto, Texture? texture)
+    {
+        Guid id = Guid.NewGuid();
+        Translations material = new Translations(dto.Material);
+        Translations color = new Translations(dto.Color);
+        FileEntity? colorMap = null;
+        FileEntity? handleModel = null;
+        Texture? textureEntity = null;
+
+        if (dto.TextureId.HasValue)
+        {
+            textureEntity = await this._textureRepository.GetById(dto.TextureId.Value);
+        }
+
+        if (dto.ColorMapId is not null)
+        {
+            colorMap = await this._fileRepository.GetById(dto.ColorMapId.Value);
+        }
+
+        if (dto.HandleModelId is not null)
+        {
+            handleModel = await this._fileRepository.GetById(dto.HandleModelId.Value);
+        }
+
+        return new Handle(
+            id,
+            color,
+            dto.ColorCode,
+            dto.IsActive,
+            material,
+            textureEntity,
+            colorMap,
+            dto.Price,
+            handleModel
+        );
+    }
+}

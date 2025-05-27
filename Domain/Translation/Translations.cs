@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace Domain.Component.Translation;
+namespace Domain.Translation;
 
 [Owned]
 public class Translations : ITranslatable

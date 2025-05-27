@@ -1,8 +1,8 @@
-using System.Data.Entity.Core;
 using Application.Files;
 using Domain.Component.BladeCoatingColors;
 using Domain.Component.Textures;
-using Domain.Component.Translation;
+using Domain.Files;
+using Domain.Translation;
 using Infrastructure;
 using Newtonsoft.Json;
 
@@ -10,38 +10,20 @@ namespace Application.Components.TexturedComponents.Data.Dto.BladeCoatings;
 
 public class BladeCoatingMapper : ITexturedComponentDtoMapper<BladeCoatingColor, BladeCoatingDto>
 {
-    private readonly IFileService _fileService;
-    public BladeCoatingMapper(IFileService fileService)
+    private readonly IRepository<FileEntity> _fileRepository;
+    public BladeCoatingMapper(IRepository<FileEntity> fileRepository)
     {
-        this._fileService = fileService;
+        this._fileRepository = fileRepository;
     }
     public async Task<BladeCoatingColor> Map(BladeCoatingDto dto, Texture? texture)
     {
         Guid id = Guid.NewGuid();
-        Translations type;
-        Translations color;
-        string? colorMapUrl = null;
-        if (dto.ColorMap != null)
+        Translations type = new Translations(dto.Type);
+        Translations color = new Translations(dto.Color);
+        FileEntity? colorMap = null;
+        if (dto.ColorMapId is not null)
         {
-            colorMapUrl = await this._fileService.SaveFile(dto.ColorMap, dto.ColorMap.FileName);
-        }
-        try
-        {
-            type = JsonConvert.DeserializeObject<Translations>(dto.Type)
-                                ?? throw new Exception("Name is empty");
-        }
-        catch (Exception e)
-        {
-            throw new Exception("Name is not valid");
-        }
-        try
-        {
-            color = JsonConvert.DeserializeObject<Translations>(dto.Color)
-                   ?? throw new Exception("Name is empty");
-        }
-        catch (Exception e)
-        {
-            throw new Exception("Name is not valid");
+            colorMap = await this._fileRepository.GetById(dto.ColorMapId.Value);
         }
         
         return new BladeCoatingColor(
@@ -52,7 +34,7 @@ public class BladeCoatingMapper : ITexturedComponentDtoMapper<BladeCoatingColor,
                 dto.ColorCode,
                 dto.EngravingColorCode,
                 texture,
-                colorMapUrl
+                colorMap
         );
     }
 }

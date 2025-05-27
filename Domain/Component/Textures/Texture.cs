@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Domain.Files;
 
 namespace Domain.Component.Textures;
 
@@ -12,55 +13,32 @@ public class Texture: IEntity, IUpdatable<Texture>
     public Texture(
         Guid id, 
         string name,
-        string normalMapUrl, 
-        string roughnessMapUrl
+        FileEntity normalMap, 
+        FileEntity roughnessMap
     )
     {
-        if (!Uri.IsWellFormedUriString(normalMapUrl, UriKind.Absolute))
-        {
-            throw new ArgumentException("Normal map url is not valid");
-        }
-
-        if (!Uri.IsWellFormedUriString(roughnessMapUrl, UriKind.Absolute))
-        {
-            throw new ArgumentException("Roughness map url is not valid");
-        }
-
         if (string.IsNullOrWhiteSpace(name))
         {
             throw new ArgumentException("Name is required");
         }
         this.Id = id;
         this.Name = name;
-        this.NormalMapUrl = normalMapUrl;
-        this.RoughnessMapUrl = roughnessMapUrl;
+        this.NormalMap = normalMap;
+        this.RoughnessMap = roughnessMap;
     }
     
     public Guid Id { get; private set; }
     [MaxLength(255)]
     public string Name { get; private set; }
     [MaxLength(255)]
-    public string NormalMapUrl { get; private set; }
+    public FileEntity NormalMap { get; private set; }
     [MaxLength(255)]
-    public string RoughnessMapUrl { get; private set; }
+    public FileEntity RoughnessMap { get; private set; }
 
     public void Update(Texture texture)
     {
-        if (!Uri.IsWellFormedUriString(texture.NormalMapUrl, UriKind.Absolute))
-        {
-            throw new ArgumentException("Normal map url is not valid");
-        }
-        if (!Uri.IsWellFormedUriString(texture.RoughnessMapUrl, UriKind.Absolute))
-        {
-            throw new ArgumentException("Roughness map url is not valid");
-        }
-
-        if (string.IsNullOrWhiteSpace(texture.Name))
-        {
-            throw new ArgumentException("Name is required");
-        }
         this.Name = texture.Name;
-        this.NormalMapUrl = texture.NormalMapUrl;
-        this.RoughnessMapUrl = texture.RoughnessMapUrl;
+        this.NormalMap = texture.NormalMap;
+        this.RoughnessMap = texture.RoughnessMap;
     }
 }

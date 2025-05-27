@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Domain.Models;
-using Application.Services;
+﻿using Application.Orders.Support.DeliveryTypes;
+using Application.Orders.Support.DeliveryTypes.Data;
+using Microsoft.AspNetCore.Mvc;
+using Infrastructure.Orders.Support.DeliveryTypes;
 
 namespace API.Controllers;
 
@@ -8,23 +9,28 @@ namespace API.Controllers;
 [ApiController]
 public class DeliveryTypeController : ControllerBase
 {
-    private readonly DeliveryTypeService _deliveryTypeService;
+    private readonly IDeliveryTypeRepository _deliveryTypeRepository;
+    private readonly IDeliveryTypeService _deliveryTypeService;
 
-    public DeliveryTypeController(DeliveryTypeService service)
+    public DeliveryTypeController(
+        IDeliveryTypeRepository deliveryTypeRepository,
+        IDeliveryTypeService deliveryTypeService
+    )
     {
-        _deliveryTypeService = service;
+        this._deliveryTypeRepository = deliveryTypeRepository;
+        this._deliveryTypeService = deliveryTypeService;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAllDeliveryTypes()
     {
-        return Ok(await _deliveryTypeService.GetAllDeliveryTypes());
+        return Ok(await this._deliveryTypeRepository.GetAll());
     }
 
     [HttpGet("active")]
     public async Task<IActionResult> GetAllActiveDeliveryTypes()
     {
-        return Ok(await _deliveryTypeService.GetAllActiveDeliveryTypes());
+        return Ok(await this._deliveryTypeRepository.GetAllActive());
     }
 
     [HttpGet("{id:guid}")]
@@ -32,7 +38,7 @@ public class DeliveryTypeController : ControllerBase
     {
         try
         {
-            return Ok(await _deliveryTypeService.GetDeliveryTypeById(id));
+            return Ok(await this._deliveryTypeRepository.GetById(id));
         }
         catch (Exception)
         {
@@ -41,17 +47,17 @@ public class DeliveryTypeController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateDeliveryType([FromForm] DeliveryType type)
+    public async Task<IActionResult> CreateDeliveryType([FromBody] DeliveryTypeDto type)
     {
-        return Ok(await _deliveryTypeService.CreateDeliveryType(type));
+        return Ok(await this._deliveryTypeService.Create(type));
     }
 
     [HttpPut("{id:guid}")]
-    public async Task<IActionResult> UpdateDeliveryType(Guid id, [FromForm] DeliveryType type)
+    public async Task<IActionResult> UpdateDeliveryType(Guid id, [FromBody] DeliveryTypeDto type)
     {
         try
         {
-            return Ok(await _deliveryTypeService.UpdateDeliveryType(id, type));
+            return Ok(await this._deliveryTypeService.Update(id, type));
         }
         catch (Exception)
         {
@@ -64,7 +70,7 @@ public class DeliveryTypeController : ControllerBase
     {
         try
         {
-            return Ok(new { isDeleted = await _deliveryTypeService.DeleteDeliveryType(id) });
+            return Ok(new { isDeleted = await this._deliveryTypeRepository.Delete(id) });
         }
         catch (Exception)
         {
@@ -77,7 +83,8 @@ public class DeliveryTypeController : ControllerBase
     {
         try
         {
-            return Ok(await _deliveryTypeService.ChangeActive(id, false));
+            this._deliveryTypeService.DeactivateDeliveryType(id);
+            return Ok();
         }
         catch (Exception)
         {
@@ -90,7 +97,8 @@ public class DeliveryTypeController : ControllerBase
     {
         try
         {
-            return Ok(await _deliveryTypeService.ChangeActive(id, true));
+            this._deliveryTypeService.ActivateDeliveryType(id);
+            return Ok();
         }
         catch (Exception)
         {

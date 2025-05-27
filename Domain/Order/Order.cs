@@ -1,5 +1,5 @@
 using Domain.Component.Product;
-using Domain.Order.Suppport;
+using Domain.Order.Support;
 
 namespace Domain.Order;
 

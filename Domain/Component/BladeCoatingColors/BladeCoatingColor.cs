@@ -1,8 +1,8 @@
 ﻿using Domain.Component.BladeCoatingColors.Validators;
 using Domain.Component.Textures;
-using Domain.Component.Translation;
+using Domain.Files;
+using Domain.Translation;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.EntityFrameworkCore;
 
 namespace Domain.Component.BladeCoatingColors;
 
@@ -21,7 +21,7 @@ public class BladeCoatingColor : IEntity, IComponent, IUpdatable<BladeCoatingCol
         string? colorCode, 
         string engravingColorCode, 
         Texture? texture, 
-        string? colorMapUrl
+        FileEntity? colorMapUrl
     )
     {
         this.Id = id;
@@ -31,7 +31,7 @@ public class BladeCoatingColor : IEntity, IComponent, IUpdatable<BladeCoatingCol
         this.ColorCode = colorCode;
         this.EngravingColorCode = engravingColorCode;
         this.Texture = texture;
-        this.ColorMapUrl = colorMapUrl;
+        this.ColorMap = colorMapUrl;
         this.IsActive = true;
     }
     [BindNever]
@@ -43,7 +43,7 @@ public class BladeCoatingColor : IEntity, IComponent, IUpdatable<BladeCoatingCol
     public string EngravingColorCode { get; private set; }
     public bool IsActive { get; private set; }
     public Texture? Texture { get; private set; }
-    public string? ColorMapUrl { get; private set; }
+    public FileEntity? ColorMap { get; private set; }
 
     public double GetPrice(double exchangerRate)
     {
@@ -60,7 +60,7 @@ public class BladeCoatingColor : IEntity, IComponent, IUpdatable<BladeCoatingCol
             bladeCoatingColor.Price, 
             bladeCoatingColor.ColorCode, 
             bladeCoatingColor.EngravingColorCode, 
-            bladeCoatingColor.ColorMapUrl
+            bladeCoatingColor.ColorMap
         );
         
         this.Type = bladeCoatingColor.Type;
@@ -69,7 +69,7 @@ public class BladeCoatingColor : IEntity, IComponent, IUpdatable<BladeCoatingCol
         this.ColorCode = bladeCoatingColor.ColorCode;
         this.EngravingColorCode = bladeCoatingColor.EngravingColorCode;
         this.Texture = bladeCoatingColor.Texture;
-        this.ColorMapUrl = bladeCoatingColor.ColorMapUrl;
+        this.ColorMap = bladeCoatingColor.ColorMap;
         this.IsActive = bladeCoatingColor.IsActive;
     }
     

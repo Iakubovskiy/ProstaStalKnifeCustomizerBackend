@@ -2,8 +2,9 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Domain.Component.Engravings.Parameters;
 using Domain.Component.Engravings.Support;
-using Domain.Component.Translation;
+using Domain.Translation;
 using Domain.Component.Engravings.Validators;
+using Domain.Files;
 
 namespace Domain.Component.Engravings;
 
@@ -20,7 +21,7 @@ public class Engraving : IEntity, IComponent, IUpdatable<Engraving>
         int side, 
         string? text, 
         string? font, 
-        string? pictureUrl,
+        FileEntity? picture,
         EngravingPosition engravingPosition, 
         EngravingRotation engravingRotation, 
         EngravingScale engravingScale,
@@ -30,13 +31,13 @@ public class Engraving : IEntity, IComponent, IUpdatable<Engraving>
         bool isActive
     )
     {
-        EngravingVlaidator.Validate(side, text, font, pictureUrl);
+        EngravingVlaidator.Validate(side, text, font, picture);
         this.Id = id;
         this.Name = name;
         this.Side = side;
         this.Text = text;
         this.Font = font;
-        this.PictureUrl = pictureUrl;
+        this.Picture = picture;
         this.EngravingPosition = engravingPosition;
         this.EngravingRotation = engravingRotation;
         this.EngravingScale = engravingScale;
@@ -51,9 +52,11 @@ public class Engraving : IEntity, IComponent, IUpdatable<Engraving>
     public Translations Name { get; private set; }
     [Required]
     public int Side { get; private set; }
+    [MaxLength(255)]
     public string? Text { get; private set; }
+    [MaxLength(100)]
     public string? Font { get; private set; }
-    public string? PictureUrl { get; private set; }
+    public FileEntity? Picture { get; private set; }
     [Required]
     public EngravingPosition EngravingPosition { get; private set; }
     [Required]
@@ -81,13 +84,13 @@ public class Engraving : IEntity, IComponent, IUpdatable<Engraving>
             engraving.Side, 
             engraving.Text, 
             engraving.Font, 
-            engraving.PictureUrl
+            engraving.Picture
         );
         
         this.Side = engraving.Side;
         this.Text = engraving.Text;
         this.Font = engraving.Font;
-        this.PictureUrl = engraving.PictureUrl;
+        this.Picture = engraving.Picture;
         this.EngravingPosition = engraving.EngravingPosition;
         this.EngravingRotation = engraving.EngravingRotation;
         this.EngravingScale = engraving.EngravingScale;

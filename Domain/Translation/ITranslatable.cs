@@ -1,4 +1,4 @@
-namespace Domain.Component.Translation;
+namespace Domain.Translation;
 
 public interface ITranslatable
 {

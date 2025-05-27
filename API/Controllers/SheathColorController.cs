@@ -1,6 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Domain.Models;
-using Application.Services;
+﻿using Application.Components.ComponentsWithType.SheathColors;
+using Application.Components.ComponentsWithType.SheathColors.Activate;
+using Application.Components.ComponentsWithType.UseCases.Create;
+using Application.Components.ComponentsWithType.UseCases.Deactivate;
+using Application.Components.ComponentsWithType.UseCases.Update;
+using Microsoft.AspNetCore.Mvc;
+using Domain.Component.Sheaths.Color;
+using Infrastructure.Components;
+using Infrastructure.Components.Sheaths.Color;
 
 namespace API.Controllers;
 
@@ -8,23 +14,37 @@ namespace API.Controllers;
 [ApiController]
 public class SheathColorController : ControllerBase
 {
-    private readonly SheathColorService _sheathColorService;
+    private readonly ISheathColorRepository _sheathColorRepository;
+    private readonly ICreateTypeDependencyComponentService<SheathColor, SheathColorDto> _sheathColorCreateService;
+    private readonly IUpdateTypeDependencyComponentService<SheathColor, SheathColorDto> _sheathColorUpdateService;
+    private readonly IActivateSheathColorService _activateSheathColorService;
+    private readonly IDeactivateSheathColorService _deactivateSheathColorService;
 
-    public SheathColorController(SheathColorService service)
+    public SheathColorController(
+        ISheathColorRepository sheathColorRepository,
+        ICreateTypeDependencyComponentService<SheathColor, SheathColorDto> sheathColorCreateService,
+        IUpdateTypeDependencyComponentService<SheathColor, SheathColorDto> sheathColorUpdateService,
+        IActivateSheathColorService activateSheathColorService,
+        IDeactivateSheathColorService deactivateSheathColorService
+    )
     {
-        _sheathColorService = service;
+        this._sheathColorRepository = sheathColorRepository;
+        this._sheathColorCreateService = sheathColorCreateService;
+        this._sheathColorUpdateService = sheathColorUpdateService;
+        this._activateSheathColorService = activateSheathColorService;
+        this._deactivateSheathColorService = deactivateSheathColorService;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAllSheathColors()
     {
-        return Ok(await _sheathColorService.GetAllSheathColors());
+        return Ok(await this._sheathColorRepository.GetAll());
     }
 
     [HttpGet("active")]
     public async Task<IActionResult> GetAllActiveSheathColors()
     {
-        return Ok(await _sheathColorService.GetAllActiveSheathColors());
+        return Ok(await this._sheathColorRepository.GetAllActive());
     }
 
     [HttpGet("{id:guid}")]
@@ -32,7 +52,7 @@ public class SheathColorController : ControllerBase
     {
         try
         {
-            return Ok(await _sheathColorService.GetSheathColorById(id));
+            return Ok(await this._sheathColorRepository.GetById(id));
         }
         catch (Exception)
         {
@@ -42,32 +62,23 @@ public class SheathColorController : ControllerBase
 
     [HttpPost]
     public async Task<IActionResult> CreateSheathColor(
-        [FromForm] SheathColor newColor,
-        IFormFile? colorMap,
-        IFormFile? normalMap,
-        IFormFile? roughnessMap
+        [FromBody] SheathColorDto newColor
     )
     {
-        return Ok(await _sheathColorService.CreateSheathColor(
-            newColor, 
-            colorMap,
-            normalMap,
-            roughnessMap
+        return Ok(await this._sheathColorCreateService.Create(
+            newColor
         ));
     }
 
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdateSheathColor(
         Guid id, 
-        [FromForm] SheathColor updatedColor,
-        IFormFile? colorMap,
-        IFormFile? normalMap,
-        IFormFile? roughnessMap
+        [FromBody] SheathColorDto updatedColor
     )
     {
         try
         {
-            return Ok(await _sheathColorService.UpdateSheathColor(id, updatedColor, colorMap,normalMap,roughnessMap));
+            return Ok(await this._sheathColorUpdateService.Update(id, updatedColor));
         }
         catch (Exception)
         {
@@ -80,7 +91,7 @@ public class SheathColorController : ControllerBase
     {
         try
         {
-            return Ok(new { isDeleted = await _sheathColorService.DeleteSheathColor(id) });
+            return Ok(new { isDeleted = await this._sheathColorRepository.Delete(id) });
         }
         catch (Exception)
         {
@@ -93,7 +104,8 @@ public class SheathColorController : ControllerBase
     {
         try
         {
-            return Ok(await _sheathColorService.ChangeActive(id, false));
+            this._deactivateSheathColorService.Deactivate(id);
+            return Ok();
         }
         catch (Exception)
         {
@@ -106,7 +118,8 @@ public class SheathColorController : ControllerBase
     {
         try
         {
-            return Ok(await _sheathColorService.ChangeActive(id, true));
+            this._activateSheathColorService.Activate(id);
+            return Ok();
         }
         catch (Exception)
         {

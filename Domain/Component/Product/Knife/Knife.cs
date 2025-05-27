@@ -1,11 +1,12 @@
 using Domain.Component.BladeCoatingColors;
-using Domain.Component.Translation;
+using Domain.Translation;
 using Domain.Component.BladeShapes;
 using Domain.Component.Engravings;
 using Domain.Component.Handles;
 using Domain.Component.Product.Attachments;
 using Domain.Component.Sheaths;
 using Domain.Component.Sheaths.Color;
+using Domain.Files;
 
 namespace Domain.Component.Product.Knife;
 
@@ -19,7 +20,7 @@ public class Knife : Product, IUpdatable<Knife>
     public Knife(
         Guid id,
         bool isActive,
-        string imageUrl,
+        FileEntity image,
         Translations name,
         Translations title,
         Translations description,
@@ -36,7 +37,7 @@ public class Knife : Product, IUpdatable<Knife>
     ) : base(
         id, 
         isActive, 
-        imageUrl, 
+        image, 
         name, 
         title, 
         description, 

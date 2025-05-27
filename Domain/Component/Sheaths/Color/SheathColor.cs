@@ -1,7 +1,9 @@
-﻿using Domain.Component.BladeShapeTypes;
+﻿using System.ComponentModel.DataAnnotations;
+using Domain.Component.BladeShapeTypes;
 using Domain.Component.Sheaths.Color.Validators;
 using Domain.Component.Textures;
-using Domain.Component.Translation;
+using Domain.Files;
+using Domain.Translation;
 
 namespace Domain.Component.Sheaths.Color;
 
@@ -16,14 +18,15 @@ public class SheathColor : IEntity, IComponentWithTypeDependency, IUpdatable<She
         Guid id, 
         Translations color, 
         bool isActive,
+        string? colorCode,
         List<SheathColorPriceByType> prices,
-        string material, 
+        Translations material, 
         string engravingColorCode, 
         Texture? texture, 
-        string? colorMapUrl
+        FileEntity? colorMap
     )
     {
-        SheathColorValidator.Validate(prices, material, engravingColorCode, colorMapUrl);
+        SheathColorValidator.Validate(prices, material, engravingColorCode);
         this.Id = id;
         this.Color = color;
         this.IsActive = isActive;
@@ -31,16 +34,21 @@ public class SheathColor : IEntity, IComponentWithTypeDependency, IUpdatable<She
         this.EngravingColorCode = engravingColorCode;
         this.Texture = texture;
         this.Prices = prices;
-        this.ColorMapUrl = colorMapUrl;
+        this.ColorMap = colorMap;
+        this.ColorCode = colorCode;
     }
     
     public Guid Id { get; private set;}
     public Translations Color { get; private set; }
     public bool IsActive { get; private set; }
-    public string Material { get; private set; }
+    [MaxLength(10)]
+    public string? ColorCode { get; private set; }
+    public Translations Material { get; private set; }
+    [MaxLength(10)]
     public string EngravingColorCode { get; private set; }
     public Texture? Texture { get; private set; }
-    public string? ColorMapUrl { get; private set; }
+    [MaxLength(255)]
+    public FileEntity? ColorMap { get; private set; }
     public List<SheathColorPriceByType> Prices { get; private set; }
 
     public double GetPrice(BladeShapeType type, double exchangerRate)
@@ -50,14 +58,15 @@ public class SheathColor : IEntity, IComponentWithTypeDependency, IUpdatable<She
     
     public void Update(SheathColor sheathColor)
     {
-        SheathColorValidator.Validate(sheathColor.Prices, sheathColor.Material, sheathColor.EngravingColorCode, sheathColor.ColorMapUrl);
+        SheathColorValidator.Validate(sheathColor.Prices, sheathColor.Material, sheathColor.EngravingColorCode);
         this.Color = sheathColor.Color;
         this.IsActive = sheathColor.IsActive;
         this.Material = sheathColor.Material;
         this.EngravingColorCode = sheathColor.EngravingColorCode;
         this.Texture = sheathColor.Texture;
-        this.ColorMapUrl = sheathColor.ColorMapUrl;
+        this.ColorMap = sheathColor.ColorMap;
         this.Prices = sheathColor.Prices;
+        this.ColorCode = sheathColor.ColorCode;
     }
 
     public void Activate()

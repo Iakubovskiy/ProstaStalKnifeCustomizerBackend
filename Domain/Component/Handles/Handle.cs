@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Domain.Component.Handles.Validators;
 using Domain.Component.Textures;
-using Domain.Component.Translation;
+using Domain.Files;
+using Domain.Translation;
 
 namespace Domain.Component.Handles;
 
@@ -14,40 +15,40 @@ public class Handle : IComponent, IEntity, IUpdatable<Handle>, ITextured
 
     public Handle(
         Guid id, 
-        Translations name, 
+        Translations color, 
         string? colorCode, 
         bool isActive, 
         Translations material,
         Texture? texture,
-        string? colorMapUrl,
+        FileEntity? colorMap,
         double price,
-        string? handleModelUrl
+        FileEntity? handleModel
     )
     {
-        HandleValidator.Validate(colorCode, colorMapUrl);
+        HandleValidator.Validate(colorCode, colorMap);
         this.Id = id;
-        this.Name = name;
+        this.Color = color;
         this.ColorCode = colorCode;
         this.IsActive = isActive;
         this.Material = material;
         this.Texture = texture;
-        this.ColorMapUrl = colorMapUrl;
+        this.ColorMap = colorMap;
         this.Price = price;
-        this.HandleModelUrl = handleModelUrl;
+        this.HandleModel = handleModel;
     }
 
     public Guid Id { get; private set; }
-    public Translations Name { get; private set; }
+    public Translations Color { get; private set; }
     [MaxLength(255)]
     public string? ColorCode { get; private set; }
     public bool IsActive { get; set; }
     public Translations Material { get; private set; }
     public Texture? Texture { get; private set; }
     [MaxLength(255)]
-    public string? ColorMapUrl { get; private set; }
+    public FileEntity? ColorMap { get; private set; }
     public double Price { get; private set; }
     
-    public string? HandleModelUrl { get; private set; }
+    public FileEntity? HandleModel { get; private set; }
     
     public double GetPrice(double exchangerRate)
     {
@@ -56,13 +57,13 @@ public class Handle : IComponent, IEntity, IUpdatable<Handle>, ITextured
 
     public void Update(Handle handle)
     {
-        HandleValidator.Validate(handle.ColorCode, handle.ColorMapUrl);
-        this.Name = handle.Name;
+        HandleValidator.Validate(handle.ColorCode, handle.ColorMap);
+        this.Color = handle.Color;
         this.ColorCode = handle.ColorCode;
         this.IsActive = handle.IsActive;
         this.Material = handle.Material;
         this.Texture = handle.Texture;
-        this.ColorMapUrl = handle.ColorMapUrl;
+        this.ColorMap = handle.ColorMap;
         this.Price = handle.Price;
     }
 
