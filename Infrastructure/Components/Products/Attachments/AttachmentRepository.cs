@@ -3,7 +3,7 @@ using Domain.Component.Product.Attachments;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Components.Products;
+namespace Infrastructure.Components.Products.Attachments;
 
 public class AttachmentRepository : ComponentRepository<Attachment>
 {

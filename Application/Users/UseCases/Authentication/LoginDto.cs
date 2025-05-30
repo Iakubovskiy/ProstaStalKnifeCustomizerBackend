@@ -1,6 +1,6 @@
-﻿namespace Application.Users.Authentication.Models
+﻿namespace Application.Users.UseCases.Authentication
 {
-    public class LoginDTO
+    public class LoginDto
     {
         public string Username { get; set; }
         public string Password { get; set; }

@@ -38,6 +38,7 @@ namespace Infrastructure.Data
         public DbSet<SheathColor> SheathColors { get; set; }
         public DbSet<Texture> Textures { get; set; }
         public DbSet<Attachment> Attachments { get; set; }
+        public DbSet<AttachmentType> AttachmentTypes { get; set; }
         
         public DbSet<Knife> Knives { get; set; }
         public DbSet<DeliveryType> DeliveryTypes { get; set; }
@@ -311,6 +312,20 @@ namespace Infrastructure.Data
                 entity.OwnsOne(attachment => attachment.Material, material =>
                 {
                     material.Property(t => t.TranslationDictionary)
+                        .HasConversion(
+                            v => JsonConvert.SerializeObject(v),
+                            v => JsonConvert.DeserializeObject<Dictionary<string, string>>(v) 
+                                 ?? new Dictionary<string, string>()
+                        )
+                        .HasColumnType("jsonb");
+                });
+            });
+            
+            modelBuilder.Entity<AttachmentType>(entity =>
+            {
+                entity.OwnsOne(type => type.Name, name =>
+                {
+                    name.Property(t => t.TranslationDictionary)
                         .HasConversion(
                             v => JsonConvert.SerializeObject(v),
                             v => JsonConvert.DeserializeObject<Dictionary<string, string>>(v) 

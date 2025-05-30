@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
-using Domain.Models;
-using Application.Services;
-using API.DTO;
+using Application.Components.Products.Knives;
+using Application.Components.Products.UseCases.Activate;
+using Application.Components.Products.UseCases.Create;
+using Application.Components.Products.UseCases.Deactivate;
+using Application.Components.Products.UseCases.Update;
+using Domain.Component.Product.Knife;
+using Infrastructure.Components;
 
 namespace API.Controllers;
 
@@ -10,44 +13,37 @@ namespace API.Controllers;
 [ApiController]
 public class KnifeController : ControllerBase
 {
-    private readonly KnifeService _knifeService;
-    private readonly BladeCoatingColorService _bladeCoatingColorService;
-    private readonly SheathColorService _sheathService;
-    private readonly HandleColorService _handleColorService;
-    private readonly BladeShapeService _bladeShapeService;
-    private readonly FasteningService _fasteningService;
-    private readonly EngravingService _engravingService;
+    private readonly ICreateProductService<Knife, KnifeDto> _createKnifeService;
+    private readonly IUpdateProductService<Knife, KnifeDto> _updateProductService;
+    private readonly IComponentRepository<Knife> _knifeRepository;
+    private readonly IActivateProduct<Knife> _activateProductService;
+    private readonly IDeactivateProduct<Knife> _deactivateProductService;
 
     public KnifeController(
-        KnifeService service,
-        BladeCoatingColorService bladeCoatingColorService,
-        SheathColorService sheathColorService,
-        HandleColorService handleColorService,
-        BladeShapeService bladeShapeService,
-        FasteningService fasteningService,
-        EngravingService engravingService
+        ICreateProductService<Knife, KnifeDto> createProductService,
+        IUpdateProductService<Knife, KnifeDto> updateProductService,
+        IComponentRepository<Knife> knifeRepository,
+        IActivateProduct<Knife> activateProductService,
+        IDeactivateProduct<Knife> deactivateProductService
     )
     {
-        _knifeService = service;
-        _bladeCoatingColorService = bladeCoatingColorService;
-        _bladeShapeService = bladeShapeService;
-        _engravingService = engravingService;
-        _fasteningService = fasteningService;
-        _handleColorService = handleColorService;
-        _sheathService = sheathColorService;
-
+        this._createKnifeService = createProductService;
+        this._updateProductService = updateProductService;
+        this._knifeRepository = knifeRepository;
+        this._activateProductService = activateProductService;
+        this._deactivateProductService = deactivateProductService;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAllKnifes()
     {
-        return Ok(await _knifeService.GetAllKnives());
+        return Ok(await this._knifeRepository.GetAll());
     }
 
     [HttpGet("active")]
     public async Task<IActionResult> GetAllActiveKnifes()
     {
-        return Ok(await _knifeService.GetAllActiveKnives());
+        return Ok(await this._knifeRepository.GetAllActive());
     }
 
     [HttpGet("{id:guid}")]
@@ -55,71 +51,32 @@ public class KnifeController : ControllerBase
     {
         try
         {
-            return Ok(await _knifeService.GetKnifeById(id));
+            return Ok(await this._knifeRepository.GetById(id));
         }
         catch (Exception)
         {
-            return BadRequest("Can't find knife");
+            return NotFound("Can't find knife");
         }
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateKnife([FromForm] KnifeDTO knife)
+    public async Task<IActionResult> CreateKnife([FromBody] KnifeDto knife)
     {
-        var engravings = !string.IsNullOrEmpty(knife.EngravingsJson)
-            ? (JsonSerializer.Deserialize<List<Guid>>(knife.EngravingsJson) ??
-               throw new NullReferenceException("EngravingsJson")) 
-            .Select(id => _engravingService.GetEngravingById(id).Result)
-            .ToList()
-            : new List<Engraving>();
-        var newKnife = new Knife
-        {
-            Shape = await _bladeShapeService.GetBladeShapeById(knife.ShapeId),
-            BladeCoatingColor = await _bladeCoatingColorService.GetBladeCoatingColorById(knife.BladeCoatingColorId),
-            HandleColor = await _handleColorService.GetHandleColorById(knife.HandleColorId),
-            SheathColor = await _sheathService.GetSheathColorById(knife.SheathColorId),
-            Engravings = engravings,
-        };
-        if (knife.FasteningId != null && knife.FasteningId != Guid.Empty)
-        {
-            newKnife.Fastening = await _fasteningService.GetFasteningById(knife.FasteningId.Value);
-        }
-        return Ok(await _knifeService.CreateKnife(newKnife));
+        return Ok(await this._createKnifeService.Create(knife));
     }
 
     [HttpPut("{id:guid}")]
-    public async Task<IActionResult> UpdateKnife(Guid id, [FromForm] KnifeDTO knifeDto)
+    public async Task<IActionResult> UpdateKnife(Guid id, [FromBody] KnifeDto knifeDto)
     {
-        var engravings = !string.IsNullOrEmpty(knifeDto.EngravingsJson)
-            ? (JsonSerializer.Deserialize<List<Guid>>(knifeDto.EngravingsJson) ?? 
-               throw new NullReferenceException("EngravingsJson"))
-            .Select(engravingId => _engravingService.GetEngravingById(engravingId).Result)
-            .ToList()
-            : new List<Engraving>();
-
-        var knife = new Knife
-        {
-            Id = id,
-            Shape = await _bladeShapeService.GetBladeShapeById(knifeDto.ShapeId),
-            BladeCoatingColor = await _bladeCoatingColorService.GetBladeCoatingColorById(knifeDto.BladeCoatingColorId),
-            HandleColor = await _handleColorService.GetHandleColorById(knifeDto.HandleColorId),
-            SheathColor = await _sheathService.GetSheathColorById(knifeDto.SheathColorId),
-            Engravings = engravings,
-        };
-        if (knifeDto.FasteningId != null && knifeDto.FasteningId != Guid.Empty)
-        {
-            knife.Fastening = await _fasteningService.GetFasteningById(knifeDto.FasteningId.Value);
-        }
-
         try
         {
-            var updatedKnife = await _knifeService.UpdateKnife(id, knife);
+            var updatedKnife = await this._updateProductService.Update(id, knifeDto);
 
             return Ok(updatedKnife);
         }
         catch (Exception)
         {
-            return BadRequest("Can't find knife");
+            return NotFound("Can't find knife");
         }
     }
 
@@ -128,15 +85,15 @@ public class KnifeController : ControllerBase
     {
         try
         {
-            return Ok(new { isDeleted = await _knifeService.DeleteKnife(id) });
+            return Ok(new { isDeleted = await this._knifeRepository.Delete(id) });
         }
         catch (Exception)
         {
-            return BadRequest("Can't find knife");
+            return NotFound("Can't find knife");
         }
     }
 
-    [HttpGet("price/{id:guid}")]
+    /*[HttpGet("price/{id:guid}")]
     public async Task<IActionResult> GetKnifePrice(Guid id)
     {
         try
@@ -147,18 +104,19 @@ public class KnifeController : ControllerBase
         {
             return BadRequest("Can't find knife");
         }
-    }
+    }*/
 
     [HttpPatch("deactivate/{id:guid}")]
     public async Task<IActionResult> Deactivate(Guid id)
     {
         try
         {
-            return Ok(await _knifeService.ChangeActive(id, false));
+            this._deactivateProductService.Deactivate(id);
+            return Ok();
         }
         catch (Exception)
         {
-            return BadRequest("Can't find knife");
+            return NotFound("Can't find knife");
         }
     }
 
@@ -167,11 +125,12 @@ public class KnifeController : ControllerBase
     {
         try
         {
-            return Ok(await _knifeService.ChangeActive(id, true));
+            this._activateProductService.Activate(id);
+            return Ok();
         }
         catch (Exception)
         {
-            return BadRequest("Can't find knife");
+            return NotFound("Can't find knife");
         }
     }
 }

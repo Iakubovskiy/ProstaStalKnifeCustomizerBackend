@@ -24,7 +24,7 @@ public class Attachment : Product, IUpdatable<Attachment>
         Translations color, 
         double price, 
         Translations material,
-        string modelUrl
+        FileEntity model
     ) : base(
         id, 
         isActive, 
@@ -37,7 +37,7 @@ public class Attachment : Product, IUpdatable<Attachment>
         tags
     )
     {
-        if (string.IsNullOrWhiteSpace(modelUrl) || !Uri.IsWellFormedUriString(modelUrl, UriKind.Absolute))
+        if (string.IsNullOrWhiteSpace(model.FileUrl) || !Uri.IsWellFormedUriString(model.FileUrl, UriKind.Absolute))
         {
             throw new ArgumentException("Invalid attachment model URL or it's empty");
         }
@@ -50,14 +50,14 @@ public class Attachment : Product, IUpdatable<Attachment>
         this.Color = color;
         this.Price = price;
         this.Material = material;
-        this.ModelUrl = modelUrl;
+        this.Model = model;
     }
     
     public AttachmentType Type { get; private set; }
     public Translations Color { get; private set; }
     public double Price { get; private set; }
     public Translations Material { get; private set; }
-    public string ModelUrl { get; private set; }
+    public FileEntity Model { get; private set; }
     
     public override double GetPrice(double exchangerRate)
     {
@@ -66,7 +66,7 @@ public class Attachment : Product, IUpdatable<Attachment>
 
     public void Update(Attachment attachment)
     {
-        if (string.IsNullOrWhiteSpace(attachment.ModelUrl) || !Uri.IsWellFormedUriString(attachment.ModelUrl, UriKind.Absolute))
+        if (string.IsNullOrWhiteSpace(attachment.Model.FileUrl) || !Uri.IsWellFormedUriString(attachment.Model.FileUrl, UriKind.Absolute))
         {
             throw new ArgumentException("Invalid attachment model URL or it's empty");
         }
@@ -80,6 +80,6 @@ public class Attachment : Product, IUpdatable<Attachment>
         this.Color = attachment.Color;
         this.Price = attachment.Price;
         this.Material = attachment.Material;
-        this.ModelUrl = attachment.ModelUrl;
+        this.Model = attachment.Model;
     }
 }

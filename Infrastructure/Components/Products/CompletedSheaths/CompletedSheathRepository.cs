@@ -4,7 +4,7 @@ using Domain.Component.Product.Knife;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Components.Products;
+namespace Infrastructure.Components.Products.CompletedSheaths;
 
 public class CompletedSheathRepository : ComponentRepository<CompletedSheath>
 {

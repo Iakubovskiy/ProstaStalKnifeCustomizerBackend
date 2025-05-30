@@ -3,13 +3,12 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Application.Users.Authentication.Models;
 using Microsoft.Extensions.Configuration;
 using Domain.Users;
 
-namespace Application.Users.Authentication
+namespace Application.Users.UseCases.Authentication
 {
-    public class AuthService
+    public class AuthService : IAuthService
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
@@ -61,7 +60,7 @@ namespace Application.Users.Authentication
             return tokenString;
         }
 
-        public async Task<string> Login(LoginDTO model)
+        public async Task<string> Login(LoginDto model)
         {
             var user = null as User;
             var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, false, lockoutOnFailure: false);

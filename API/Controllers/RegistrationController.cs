@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using API.DTO;
-using Domain.Services;
+using Application.Users.UseCases.Registration;
 
 namespace API.Controllers;
 
@@ -8,23 +7,25 @@ namespace API.Controllers;
 [ApiController]
 public class RegistrationController : ControllerBase
 {
-    private readonly UserService _userService;
+    private readonly IRegistrationService _registrationService;
 
-    public RegistrationController(UserService userService)
+    public RegistrationController(IRegistrationService registrationService)
     {
-        _userService = userService;
+        this._registrationService = registrationService;
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromForm] RegisterDTO model)
+    public async Task<IActionResult> Register([FromForm] RegisterDto registrationDto)
     {
-        var (result, userId) = await _userService.RegisterUser(model.Username, model.Password, model.Role, 
-            model.Email, model.PhoneNumber);
-
-        if (result.Succeeded)
+        try
         {
+            await this._registrationService.Register(registrationDto);
+
             return Ok(new { status = 200, message = "User registered successfully" });
         }
-        return BadRequest("User already exists");
+        catch (Exception e)
+        {
+            return BadRequest($"User already exists. | { e.Message }");
+        }
     }
 }

@@ -13,7 +13,7 @@ public class Order : IEntity, IUpdatable<Order>
 
     public Order(
         Guid id, 
-        string number, 
+        int number, 
         double total, 
         List<Product> products, 
         DeliveryType deliveryType,
@@ -38,7 +38,7 @@ public class Order : IEntity, IUpdatable<Order>
     }
     
     public Guid Id { get; private set; }
-    public string Number { get; private set; }
+    public int Number { get; private set; }
     public double Total { get; private set; }
     public List<Product> Products { get; private set; }
     public DeliveryType DeliveryType { get; private set; }

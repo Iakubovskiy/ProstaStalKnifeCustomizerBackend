@@ -1,5 +1,4 @@
-﻿using Application.Users.Authentication;
-using Application.Users.Authentication.Models;
+﻿using Application.Users.UseCases.Authentication;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -11,19 +10,16 @@ namespace API.Controllers;
 [ApiController]
 public class AuthController : ControllerBase
 {
-    private readonly SignInManager<User> _signInManager;
-    private readonly UserManager<User> _userManager;
-    private readonly AuthService _authService;
+    private readonly IAuthService _authService;
 
-    public AuthController(SignInManager<User> signInManager, UserManager<User> userManager, AuthService authService)
+    public AuthController(
+        IAuthService authService)
     {
-        _signInManager = signInManager;
-        _userManager = userManager;
-        _authService = authService;
+        this._authService = authService;
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromForm] LoginDTO model)
+    public async Task<IActionResult> Login([FromForm] LoginDto model)
     {
         if (!ModelState.IsValid)
         {

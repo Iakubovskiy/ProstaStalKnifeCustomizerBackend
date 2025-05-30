@@ -5,7 +5,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure;
 
-public class BaseRepository<TEntity> : IRepository <TEntity> where TEntity : class, IEntity, IUpdatable<TEntity>
+public class BaseRepository<TEntity> : IRepository <TEntity>
+where TEntity : class, IEntity, IUpdatable<TEntity>
 {
     protected readonly DBContext Context;
     protected readonly DbSet<TEntity> Set;

@@ -1,7 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Data.Entity.Core;
+using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
-using Application.Services;
-using Domain.Models;
+using Application.Orders.Dto;
+using Application.Orders.UseCases.ChangeClientData;
+using Application.Orders.UseCases.Create;
+using Application.Orders.UseCases.UpdateStatus;
+using Domain.Component.Product;
+using Domain.Order;
+using Domain.Order.Support;
+using Infrastructure.Orders;
 
 namespace API.Controllers;
 
@@ -9,23 +16,28 @@ namespace API.Controllers;
 [ApiController]
 public class OrderController : ControllerBase
 {
-    private readonly OrderService _orderService;
-    private readonly KnifeService _knifeService;
-    private readonly FasteningService _fasteningService;
-    private readonly DeliveryTypeService _deliveryTypeService;
+    private readonly IOrderRepository _orderRepository;
+    private readonly ICreateOrderService _createOrderService;
+    private readonly IUpdateOrderStatusService _updateOrderStatusService;
+    private readonly IChangeClientDataService _changeClientDataService;
 
-    public OrderController(OrderService service, KnifeService knifeService, DeliveryTypeService deliveryTypeService, FasteningService fasteningService)
+    public OrderController(
+        IOrderRepository orderRepository, 
+        ICreateOrderService createOrderService, 
+        IUpdateOrderStatusService updateOrderStatusService, 
+        IChangeClientDataService changeClientDataService
+    )
     {
-        _orderService = service;
-        _knifeService = knifeService;
-        _deliveryTypeService = deliveryTypeService;
-        _fasteningService = fasteningService;
+        this._orderRepository = orderRepository;
+        this._createOrderService = createOrderService;
+        this._updateOrderStatusService = updateOrderStatusService;
+        this._changeClientDataService = changeClientDataService;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAllOrders()
     {
-        return Ok(await _orderService.GetAllOrders());
+        return Ok(await this._orderRepository.GetAll());
     }
 
     [HttpGet("{id:guid}")]
@@ -33,110 +45,81 @@ public class OrderController : ControllerBase
     {
         try
         {
-            return Ok( await _orderService.GetOrderById(id));
+            return Ok( await this._orderRepository.GetById(id));
         }
-        catch (Exception)
+        catch (ObjectNotFoundException)
         {
-            return BadRequest("Can't find order");
+            return NotFound("Can't find order");
+        }
+        catch (Exception e)
+        {
+            return StatusCode(400, e.Message);
         }
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateOrder([FromForm] OrderDTO orderDto)
-    {
-        List<Guid> productsId = JsonSerializer.Deserialize<List<Guid>>(orderDto.ProductIdsJson) ?? new List<Guid>();
-
-        List<int> productQuantities = JsonSerializer.Deserialize<List<int>>(orderDto.ProductQuantitiesJson) ?? new List<int>();
-
-        if(productsId.Count != productQuantities.Count)
-        {
-            throw new Exception("Products and quantities are different");
-        }
-
-        List<Product> products = new List<Product>();
-
-        foreach(var productId in productsId)
-        {
-            Product product = await _knifeService.GetKnifeById(productId) 
-                              ?? (Product?)await _fasteningService.GetFasteningById(productId) 
-                              ?? throw new ArgumentException("Not valid Id");
-                
-            products.Add(product);
-        }
-        List<(Product, int)> items = new List<(Product, int)> ();
-        for(int i = 0; i<products.Count; i++)
-        {
-            (Product, int) item = (products[i], productQuantities[i]);
-            items.Add(item);
-        }
-
-        var deliveryType = await _deliveryTypeService.GetDeliveryTypeById(orderDto.DeliveryTypeId);
-        Order order = new Order
-        {
-            City = orderDto.City,
-            ClientFullName = orderDto.ClientFullName,
-            ClientPhoneNumber = orderDto.ClientPhoneNumber,
-            Comment = orderDto.Comment,
-            CountryForDelivery = orderDto.CountryForDelivery,
-            DeliveryType = deliveryType,
-            Email = orderDto.Email,
-            Products = products,
-            Number = orderDto.Number,
-            Status = orderDto.Status,
-            Total = orderDto.Total,
-        };
-        return Ok(new { createdColor = await _orderService.CreateOrder(order,items) });
-    }
-
-    [HttpPatch("update/status/{id:guid}")]
-    public async Task<IActionResult> UpdateOrderStatus(Guid id, [FromForm] string status)
+    public async Task<IActionResult> CreateOrder([FromBody] OrderDto orderDto)
     {
         try
         {
-            return Ok(await _orderService.ChangeStatus(id, status));
+            return Ok(new { newOrder = await this._createOrderService.Create(orderDto) });
         }
-        catch (Exception)
+        catch (Exception e)
         {
-            return BadRequest("Can't find order");
+            return StatusCode(400, e.Message);
+        }
+    }
+
+    [HttpPatch("update/status/{id:guid}")]
+    public async Task<IActionResult> UpdateOrderStatus(
+        Guid id, 
+        [FromBody] string status
+    )
+    {
+        try
+        {
+            return Ok(await this._updateOrderStatusService.UpdateStatus(id, status));
+        }
+        catch (ObjectNotFoundException)
+        {
+            return NotFound("Can't find order");
+        }
+        catch (Exception e)
+        {
+            return StatusCode(400, e.Message);
         }
     }
 
     [HttpPatch("update/delivery-data/{id:guid}")]
-    public async Task<IActionResult> UpdateOrderDeliveryData(Guid id, [FromForm] DeliveryDataDTO data)
+    public async Task<IActionResult> UpdateOrderDeliveryData(
+        Guid id, 
+        [FromBody] ClientData clientData
+    )
     {
         try
         {
-            return Ok(await _orderService.ChangeDeliveryData(id, data));
+            return Ok(await this._changeClientDataService.ChangeClientData(id, clientData));
         }
         catch (Exception)
         {
-            return BadRequest("Can't find order");
+            return NotFound("Can't find order");
         }
     }
-
-    [HttpPatch("update/delivery-type/{id:guid}")]
-    public async Task<IActionResult> UpdateOrderDeliveryType(Guid id, [FromForm] DeliveryType type)
-    {
-        try
-        {
-            return Ok(await _orderService.ChangeDeliveryType(id, type));
-        }
-        catch (Exception)
-        {
-            return BadRequest("Can't find order");
-        }
-    }
-
+    
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteOrder(Guid id)
     {
         try
         {
-            return Ok(new { isDeleted = await _orderService.DeleteOrder(id) });
+            return Ok(new { isDeleted = await this._orderRepository.Delete(id) });
         }
-        catch (Exception)
+        catch (ObjectNotFoundException)
         {
-            return BadRequest("Can't find order");
+            return NotFound("Can't find order");
+        }
+        catch (Exception e)
+        {
+            return StatusCode(400, e.Message);
         }
     }
 }

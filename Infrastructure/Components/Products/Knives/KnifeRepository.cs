@@ -3,7 +3,7 @@ using Domain.Component.Product.Knife;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Components.Products;
+namespace Infrastructure.Components.Products.Knives;
 
 public class KnifeRepository : ComponentRepository<Knife>
 {
