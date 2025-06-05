@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class IntialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -53,15 +53,51 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BladeShapeTypes",
+                name: "BladeCoatingColors",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false)
+                    Type = table.Column<string>(type: "text", nullable: false),
+                    Color = table.Column<string>(type: "text", nullable: false),
+                    ColorCode = table.Column<string>(type: "text", nullable: true),
+                    EngravingColorCode = table.Column<string>(type: "text", nullable: false),
+                    Price = table.Column<double>(type: "double precision", nullable: false, defaultValue: 0.0),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
+                    ColorMapUrl = table.Column<string>(type: "text", nullable: true),
+                    NormalMapUrl = table.Column<string>(type: "text", nullable: true),
+                    RoughnessMapUrl = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BladeShapeTypes", x => x.Id);
+                    table.PrimaryKey("PK_BladeCoatingColors", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BladeShapes",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Price = table.Column<double>(type: "double precision", nullable: false, defaultValue: 0.0),
+                    totalLength = table.Column<double>(type: "double precision", nullable: false),
+                    bladeLength = table.Column<double>(type: "double precision", nullable: false),
+                    bladeWidth = table.Column<double>(type: "double precision", nullable: false),
+                    bladeWeight = table.Column<double>(type: "double precision", nullable: false),
+                    sharpeningAngle = table.Column<double>(type: "double precision", nullable: false),
+                    rockwellHardnessUnits = table.Column<double>(type: "double precision", nullable: true),
+                    engravingLocationX = table.Column<double>(type: "double precision", nullable: true),
+                    engravingLocationY = table.Column<double>(type: "double precision", nullable: true),
+                    engravingLocationZ = table.Column<double>(type: "double precision", nullable: true),
+                    engravingRotationX = table.Column<double>(type: "double precision", nullable: true),
+                    engravingRotationY = table.Column<double>(type: "double precision", nullable: true),
+                    engravingRotationZ = table.Column<double>(type: "double precision", nullable: true),
+                    bladeShapeModelUrl = table.Column<string>(type: "text", nullable: false),
+                    sheathModelUrl = table.Column<string>(type: "text", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BladeShapes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -69,9 +105,10 @@ namespace Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name_TranslationDictionary = table.Column<string>(type: "jsonb", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
                     Price = table.Column<double>(type: "double precision", nullable: false),
-                    Comment_TranslationDictionary = table.Column<string>(type: "jsonb", nullable: true)
+                    Comment = table.Column<string>(type: "text", nullable: true),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -95,21 +132,20 @@ namespace Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name_TranslationDictionary = table.Column<string>(type: "jsonb", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: true),
                     Side = table.Column<int>(type: "integer", nullable: false),
                     Text = table.Column<string>(type: "text", nullable: true),
                     Font = table.Column<string>(type: "text", nullable: true),
-                    PictureUrl = table.Column<string>(type: "text", nullable: true),
-                    EngravingPosition_LocationX = table.Column<double>(type: "double precision", nullable: false),
-                    EngravingPosition_LocationY = table.Column<double>(type: "double precision", nullable: false),
-                    EngravingPosition_LocationZ = table.Column<double>(type: "double precision", nullable: false),
-                    EngravingRotation_RotationX = table.Column<double>(type: "double precision", nullable: false),
-                    EngravingRotation_RotationY = table.Column<double>(type: "double precision", nullable: false),
-                    EngravingRotation_RotationZ = table.Column<double>(type: "double precision", nullable: false),
-                    EngravingScale_ScaleX = table.Column<double>(type: "double precision", nullable: false),
-                    EngravingScale_ScaleY = table.Column<double>(type: "double precision", nullable: false),
-                    EngravingScale_ScaleZ = table.Column<double>(type: "double precision", nullable: false),
-                    Description_TranslationDictionary = table.Column<string>(type: "jsonb", nullable: false)
+                    pictureUrl = table.Column<string>(type: "text", nullable: true),
+                    rotationX = table.Column<double>(type: "double precision", nullable: false),
+                    rotationY = table.Column<double>(type: "double precision", nullable: false),
+                    rotationZ = table.Column<double>(type: "double precision", nullable: false),
+                    locationX = table.Column<double>(type: "double precision", nullable: false),
+                    locationY = table.Column<double>(type: "double precision", nullable: false),
+                    locationZ = table.Column<double>(type: "double precision", nullable: false),
+                    scaleX = table.Column<double>(type: "double precision", nullable: false),
+                    scaleY = table.Column<double>(type: "double precision", nullable: false),
+                    scaleZ = table.Column<double>(type: "double precision", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -117,30 +153,53 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PaymentMethods",
+                name: "HandleColors",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name_TranslationDictionary = table.Column<string>(type: "jsonb", nullable: false),
-                    Description_TranslationDictionary = table.Column<string>(type: "jsonb", nullable: false)
+                    ColorName = table.Column<string>(type: "text", nullable: false),
+                    ColorCode = table.Column<string>(type: "text", nullable: true),
+                    Material = table.Column<string>(type: "text", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
+                    ColorMapUrl = table.Column<string>(type: "text", nullable: true),
+                    NormalMapUrl = table.Column<string>(type: "text", nullable: true),
+                    RoughnessMapUrl = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PaymentMethods", x => x.Id);
+                    table.PrimaryKey("PK_HandleColors", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Textures",
+                name: "OrderStatuses",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    NormalMapUrl = table.Column<string>(type: "text", nullable: false),
-                    RoughnessMapUrl = table.Column<string>(type: "text", nullable: false)
+                    Status = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Textures", x => x.Id);
+                    table.PrimaryKey("PK_OrderStatuses", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SheathColors",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Color = table.Column<string>(type: "text", nullable: false),
+                    ColorCode = table.Column<string>(type: "text", nullable: false),
+                    Material = table.Column<string>(type: "text", nullable: false),
+                    Price = table.Column<double>(type: "double precision", nullable: false),
+                    EngravingColorCode = table.Column<string>(type: "text", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
+                    ColorMapUrl = table.Column<string>(type: "text", nullable: true),
+                    NormalMapUrl = table.Column<string>(type: "text", nullable: true),
+                    RoughnessMapUrl = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SheathColors", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -250,91 +309,20 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BladeShapes",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    TypeId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name_TranslationDictionary = table.Column<string>(type: "jsonb", nullable: false),
-                    BladeShapePhotoUrl = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    Price = table.Column<double>(type: "double precision", nullable: false, defaultValue: 0.0),
-                    BladeCharacteristics_TotalLength = table.Column<double>(type: "double precision", nullable: false),
-                    BladeCharacteristics_BladeLength = table.Column<double>(type: "double precision", nullable: false),
-                    BladeCharacteristics_BladeWidth = table.Column<double>(type: "double precision", nullable: false),
-                    BladeCharacteristics_BladeWeight = table.Column<double>(type: "double precision", nullable: false),
-                    BladeCharacteristics_SharpeningAngle = table.Column<double>(type: "double precision", nullable: false),
-                    BladeCharacteristics_RockwellHardnessUnits = table.Column<double>(type: "double precision", nullable: false),
-                    BladeShapeModelUrl = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    SheathModelUrl = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_BladeShapes", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_BladeShapes_BladeShapeTypes_TypeId",
-                        column: x => x.TypeId,
-                        principalTable: "BladeShapeTypes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Sheaths",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name_TranslationDictionary = table.Column<string>(type: "jsonb", nullable: false),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    ModelUrl = table.Column<string>(type: "text", nullable: true),
-                    TypeId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Price = table.Column<double>(type: "double precision", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Sheaths", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Sheaths_BladeShapeTypes_TypeId",
-                        column: x => x.TypeId,
-                        principalTable: "BladeShapeTypes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "EngravingTags",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name_TranslationDictionary = table.Column<string>(type: "jsonb", nullable: false),
-                    EngravingId = table.Column<Guid>(type: "uuid", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EngravingTags", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_EngravingTags_Engravings_EngravingId",
-                        column: x => x.EngravingId,
-                        principalTable: "Engravings",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Orders",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Number = table.Column<string>(type: "text", nullable: false),
                     Total = table.Column<double>(type: "double precision", nullable: false),
-                    DeliveryTypeId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ClientData_ClientFullName = table.Column<string>(type: "text", nullable: false),
-                    ClientData_ClientPhoneNumber = table.Column<string>(type: "text", nullable: false),
-                    ClientData_CountryForDelivery = table.Column<string>(type: "text", nullable: false),
-                    ClientData_City = table.Column<string>(type: "text", nullable: false),
-                    ClientData_Email = table.Column<string>(type: "text", nullable: false),
-                    Comment = table.Column<string>(type: "text", nullable: true),
                     Status = table.Column<string>(type: "text", nullable: false),
-                    PaymentMethodId = table.Column<Guid>(type: "uuid", nullable: false)
+                    DeliveryTypeId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ClientFullName = table.Column<string>(type: "text", nullable: false),
+                    ClientPhoneNumber = table.Column<string>(type: "text", nullable: false),
+                    CountryForDelivery = table.Column<string>(type: "text", nullable: false),
+                    City = table.Column<string>(type: "text", nullable: false),
+                    Email = table.Column<string>(type: "text", nullable: false),
+                    Comment = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -345,82 +333,6 @@ namespace Infrastructure.Migrations
                         principalTable: "DeliveryTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Orders_PaymentMethods_PaymentMethodId",
-                        column: x => x.PaymentMethodId,
-                        principalTable: "PaymentMethods",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "BladeCoatingColors",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Type_TranslationDictionary = table.Column<string>(type: "jsonb", nullable: false),
-                    Price = table.Column<double>(type: "double precision", nullable: false, defaultValue: 0.0),
-                    Color_TranslationDictionary = table.Column<string>(type: "jsonb", nullable: false),
-                    ColorCode = table.Column<string>(type: "text", nullable: true),
-                    EngravingColorCode = table.Column<string>(type: "text", nullable: false),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
-                    TextureId = table.Column<Guid>(type: "uuid", nullable: true),
-                    ColorMapUrl = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_BladeCoatingColors", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_BladeCoatingColors_Textures_TextureId",
-                        column: x => x.TextureId,
-                        principalTable: "Textures",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Handles",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name_TranslationDictionary = table.Column<string>(type: "jsonb", nullable: false),
-                    ColorCode = table.Column<string>(type: "text", nullable: true),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
-                    Material_TranslationDictionary = table.Column<string>(type: "jsonb", nullable: false),
-                    TextureId = table.Column<Guid>(type: "uuid", nullable: true),
-                    ColorMapUrl = table.Column<string>(type: "text", nullable: true),
-                    Price = table.Column<double>(type: "double precision", nullable: false),
-                    HandleModelUrl = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Handles", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Handles_Textures_TextureId",
-                        column: x => x.TextureId,
-                        principalTable: "Textures",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "SheathColors",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Color_TranslationDictionary = table.Column<string>(type: "jsonb", nullable: false),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
-                    Material = table.Column<string>(type: "text", nullable: false),
-                    EngravingColorCode = table.Column<string>(type: "text", nullable: false),
-                    TextureId = table.Column<Guid>(type: "uuid", nullable: true),
-                    ColorMapUrl = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SheathColors", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_SheathColors_Textures_TextureId",
-                        column: x => x.TextureId,
-                        principalTable: "Textures",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -429,81 +341,47 @@ namespace Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
-                    ImageUrl = table.Column<string>(type: "text", nullable: false),
-                    Name_TranslationDictionary = table.Column<string>(type: "jsonb", nullable: false),
-                    Title_TranslationDictionary = table.Column<string>(type: "jsonb", nullable: false),
-                    Description_TranslationDictionary = table.Column<string>(type: "jsonb", nullable: false),
-                    MetaTitle_TranslationDictionary = table.Column<string>(type: "jsonb", nullable: false),
-                    MetaDescription_TranslationDictionary = table.Column<string>(type: "jsonb", nullable: false),
                     Discriminator = table.Column<string>(type: "character varying(13)", maxLength: 13, nullable: false),
-                    Type = table.Column<int>(type: "integer", nullable: true),
-                    Color_TranslationDictionary = table.Column<string>(type: "jsonb", nullable: true),
+                    Name = table.Column<string>(type: "text", nullable: true),
+                    Material = table.Column<string>(type: "text", nullable: true),
+                    Color = table.Column<string>(type: "text", nullable: true),
+                    ColorCode = table.Column<string>(type: "text", nullable: true),
                     Price = table.Column<double>(type: "double precision", nullable: true),
-                    Material_TranslationDictionary = table.Column<string>(type: "jsonb", nullable: true),
                     ModelUrl = table.Column<string>(type: "text", nullable: true),
-                    KnifeId = table.Column<Guid>(type: "uuid", nullable: true),
-                    BladeId = table.Column<Guid>(type: "uuid", nullable: true),
-                    ColorId = table.Column<Guid>(type: "uuid", nullable: true),
-                    HandleId = table.Column<Guid>(type: "uuid", nullable: true),
-                    SheathId = table.Column<Guid>(type: "uuid", nullable: true),
-                    SheathColorId = table.Column<Guid>(type: "uuid", nullable: true)
+                    ShapeId = table.Column<Guid>(type: "uuid", nullable: true),
+                    BladeCoatingColorId = table.Column<Guid>(type: "uuid", nullable: true),
+                    HandleColorId = table.Column<Guid>(type: "uuid", nullable: true),
+                    SheathColorId = table.Column<Guid>(type: "uuid", nullable: true),
+                    FasteningId = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Product", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Product_BladeCoatingColors_ColorId",
-                        column: x => x.ColorId,
+                        name: "FK_Product_BladeCoatingColors_BladeCoatingColorId",
+                        column: x => x.BladeCoatingColorId,
                         principalTable: "BladeCoatingColors",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Product_BladeShapes_BladeId",
-                        column: x => x.BladeId,
+                        name: "FK_Product_BladeShapes_ShapeId",
+                        column: x => x.ShapeId,
                         principalTable: "BladeShapes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Product_Handles_HandleId",
-                        column: x => x.HandleId,
-                        principalTable: "Handles",
-                        principalColumn: "Id");
+                        name: "FK_Product_HandleColors_HandleColorId",
+                        column: x => x.HandleColorId,
+                        principalTable: "HandleColors",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Product_Product_KnifeId",
-                        column: x => x.KnifeId,
+                        name: "FK_Product_Product_FasteningId",
+                        column: x => x.FasteningId,
                         principalTable: "Product",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Product_SheathColors_SheathColorId",
-                        column: x => x.SheathColorId,
-                        principalTable: "SheathColors",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Product_Sheaths_SheathId",
-                        column: x => x.SheathId,
-                        principalTable: "Sheaths",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "SheathColorPriceByType",
-                columns: table => new
-                {
-                    SheathColorId = table.Column<Guid>(type: "uuid", nullable: false),
-                    TypeId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Price = table.Column<double>(type: "double precision", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SheathColorPriceByType", x => new { x.TypeId, x.SheathColorId });
-                    table.ForeignKey(
-                        name: "FK_SheathColorPriceByType_BladeShapeTypes_TypeId",
-                        column: x => x.TypeId,
-                        principalTable: "BladeShapeTypes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_SheathColorPriceByType_SheathColors_SheathColorId",
                         column: x => x.SheathColorId,
                         principalTable: "SheathColors",
                         principalColumn: "Id",
@@ -538,13 +416,14 @@ namespace Infrastructure.Migrations
                 name: "OrderItems",
                 columns: table => new
                 {
-                    OrderId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     ProductId = table.Column<Guid>(type: "uuid", nullable: false),
+                    OrderId = table.Column<Guid>(type: "uuid", nullable: false),
                     Quantity = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderItems", x => new { x.OrderId, x.ProductId });
+                    table.PrimaryKey("PK_OrderItems", x => x.Id);
                     table.ForeignKey(
                         name: "FK_OrderItems_Orders_OrderId",
                         column: x => x.OrderId,
@@ -597,14 +476,9 @@ namespace Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_BladeCoatingColors_TextureId",
+                name: "IX_BladeCoatingColors_ColorCode",
                 table: "BladeCoatingColors",
-                column: "TextureId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_BladeShapes_TypeId",
-                table: "BladeShapes",
-                column: "TypeId");
+                column: "ColorCode");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EngravingKnife_KnifeId",
@@ -612,14 +486,9 @@ namespace Infrastructure.Migrations
                 column: "KnifeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EngravingTags_EngravingId",
-                table: "EngravingTags",
-                column: "EngravingId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Handles_TextureId",
-                table: "Handles",
-                column: "TextureId");
+                name: "IX_OrderItems_OrderId",
+                table: "OrderItems",
+                column: "OrderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderItems_ProductId",
@@ -632,54 +501,29 @@ namespace Infrastructure.Migrations
                 column: "DeliveryTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_PaymentMethodId",
-                table: "Orders",
-                column: "PaymentMethodId");
+                name: "IX_Product_BladeCoatingColorId",
+                table: "Product",
+                column: "BladeCoatingColorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Product_BladeId",
+                name: "IX_Product_FasteningId",
                 table: "Product",
-                column: "BladeId");
+                column: "FasteningId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Product_ColorId",
+                name: "IX_Product_HandleColorId",
                 table: "Product",
-                column: "ColorId");
+                column: "HandleColorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Product_HandleId",
+                name: "IX_Product_ShapeId",
                 table: "Product",
-                column: "HandleId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Product_KnifeId",
-                table: "Product",
-                column: "KnifeId");
+                column: "ShapeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Product_SheathColorId",
                 table: "Product",
                 column: "SheathColorId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Product_SheathId",
-                table: "Product",
-                column: "SheathId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SheathColorPriceByType_SheathColorId",
-                table: "SheathColorPriceByType",
-                column: "SheathColorId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SheathColors_TextureId",
-                table: "SheathColors",
-                column: "TextureId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Sheaths_TypeId",
-                table: "Sheaths",
-                column: "TypeId");
         }
 
         /// <inheritdoc />
@@ -707,13 +551,10 @@ namespace Infrastructure.Migrations
                 name: "EngravingPrices");
 
             migrationBuilder.DropTable(
-                name: "EngravingTags");
-
-            migrationBuilder.DropTable(
                 name: "OrderItems");
 
             migrationBuilder.DropTable(
-                name: "SheathColorPriceByType");
+                name: "OrderStatuses");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -734,28 +575,16 @@ namespace Infrastructure.Migrations
                 name: "DeliveryTypes");
 
             migrationBuilder.DropTable(
-                name: "PaymentMethods");
-
-            migrationBuilder.DropTable(
                 name: "BladeCoatingColors");
 
             migrationBuilder.DropTable(
                 name: "BladeShapes");
 
             migrationBuilder.DropTable(
-                name: "Handles");
+                name: "HandleColors");
 
             migrationBuilder.DropTable(
                 name: "SheathColors");
-
-            migrationBuilder.DropTable(
-                name: "Sheaths");
-
-            migrationBuilder.DropTable(
-                name: "Textures");
-
-            migrationBuilder.DropTable(
-                name: "BladeShapeTypes");
         }
     }
 }

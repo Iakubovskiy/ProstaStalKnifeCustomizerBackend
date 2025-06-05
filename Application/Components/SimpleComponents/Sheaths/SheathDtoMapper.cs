@@ -26,7 +26,7 @@ public class SheathDtoMapper : IComponentDtoMapper<Sheath, SheathDto>
     }
     public async Task<Sheath> Map(SheathDto dto)
     {
-        Guid id = Guid.NewGuid();
+        Guid id = dto.Id ?? Guid.NewGuid();
         BladeShapeType type = await this._typeRepository.GetById(dto.TypeId);
         Translations name = new Translations(dto.Name);
 

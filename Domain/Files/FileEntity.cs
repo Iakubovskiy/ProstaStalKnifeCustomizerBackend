@@ -22,7 +22,7 @@ public class FileEntity : IEntity, IUpdatable<FileEntity>
         this.Id = id;
         this.FileUrl = fileUrl;
     }
-    public Guid Id { get; }
+    public Guid Id { get; set; }
     public string FileUrl { get; set; }
     public void Update(FileEntity fileEntity)
     {

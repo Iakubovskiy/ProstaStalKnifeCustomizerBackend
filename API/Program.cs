@@ -18,6 +18,7 @@ using Domain.Component.Product.Knife;
 using Domain.Component.Sheaths;
 using Domain.Component.Sheaths.Color;
 using Domain.Component.Textures;
+using Domain.Files;
 using Domain.Order;
 using Domain.Order.Support;
 using Domain.Users;
@@ -172,12 +173,7 @@ builder.Services.AddScoped<IRepository<Texture>, BaseRepository<Texture>>();
 builder.Services.AddScoped<IRepository<Order>, BaseRepository<Order>>();
 builder.Services.AddScoped<IRepository<DeliveryType>, BaseRepository<DeliveryType>>();
 builder.Services.AddScoped<IRepository<PaymentMethod>, BaseRepository<PaymentMethod>>();
-
-
-//it should be moved to services
-    builder.Services.AddScoped<ICustomEmailSender, EmailSenderService>();
-    builder.Services.AddScoped<IFileService, AwsService>();
-//
+builder.Services.AddScoped<IRepository<FileEntity>, BaseRepository<FileEntity>>();
 #endregion
 
 #region Mappers
@@ -194,8 +190,10 @@ builder.Services.AddScoped<ITexturedComponentDto<BladeCoatingColor>, BladeCoatin
 
 builder.Services.AddHttpContextAccessor();
 
-/*#region services
-builder.Services.AddScoped<BladeCoatingColorService>();
+#region services
+builder.Services.AddScoped<ICustomEmailSender, EmailSenderService>();
+builder.Services.AddScoped<IFileService, AwsService>();
+/*builder.Services.AddScoped<BladeCoatingColorService>();
 builder.Services.AddScoped<BladeShapeService>();
 builder.Services.AddScoped<CloudinarySettings>();
 builder.Services.AddScoped<DeliveryTypeService>();
@@ -209,7 +207,8 @@ builder.Services.AddScoped<OrderStatusesService>();
 builder.Services.AddScoped<SheathColorService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<UserService>();
-#endregion*/
+*/
+#endregion
 
 var app = builder.Build();
 

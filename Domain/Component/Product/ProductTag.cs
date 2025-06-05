@@ -4,6 +4,7 @@ namespace Domain.Component.Product;
 
 public class ProductTag : IEntity, IUpdatable<ProductTag>
 {
+    private ProductTag() { }
     public ProductTag(
         Guid id,
         Translations tag

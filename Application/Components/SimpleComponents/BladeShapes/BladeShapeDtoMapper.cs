@@ -28,7 +28,7 @@ public class BladeShapeDtoMapper : IComponentDtoMapper<BladeShape, BladeShapeDto
     }
     public async Task<BladeShape> Map(BladeShapeDto dto)
     {
-        Guid id = Guid.NewGuid();
+        Guid id =dto.Id ?? Guid.NewGuid();
         Sheath sheath = null;
         BladeShapeType type = await this._typeRepository.GetById(dto.TypeId);
         Translations name = new Translations(dto.Name);

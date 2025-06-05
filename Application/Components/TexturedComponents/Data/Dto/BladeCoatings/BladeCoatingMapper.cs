@@ -17,7 +17,7 @@ public class BladeCoatingMapper : ITexturedComponentDtoMapper<BladeCoatingColor,
     }
     public async Task<BladeCoatingColor> Map(BladeCoatingDto dto, Texture? texture)
     {
-        Guid id = Guid.NewGuid();
+        Guid id = dto.Id ?? Guid.NewGuid();
         Translations type = new Translations(dto.Type);
         Translations color = new Translations(dto.Color);
         FileEntity? colorMap = null;
