@@ -4,17 +4,20 @@ using System.Collections.Generic;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace WorkshopBackend.Migrations
+namespace Infrastructure.Migrations
 {
     [DbContext(typeof(DBContext))]
-    partial class DBContextModelSnapshot : ModelSnapshot
+    [Migration("20250606012600_CurrenyAddedToDbSet")]
+    partial class CurrenyAddedToDbSet
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -124,9 +127,6 @@ namespace WorkshopBackend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("CompletedSheathId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Font")
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
@@ -145,8 +145,6 @@ namespace WorkshopBackend.Migrations
                         .HasColumnType("character varying(255)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CompletedSheathId");
 
                     b.HasIndex("PictureId");
 
@@ -189,9 +187,6 @@ namespace WorkshopBackend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("BladeShapeTypeId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("ColorCode")
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
@@ -214,8 +209,6 @@ namespace WorkshopBackend.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("BladeShapeTypeId");
 
                     b.HasIndex("ColorMapId");
 
@@ -245,8 +238,8 @@ namespace WorkshopBackend.Migrations
 
                     b.Property<string>("Discriminator")
                         .IsRequired()
-                        .HasMaxLength(21)
-                        .HasColumnType("character varying(21)");
+                        .HasMaxLength(13)
+                        .HasColumnType("character varying(13)");
 
                     b.Property<Guid>("ImageId")
                         .HasColumnType("uuid");
@@ -729,9 +722,6 @@ namespace WorkshopBackend.Migrations
                 {
                     b.HasBaseType("Domain.Component.Product.Product");
 
-                    b.Property<Guid?>("CompletedSheathId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid?>("KnifeId")
                         .HasColumnType("uuid");
 
@@ -744,8 +734,6 @@ namespace WorkshopBackend.Migrations
                     b.Property<Guid>("TypeId")
                         .HasColumnType("uuid");
 
-                    b.HasIndex("CompletedSheathId");
-
                     b.HasIndex("KnifeId");
 
                     b.HasIndex("ModelId");
@@ -753,32 +741,6 @@ namespace WorkshopBackend.Migrations
                     b.HasIndex("TypeId");
 
                     b.HasDiscriminator().HasValue("Attachment");
-                });
-
-            modelBuilder.Entity("Domain.Component.Product.CompletedSheath.CompletedSheath", b =>
-                {
-                    b.HasBaseType("Domain.Component.Product.Product");
-
-                    b.Property<Guid>("SheathColorId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("SheathId")
-                        .HasColumnType("uuid");
-
-                    b.HasIndex("SheathColorId");
-
-                    b.HasIndex("SheathId");
-
-                    b.ToTable("Product", t =>
-                        {
-                            t.Property("SheathColorId")
-                                .HasColumnName("CompletedSheath_SheathColorId");
-
-                            t.Property("SheathId")
-                                .HasColumnName("CompletedSheath_SheathId");
-                        });
-
-                    b.HasDiscriminator().HasValue("CompletedSheath");
                 });
 
             modelBuilder.Entity("Domain.Component.Product.Knife.Knife", b =>
@@ -962,10 +924,6 @@ namespace WorkshopBackend.Migrations
 
             modelBuilder.Entity("Domain.Component.Engravings.Engraving", b =>
                 {
-                    b.HasOne("Domain.Component.Product.CompletedSheath.CompletedSheath", null)
-                        .WithMany("Engravings")
-                        .HasForeignKey("CompletedSheathId");
-
                     b.HasOne("Domain.Files.FileEntity", "Picture")
                         .WithMany()
                         .HasForeignKey("PictureId");
@@ -1117,12 +1075,6 @@ namespace WorkshopBackend.Migrations
 
             modelBuilder.Entity("Domain.Component.Handles.Handle", b =>
                 {
-                    b.HasOne("Domain.Component.BladeShapes.BladeShapeTypes.BladeShapeType", "BladeShapeType")
-                        .WithMany()
-                        .HasForeignKey("BladeShapeTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Domain.Files.FileEntity", "ColorMap")
                         .WithMany()
                         .HasForeignKey("ColorMapId");
@@ -1168,8 +1120,6 @@ namespace WorkshopBackend.Migrations
                             b1.WithOwner()
                                 .HasForeignKey("HandleId");
                         });
-
-                    b.Navigation("BladeShapeType");
 
                     b.Navigation("Color")
                         .IsRequired();
@@ -1716,10 +1666,6 @@ namespace WorkshopBackend.Migrations
 
             modelBuilder.Entity("Domain.Component.Product.Attachments.Attachment", b =>
                 {
-                    b.HasOne("Domain.Component.Product.CompletedSheath.CompletedSheath", null)
-                        .WithMany("Attachments")
-                        .HasForeignKey("CompletedSheathId");
-
                     b.HasOne("Domain.Component.Product.Knife.Knife", null)
                         .WithMany("Attachments")
                         .HasForeignKey("KnifeId");
@@ -1781,25 +1727,6 @@ namespace WorkshopBackend.Migrations
                     b.Navigation("Type");
                 });
 
-            modelBuilder.Entity("Domain.Component.Product.CompletedSheath.CompletedSheath", b =>
-                {
-                    b.HasOne("Domain.Component.Sheaths.Color.SheathColor", "SheathColor")
-                        .WithMany()
-                        .HasForeignKey("SheathColorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Component.Sheaths.Sheath", "Sheath")
-                        .WithMany()
-                        .HasForeignKey("SheathId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Sheath");
-
-                    b.Navigation("SheathColor");
-                });
-
             modelBuilder.Entity("Domain.Component.Product.Knife.Knife", b =>
                 {
                     b.HasOne("Domain.Component.BladeShapes.BladeShape", "Blade")
@@ -1850,13 +1777,6 @@ namespace WorkshopBackend.Migrations
             modelBuilder.Entity("Domain.Component.Sheaths.Color.SheathColor", b =>
                 {
                     b.Navigation("Prices");
-                });
-
-            modelBuilder.Entity("Domain.Component.Product.CompletedSheath.CompletedSheath", b =>
-                {
-                    b.Navigation("Attachments");
-
-                    b.Navigation("Engravings");
                 });
 
             modelBuilder.Entity("Domain.Component.Product.Knife.Knife", b =>

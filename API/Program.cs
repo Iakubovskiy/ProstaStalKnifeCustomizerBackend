@@ -1,17 +1,20 @@
 using System.Text;
 using Application;
+using Application.Components.Prices.Engravings;
 using Application.Components.TexturedComponents.Data;
 using Application.Components.TexturedComponents.Data.Dto.BladeCoatings;
 using Application.Files;
+using Domain.Component;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Infrastructure.Data;
 using Domain.Component.BladeCoatingColors;
 using Domain.Component.BladeShapes;
-using Domain.Component.BladeShapeTypes;
+using Domain.Component.BladeShapes.BladeShapeTypes;
 using Domain.Component.Engravings;
 using Domain.Component.Engravings.Support;
 using Domain.Component.Handles;
+using Domain.Component.Product;
 using Domain.Component.Product.Attachments;
 using Domain.Component.Product.CompletedSheath;
 using Domain.Component.Product.Knife;
@@ -26,6 +29,14 @@ using Infrastructure;
 using Infrastructure.Components;
 using Infrastructure.Components.BladeCoatingColors;
 using Infrastructure.Components.BladeShapes;
+using Infrastructure.Components.Engravings;
+using Infrastructure.Components.Handles;
+using Infrastructure.Components.Products;
+using Infrastructure.Components.Products.Attachments;
+using Infrastructure.Components.Sheaths;
+using Infrastructure.Components.Sheaths.Color;
+using Infrastructure.Currencies;
+using Infrastructure.Orders;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -159,21 +170,25 @@ builder.Services.AddSwaggerGen();
 #region repositories
 builder.Services.AddScoped<IComponentRepository<BladeCoatingColor>, BladeCoatingColorRepository>();
 builder.Services.AddScoped<IComponentRepository<BladeShape>, BladeShapeRepository>();
+builder.Services.AddScoped<IComponentRepository<Handle>, HandleRepository>();
+builder.Services.AddScoped<IComponentRepository<Sheath>, SheathRepository>();
+builder.Services.AddScoped<ISheathColorRepository, SheathColorRepository>();
 builder.Services.AddScoped<IRepository<BladeShapeType>, BaseRepository<BladeShapeType>>();
-builder.Services.AddScoped<IRepository<Engraving>, BaseRepository<Engraving>>();
+builder.Services.AddScoped<IComponentRepository<Engraving>, EngravingRepository>();
 builder.Services.AddScoped<IRepository<EngravingTag>, BaseRepository<EngravingTag>>();
 builder.Services.AddScoped<IRepository<EngravingPrice>, BaseRepository<EngravingPrice>>();
-builder.Services.AddScoped<IRepository<Handle>, BaseRepository<Handle>>();
-builder.Services.AddScoped<IRepository<Sheath>, BaseRepository<Sheath>>();
-builder.Services.AddScoped<IRepository<SheathColor>, BaseRepository<SheathColor>>();
-builder.Services.AddScoped<IRepository<Attachment>, BaseRepository<Attachment>>();
-builder.Services.AddScoped<IRepository<Knife>, BaseRepository<Knife>>();
-builder.Services.AddScoped<IRepository<CompletedSheath>, BaseRepository<CompletedSheath>>();
+builder.Services.AddScoped<IComponentRepository<Attachment>, AttachmentRepository>();
+builder.Services.AddScoped<IComponentRepository<Knife>, ComponentRepository<Knife>>();
+builder.Services.AddScoped<IComponentRepository<CompletedSheath>, ComponentRepository<CompletedSheath>>();
 builder.Services.AddScoped<IRepository<Texture>, BaseRepository<Texture>>();
-builder.Services.AddScoped<IRepository<Order>, BaseRepository<Order>>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IRepository<DeliveryType>, BaseRepository<DeliveryType>>();
 builder.Services.AddScoped<IRepository<PaymentMethod>, BaseRepository<PaymentMethod>>();
 builder.Services.AddScoped<IRepository<FileEntity>, BaseRepository<FileEntity>>();
+builder.Services.AddScoped<IRepository<ProductTag>, BaseRepository<ProductTag>>();
+builder.Services.AddScoped<IRepository<AttachmentType>, BaseRepository<AttachmentType>>();
+builder.Services.AddScoped<ICurrencyRepository, CurrencyRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 #endregion
 
 #region Mappers
@@ -193,6 +208,7 @@ builder.Services.AddHttpContextAccessor();
 #region services
 builder.Services.AddScoped<ICustomEmailSender, EmailSenderService>();
 builder.Services.AddScoped<IFileService, AwsService>();
+builder.Services.AddScoped<IGetEngravingPrice, GetEngravingPriceService>();
 /*builder.Services.AddScoped<BladeCoatingColorService>();
 builder.Services.AddScoped<BladeShapeService>();
 builder.Services.AddScoped<CloudinarySettings>();
@@ -210,6 +226,17 @@ builder.Services.AddScoped<UserService>();
 */
 #endregion
 
+#region Seeder
+builder.Services.Scan(scan => scan
+    .FromAssemblyOf<ISeeder>()
+    .AddClasses(classes => classes.AssignableTo<ISeeder>())
+    .AsImplementedInterfaces()
+    .WithTransientLifetime());
+
+builder.Services.AddTransient<MainSeeder>();
+
+#endregion
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -224,6 +251,12 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+#region Seeder
+using var seederScope = app.Services.CreateScope();
+var mainSeeder = seederScope.ServiceProvider.GetRequiredService<MainSeeder>();
+await mainSeeder.SeedAsync();
+#endregion
 
 using (var scope = app.Services.CreateScope())
 {

@@ -5,7 +5,7 @@ namespace Domain.Component.Engravings.Parameters;
 [Owned]
 public class EngravingRotation
 {
-    private const double MinRotation = 0;
+    private const double MinRotation = -360;
     private EngravingRotation()
     {
         
@@ -19,7 +19,7 @@ public class EngravingRotation
     {
         if (rotationX < MinRotation || rotationY < MinRotation || rotationZ < MinRotation)
         {
-            throw new ArgumentException("Rotation must be greater than 0");
+            throw new ArgumentException("Rotation must be greater than -360");
         }
         this.RotationX = rotationX;
         this.RotationY = rotationY;

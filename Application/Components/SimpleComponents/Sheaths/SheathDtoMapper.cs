@@ -1,5 +1,5 @@
 using Application.Components.SimpleComponents.UseCases;
-using Domain.Component.BladeShapeTypes;
+using Domain.Component.BladeShapes.BladeShapeTypes;
 using Domain.Component.Sheaths;
 using Domain.Files;
 using Domain.Translation;

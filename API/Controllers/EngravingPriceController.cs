@@ -22,28 +22,20 @@ public class EngravingPriceController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetEngravingPrice()
+    public async Task<IActionResult> GetEngravingPrice([FromHeader(Name = "Currency")] string currency)
     {
-        string currencyValue;
-        EngravingPrice price;
-        if (Request.Headers.TryGetValue("Currency", out var currency))
-        {
-           currencyValue = currency.ToString();
-        }
-        else
-        {
+        if (string.IsNullOrWhiteSpace(currency))
             return BadRequest("Currency not set in Headers");
-        }
+
         try
         {
-            price = await this._getEngravingPriceService.GetPrice(currencyValue);
+            var price = await this._getEngravingPriceService.GetPrice(currency);
+            return Ok(price);
         }
         catch (Exception e)
         {
             return BadRequest(e.Message);
         }
-        
-        return Ok(price);
     }
 
     [HttpPost]

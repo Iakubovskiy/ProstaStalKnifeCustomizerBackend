@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Domain.Component.BladeShapeTypes;
+using Domain.Component.BladeShapes.BladeShapeTypes;
 
 namespace Domain.Component.Sheaths.Color;
 

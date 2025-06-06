@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Newtonsoft.Json;
 
-namespace Infrastructure.Data.Component.Engravings;
+namespace Infrastructure.Data.Component.Engravings.EngravingTags;
 
 public class EngravingTagConfiguration : IEntityTypeConfiguration<EngravingTag>
 {

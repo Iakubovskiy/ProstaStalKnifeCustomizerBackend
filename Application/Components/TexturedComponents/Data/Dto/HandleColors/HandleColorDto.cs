@@ -1,3 +1,4 @@
+using Domain.Component.BladeShapes.BladeShapeTypes;
 using Domain.Component.Handles;
 using Microsoft.AspNetCore.Http;
 
@@ -14,4 +15,5 @@ public class HandleColorDto : ITexturedComponentDto<Handle>
     public Guid? ColorMapId { get; set; }
     public Guid? HandleModelId { get; set; }
     public double Price { get; set; }
+    public Guid BladeShapeTypeId { get; set; }
 }

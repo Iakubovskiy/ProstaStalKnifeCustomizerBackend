@@ -1,4 +1,4 @@
-using Domain.Component.BladeShapeTypes;
+using Domain.Component.BladeShapes.BladeShapeTypes;
 using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 

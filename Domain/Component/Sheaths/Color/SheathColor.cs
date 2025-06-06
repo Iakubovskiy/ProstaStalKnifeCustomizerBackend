@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Domain.Component.BladeShapeTypes;
+using Domain.Component.BladeShapes.BladeShapeTypes;
 using Domain.Component.Sheaths.Color.Validators;
 using Domain.Component.Textures;
 using Domain.Files;

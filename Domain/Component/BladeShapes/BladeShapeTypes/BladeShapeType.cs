@@ -1,6 +1,6 @@
 ﻿using Domain.Component.Sheaths.Color;
 
-namespace Domain.Component.BladeShapeTypes;
+namespace Domain.Component.BladeShapes.BladeShapeTypes;
 
 public class BladeShapeType : IEntity, IUpdatable<BladeShapeType>
 {
@@ -33,6 +33,7 @@ public class BladeShapeType : IEntity, IUpdatable<BladeShapeType>
 
     public bool Equals(BladeShapeType other)
     {
+        if (other is null) return false;
         return this.Id == other.Id;
     }
 

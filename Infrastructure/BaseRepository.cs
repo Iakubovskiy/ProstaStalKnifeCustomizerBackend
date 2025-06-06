@@ -35,6 +35,7 @@ where TEntity : class, IEntity, IUpdatable<TEntity>
     public virtual async Task<TEntity> Create(TEntity entity)
     {
         await Set.AddAsync(entity);
+        await Context.SaveChangesAsync();
         return entity;
     }
 

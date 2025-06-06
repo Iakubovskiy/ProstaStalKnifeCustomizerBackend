@@ -1,3 +1,4 @@
+using Domain.Component.BladeShapes.BladeShapeTypes;
 using Domain.Component.Handles;
 using Domain.Component.Textures;
 using Domain.Files;
@@ -10,14 +11,17 @@ public class HandleColorDtoMapper : ITexturedComponentDtoMapper<Handle, HandleCo
 {
     private readonly IRepository<FileEntity> _fileRepository;
     private readonly IRepository<Texture> _textureRepository;
+    private readonly IRepository<BladeShapeType> _typeRepository;
     
     public HandleColorDtoMapper(
         IRepository<FileEntity> fileRepository,
-        IRepository<Texture> textureRepository
+        IRepository<Texture> textureRepository,
+        IRepository<BladeShapeType> typeRepository
     )
     {
         this._fileRepository = fileRepository;
         this._textureRepository = textureRepository;
+        this._typeRepository = typeRepository;
     }
     public async Task<Handle> Map(HandleColorDto dto, Texture? texture)
     {
@@ -27,6 +31,7 @@ public class HandleColorDtoMapper : ITexturedComponentDtoMapper<Handle, HandleCo
         FileEntity? colorMap = null;
         FileEntity? handleModel = null;
         Texture? textureEntity = null;
+        BladeShapeType type = await this._typeRepository.GetById(dto.BladeShapeTypeId);
 
         if (dto.TextureId.HasValue)
         {
@@ -52,7 +57,8 @@ public class HandleColorDtoMapper : ITexturedComponentDtoMapper<Handle, HandleCo
             textureEntity,
             colorMap,
             dto.Price,
-            handleModel
+            handleModel,
+            type
         );
     }
 }

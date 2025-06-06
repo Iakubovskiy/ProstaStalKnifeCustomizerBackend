@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Domain.Component.BladeShapes.BladeShapeTypes;
 using Domain.Component.Handles.Validators;
 using Domain.Component.Textures;
 using Domain.Files;
@@ -22,7 +23,8 @@ public class Handle : IComponent, IEntity, IUpdatable<Handle>, ITextured
         Texture? texture,
         FileEntity? colorMap,
         double price,
-        FileEntity? handleModel
+        FileEntity? handleModel,
+        BladeShapeType shapeType
     )
     {
         HandleValidator.Validate(colorCode, colorMap);
@@ -35,6 +37,7 @@ public class Handle : IComponent, IEntity, IUpdatable<Handle>, ITextured
         this.ColorMap = colorMap;
         this.Price = price;
         this.HandleModel = handleModel;
+        this.BladeShapeType = shapeType;
     }
 
     public Guid Id { get; private set; }
@@ -49,6 +52,7 @@ public class Handle : IComponent, IEntity, IUpdatable<Handle>, ITextured
     public double Price { get; private set; }
     
     public FileEntity? HandleModel { get; private set; }
+    public BladeShapeType BladeShapeType { get; private set; }
     
     public double GetPrice(double exchangerRate)
     {
@@ -65,6 +69,7 @@ public class Handle : IComponent, IEntity, IUpdatable<Handle>, ITextured
         this.Texture = handle.Texture;
         this.ColorMap = handle.ColorMap;
         this.Price = handle.Price;
+        this.BladeShapeType = handle.BladeShapeType;
     }
 
     public void Activate()

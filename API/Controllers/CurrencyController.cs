@@ -1,5 +1,6 @@
 using Domain.Currencies;
 using Infrastructure;
+using Infrastructure.Currencies;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -8,9 +9,9 @@ namespace API.Controllers;
 [ApiController]
 public class CurrencyController : ControllerBase
 {
-    private readonly IRepository<Currency> _currencyRepository;
+    private readonly ICurrencyRepository _currencyRepository;
     
-    public CurrencyController(IRepository<Currency> currencyRepository)
+    public CurrencyController(ICurrencyRepository currencyRepository)
     {
         this._currencyRepository = currencyRepository;
     }

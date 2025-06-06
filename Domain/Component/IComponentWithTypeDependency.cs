@@ -1,4 +1,4 @@
-using Domain.Component.BladeShapeTypes;
+using Domain.Component.BladeShapes.BladeShapeTypes;
 
 namespace Domain.Component;
 

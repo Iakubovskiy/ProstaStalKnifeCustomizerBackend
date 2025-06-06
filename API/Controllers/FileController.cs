@@ -21,7 +21,7 @@ public class FileController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateFile([FromForm] IFormFile file)
+    public async Task<IActionResult> CreateFile(IFormFile file)
     {
         Guid id = Guid.NewGuid();
         string fileUrl = await this._fileService.SaveFile(file, file.FileName);

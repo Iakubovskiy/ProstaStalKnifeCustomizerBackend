@@ -3,7 +3,7 @@ using Domain.Translation;
 using Microsoft.AspNetCore.Mvc.ModelBinding; 
 using Domain.Component.BladeShapes.BladeCharacteristic;
 using Domain.Component.BladeShapes.Validators;
-using Domain.Component.BladeShapeTypes;
+using Domain.Component.BladeShapes.BladeShapeTypes;
 using Domain.Component.Sheaths;
 using Domain.Files;
 
@@ -51,13 +51,9 @@ public class BladeShape : IEntity, IComponent, IUpdatable<BladeShape>
 
     public BladeShapeType Type { get; private set; }
     public Translations Name { get; private set; }
-
-    [MaxLength(UrlMaxLength)]
     public FileEntity? BladeShapePhoto { get; private set; }
     public double Price { get; private set; }
     public BladeCharacteristics BladeCharacteristics { get; private set; }
-
-    [MaxLength(UrlMaxLength)]
     public FileEntity BladeShapeModel { get; private set; }
     public bool IsActive { get; private set; } 
     public Sheath? Sheath { get; private set; } 

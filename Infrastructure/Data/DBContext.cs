@@ -1,20 +1,23 @@
 ﻿using Domain.Component.BladeCoatingColors;
 using Domain.Component.BladeShapes;
-using Domain.Component.BladeShapeTypes;
+using Domain.Component.BladeShapes.BladeShapeTypes;
 using Domain.Component.Engravings;
 using Domain.Component.Engravings.Support;
 using Domain.Component.Handles;
 using Domain.Component.Product.Attachments;
+using Domain.Component.Product.CompletedSheath;
 using Domain.Component.Product.Knife;
 using Domain.Component.Sheaths;
 using Domain.Component.Sheaths.Color;
 using Domain.Component.Textures;
+using Domain.Currencies;
 using Domain.Order;
 using Domain.Order.Support;
 using Domain.Users;
 using Infrastructure.Data.Component.BladeCoatingColors;
 using Infrastructure.Data.Component.BladeShapes;
 using Infrastructure.Data.Component.Engravings;
+using Infrastructure.Data.Component.Engravings.EngravingTags;
 using Infrastructure.Data.Component.Handles;
 using Infrastructure.Data.Component.Products;
 using Infrastructure.Data.Component.Products.Attachments;
@@ -48,6 +51,8 @@ namespace Infrastructure.Data
         public DbSet<Texture> Textures { get; set; }
         public DbSet<Attachment> Attachments { get; set; }
         public DbSet<AttachmentType> AttachmentTypes { get; set; }
+        public DbSet<Currency> Currencies { get; set; }
+        public DbSet<CompletedSheath> CompletedSheaths { get; set; }
         
         public DbSet<Knife> Knives { get; set; }
         public DbSet<DeliveryType> DeliveryTypes { get; set; }

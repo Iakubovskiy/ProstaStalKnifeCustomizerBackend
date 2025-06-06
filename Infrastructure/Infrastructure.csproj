@@ -17,10 +17,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Data\Component\Products\CompletedSheaths\" />
-      <Folder Include="Data\Component\Textures\" />
-      <Folder Include="Data\Currencies\" />
-      <Folder Include="Data\Files\" />
       <Folder Include="Data\Translation\" />
       <Folder Include="Data\Users\" />
     </ItemGroup>
