@@ -14,9 +14,10 @@ public class ActivateComponentService<T>: IActivate<T> where T: class, IEntity, 
         this._componentRepository = componentRepository;
     }
     
-    public void Activate(T component)
+    public async Task Activate(Guid id)
     {
+        T component = await this._componentRepository.GetById(id);
         component.Activate();
-        this._componentRepository.Update(component.Id, component);
+        await this._componentRepository.Update(component.Id, component);
     }
 }

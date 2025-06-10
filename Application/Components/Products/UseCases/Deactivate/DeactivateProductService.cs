@@ -14,9 +14,10 @@ where T: Product, IUpdatable<T>
         this._productRepository = productRepository;
     }
 
-    public async void Deactivate(Guid id)
+    public async Task Deactivate(Guid id)
     {
         T product = await this._productRepository.GetById(id);
         product.Deactivate();
+        await this._productRepository.Update(id, product);
     }
 }

@@ -14,7 +14,7 @@ public class DeactivateSheathColor : IDeactivateSheathColorService
     {
         this._sheathColorRepository = sheathColorRepository;
     }
-    public async void Deactivate(Guid id)
+    public async Task Deactivate(Guid id)
     {
         SheathColor sheathColor = await this._sheathColorRepository.GetById(id);
         sheathColor.Deactivate();

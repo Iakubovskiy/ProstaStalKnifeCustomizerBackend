@@ -1,4 +1,4 @@
-using Application.Components.Products.Attachemts;
+using Application.Components.Products.Attachments;
 using Application.Components.SimpleComponents.Engravings;
 using Application.Components.SimpleComponents.UseCases;
 using Domain.Component.Engravings;

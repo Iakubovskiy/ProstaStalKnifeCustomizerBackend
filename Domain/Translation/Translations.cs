@@ -10,9 +10,9 @@ public class Translations : ITranslatable
         
     }
     
-    public Translations(Dictionary<string, string> translations)
+    public Translations(Dictionary<string, string> translationDictionary)
     {
-        this.TranslationDictionary = translations;    
+        this.TranslationDictionary = translationDictionary;    
     }
 
     public Dictionary<string, string> TranslationDictionary { get; private set;  }

@@ -5,5 +5,5 @@ namespace Application.Components.ComponentsWithType.UseCases.Deactivate;
 
 public interface IDeactivateSheathColorService
 {
-    public void Deactivate(Guid id);
+    public Task Deactivate(Guid id);
 }

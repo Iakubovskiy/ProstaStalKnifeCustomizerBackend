@@ -11,7 +11,7 @@ public class ActivateSheathColor : IActivateSheathColorService
     {
         this._sheathColorRepository = sheathColorRepository;
     }
-    public async void Activate(Guid id)
+    public async Task Activate(Guid id)
     {
         SheathColor sheathColor = await this._sheathColorRepository.GetById(id);
         sheathColor.Activate();

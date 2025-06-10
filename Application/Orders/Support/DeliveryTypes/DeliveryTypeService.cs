@@ -7,11 +7,11 @@ namespace Application.Orders.Support.DeliveryTypes;
 public class DeliveryTypeService : IDeliveryTypeService
 {
     private readonly IDeliveryTypeRepository _deliveryTypeRepository;
-    private readonly DeliveryTypeDtoMapper _deliveryTypeDtoMapper;
+    private readonly IDeliveryTypeDtoMapper _deliveryTypeDtoMapper;
     
     public DeliveryTypeService(
         IDeliveryTypeRepository deliveryTypeRepository,
-        DeliveryTypeDtoMapper deliveryTypeDtoMapper
+        IDeliveryTypeDtoMapper deliveryTypeDtoMapper
     )
     {
         this._deliveryTypeRepository = deliveryTypeRepository;

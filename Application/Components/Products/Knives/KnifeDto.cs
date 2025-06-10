@@ -1,4 +1,4 @@
-using Application.Components.Products.Attachemts;
+using Application.Components.Products.Attachments;
 using Application.Components.SimpleComponents.Engravings;
 
 namespace Application.Components.Products.Knives;

@@ -60,7 +60,7 @@ public class EngravingSeeder : ISeeder
             new EngravingPosition(0.0, 0.0, 0.1), new EngravingRotation(0.0, 0.0, 0.0), new EngravingScale(1.0, 1.0, 1.0),
             new List<EngravingTag> { tagScandinavian, tagRunes },
             new Translations(new Dictionary<string, string> { { "en", "Ancient runic compass" }, { "ua", "Стародавній рунічний компас" }, }),
-            standardPrice, true);
+            standardPrice.Price, true);
 
         var engraving2 = new Engraving(
             new Guid("f2b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d"),
@@ -69,7 +69,7 @@ public class EngravingSeeder : ISeeder
             new EngravingPosition(-2.0, 1.5, 0.0), new EngravingRotation(0.0, 0.0, 15.0), new EngravingScale(0.8, 0.8, 0.8),
             new List<EngravingTag> { tagMinimalist },
             new Translations(new Dictionary<string, string> { { "en", "Personalized text engraving" }, { "ua", "Персоналізоване гравіювання тексту" }, }),
-            standardPrice, true);
+            standardPrice.Price, true);
 
         var engraving3 = new Engraving(
             new Guid("a3b4c5d6-e7f8-4a9b-0c1d-2e3f4a5b6c7e"),
@@ -78,7 +78,7 @@ public class EngravingSeeder : ISeeder
             new EngravingPosition(0.0, -1.0, 0.05), new EngravingRotation(0.0, 0.0, 0.0), new EngravingScale(1.2, 1.2, 1.2),
             new List<EngravingTag> { tagMilitary },
             new Translations(new Dictionary<string, string> { { "en", "Ukrainian coat of arms" }, { "ua", "Герб України" }, }),
-            standardPrice, true);
+            standardPrice.Price, true);
             
         var engraving4 = new Engraving(
             new Guid("b4c5d6e7-f8a9-4b0c-1d2e-3f4a5b6c7d8f"),
@@ -87,7 +87,7 @@ public class EngravingSeeder : ISeeder
             new EngravingPosition(1.0, 2.5, 0.0), new EngravingRotation(0.0, 0.0, -5.0), new EngravingScale(0.9, 0.9, 0.9),
             new List<EngravingTag>(),
             new Translations(new Dictionary<string, string> { { "en", "Fortune favors the bold" }, { "ua", "Фортуна допомагає сміливим" }, }),
-            standardPrice, false);
+            standardPrice.Price, false);
             
         var engraving5 = new Engraving(
             new Guid("c5d6e7f8-a9b0-4c1d-2e3f-4a5b6c7d8e90"),
@@ -96,7 +96,7 @@ public class EngravingSeeder : ISeeder
             new EngravingPosition(0.0, 0.0, 0.1), new EngravingRotation(0.0, 0.0, 45.0), new EngravingScale(1.1, 1.1, 1.1),
             new List<EngravingTag> { tagCeltic },
             new Translations(new Dictionary<string, string> { { "en", "Traditional Celtic pattern" }, { "ua", "Традиційний кельтський візерунок" }, }),
-            standardPrice, true);
+            standardPrice.Price, true);
             
         var engraving6 = new Engraving(
             new Guid("d6e7f8a9-b0c1-4d2e-3f4a-5b6c7d8e9f12"),
@@ -105,7 +105,7 @@ public class EngravingSeeder : ISeeder
             new EngravingPosition(1.0, -1.5, 0.2), new EngravingRotation(0.0, 0.0, 0.0), new EngravingScale(1.5, 1.5, 1.5),
             new List<EngravingTag> { tagFantasy },
             new Translations(new Dictionary<string, string> { { "en", "Mythical dragon engraving" }, { "ua", "Гравіювання міфічного дракона" }, }),
-            standardPrice, true);
+            standardPrice.Price, true);
             
         var engraving7 = new Engraving(
             new Guid("e7f8a9b0-c1d2-4e3f-4a5b-6c7d8e9f1234"),
@@ -114,7 +114,7 @@ public class EngravingSeeder : ISeeder
             new EngravingPosition(0.0, 3.0, 0.0), new EngravingRotation(0.0, 0.0, 0.0), new EngravingScale(0.7, 0.7, 0.7),
             new List<EngravingTag>(),
             new Translations(new Dictionary<string, string> { { "en", "Through hardship to the stars" }, { "ua", "Крізь терни до зірок" }, }),
-            standardPrice, true);
+            standardPrice.Price, true);
             
         var engraving8 = new Engraving(
             new Guid("f8a9b0c1-d2e3-4f4a-5b6c-7d8e9f123456"),
@@ -123,7 +123,7 @@ public class EngravingSeeder : ISeeder
             new EngravingPosition(-0.5, 0.5, 0.15), new EngravingRotation(0.0, 0.0, -10.0), new EngravingScale(1.3, 1.3, 1.3),
             new List<EngravingTag> { tagScandinavian, tagFantasy },
             new Translations(new Dictionary<string, string> { { "en", "Mjölnir symbol" }, { "ua", "Символ Мйольнір" }, }),
-            standardPrice, true);
+            standardPrice.Price, true);
             
         var engraving9 = new Engraving(
             new Guid("a9b0c1d2-e3f4-4a5b-6c7d-8e9f12345678"),
@@ -132,7 +132,7 @@ public class EngravingSeeder : ISeeder
             new EngravingPosition(2.0, -2.0, 0.0), new EngravingRotation(0.0, 0.0, 0.0), new EngravingScale(0.6, 0.6, 0.6),
             new List<EngravingTag> { tagMinimalist },
             new Translations(new Dictionary<string, string> { { "en", "Memorable date" }, { "ua", "Пам'ятна дата" }, }),
-            standardPrice, false);
+            standardPrice.Price, false);
             
         var engraving10 = new Engraving(
             new Guid("b0c1d2e3-f4a5-4b6c-7d8e-9f1234567890"),
@@ -141,7 +141,7 @@ public class EngravingSeeder : ISeeder
             new EngravingPosition(0.0, 0.0, 0.1), new EngravingRotation(0.0, 0.0, 0.0), new EngravingScale(1.0, 1.0, 1.0),
             new List<EngravingTag> { tagScandinavian },
             new Translations(new Dictionary<string, string> { { "en", "Lone wolf engraving" }, { "ua", "Гравіювання самотнього вовка" }, }),
-            standardPrice, true);
+            standardPrice.Price, true);
 
         await _engravingRepository.Create(engraving1);
         await _engravingRepository.Create(engraving2);

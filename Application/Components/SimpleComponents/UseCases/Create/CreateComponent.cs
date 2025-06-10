@@ -8,7 +8,7 @@ using Infrastructure.Components;
 namespace Application.Components.SimpleComponents.UseCases.Create;
 
 public class CreateComponent<T, TDto> : ICreateService<T, TDto> 
-    where T : class, ITextured, IComponent, IEntity, IUpdatable<T>
+    where T : class, IComponent, IEntity, IUpdatable<T>
 {
     private readonly IComponentRepository<T> _componentRepository;
     private readonly IComponentDtoMapper<T, TDto> _componentDtoMapper;

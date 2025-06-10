@@ -18,7 +18,7 @@ public class Sheath : IEntity, IComponent, IUpdatable<Sheath>
         FileEntity? model, 
         BladeShapeType type, 
         double price,
-        bool isActive 
+        bool isActive = true
     )
     {
         this.Id = id;

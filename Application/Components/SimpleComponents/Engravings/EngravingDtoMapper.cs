@@ -79,7 +79,7 @@ public class EngravingDtoMapper : IComponentDtoMapper<Engraving, EngravingDto>
             engravingScale,
             tags,
             descriptions,
-            engravingPrice,
+            engravingPrice.Price,
             dto.IsActive
         );
     }

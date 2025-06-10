@@ -27,7 +27,7 @@ public class BladeShape : IEntity, IComponent, IUpdatable<BladeShape>
         BladeCharacteristics bladeCharacteristics,
         Sheath? sheath,
         FileEntity bladeShapeModel,
-        bool isActive
+        bool isActive = true
     )
     {
         this.Id = id;

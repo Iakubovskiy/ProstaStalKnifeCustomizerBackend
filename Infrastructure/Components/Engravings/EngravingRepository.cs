@@ -1,3 +1,4 @@
+using System.Data.Entity.Core;
 using Domain.Component.Engravings;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,15 @@ public class EngravingRepository : ComponentRepository<Engraving>
     {
         return await this.Set.Where(component => component.IsActive)
             .Include(engraving => engraving.Tags)
+            .Include(engraving => engraving.Picture)
             .ToListAsync();
+    }
+    public override async Task<Engraving> GetById(Guid id)
+    {
+        return await this.Set
+            .Include(engraving => engraving.Tags)
+            .Include(engraving => engraving.Picture)
+            .FirstOrDefaultAsync(engraving => engraving.Id == id) 
+               ?? throw new ObjectNotFoundException();
     }
 }

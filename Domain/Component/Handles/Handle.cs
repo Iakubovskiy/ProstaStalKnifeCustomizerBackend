@@ -24,7 +24,7 @@ public class Handle : IComponent, IEntity, IUpdatable<Handle>, ITextured
         FileEntity? colorMap,
         double price,
         FileEntity? handleModel,
-        BladeShapeType shapeType
+        BladeShapeType bladeShapeType
     )
     {
         HandleValidator.Validate(colorCode, colorMap);
@@ -37,7 +37,7 @@ public class Handle : IComponent, IEntity, IUpdatable<Handle>, ITextured
         this.ColorMap = colorMap;
         this.Price = price;
         this.HandleModel = handleModel;
-        this.BladeShapeType = shapeType;
+        this.BladeShapeType = bladeShapeType;
     }
 
     public Guid Id { get; private set; }

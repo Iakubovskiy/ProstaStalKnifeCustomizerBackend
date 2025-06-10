@@ -14,9 +14,10 @@ where T: Product, IUpdatable<T>
         this._productRepository = productRepository;
     }
 
-    public async void Activate(Guid id)
+    public async Task Activate(Guid id)
     {
         T product = await this._productRepository.GetById(id);
         product.Activate();
+        await this._productRepository.Update(id, product);
     }
 }

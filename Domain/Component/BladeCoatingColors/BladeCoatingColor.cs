@@ -21,7 +21,8 @@ public class BladeCoatingColor : IEntity, IComponent, IUpdatable<BladeCoatingCol
         string? colorCode, 
         string engravingColorCode, 
         Texture? texture, 
-        FileEntity? colorMapUrl
+        FileEntity? colorMap,
+        bool isActive = true 
     )
     {
         this.Id = id;
@@ -31,8 +32,8 @@ public class BladeCoatingColor : IEntity, IComponent, IUpdatable<BladeCoatingCol
         this.ColorCode = colorCode;
         this.EngravingColorCode = engravingColorCode;
         this.Texture = texture;
-        this.ColorMap = colorMapUrl;
-        this.IsActive = true;
+        this.ColorMap = colorMap;
+        this.IsActive = isActive;
     }
     [BindNever]
     public Guid Id { get; private set; }

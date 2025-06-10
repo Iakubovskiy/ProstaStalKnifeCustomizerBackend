@@ -27,8 +27,8 @@ public class Engraving : IEntity, IComponent, IUpdatable<Engraving>
         EngravingScale engravingScale,
         List<EngravingTag> tags,
         Translations description,
-        EngravingPrice price,
-        bool isActive
+        double price,
+        bool isActive = true
     )
     {
         EngravingVlaidator.Validate(side, text, font, picture);
@@ -44,7 +44,7 @@ public class Engraving : IEntity, IComponent, IUpdatable<Engraving>
         this.Tags = tags;
         this.Description = description;
         this.IsActive = isActive;
-        this.Price = price.Price;
+        this.Price = price;
     }
     
     public Guid Id { get; private set; }
@@ -95,6 +95,10 @@ public class Engraving : IEntity, IComponent, IUpdatable<Engraving>
         this.EngravingRotation = engraving.EngravingRotation;
         this.EngravingScale = engraving.EngravingScale;
         this.Tags = engraving.Tags;
+        this.Description = engraving.Description;
+        this.Price = engraving.Price;
+        this.IsActive = engraving.IsActive;
+        this.Name = engraving.Name;
     }
 
     public void Activate()

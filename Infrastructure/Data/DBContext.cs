@@ -26,12 +26,13 @@ using Infrastructure.Data.Component.Sheaths;
 using Infrastructure.Data.Component.Sheaths.Color;
 using Infrastructure.Data.Orders;
 using Infrastructure.Data.Orders.Support;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Infrastructure.Data
 {
-    public class DBContext : IdentityDbContext<User>
+    public class DBContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
     {
         public DBContext(DbContextOptions<DBContext> options)
         : base(options)
@@ -74,6 +75,7 @@ namespace Infrastructure.Data
             modelBuilder.ApplyConfiguration(new KnifeConfiguration());
             modelBuilder.ApplyConfiguration(new OrderConfiguration());
             modelBuilder.ApplyConfiguration(new ProductConfiguration());
+            modelBuilder.ApplyConfiguration(new ProductTagConfiguration());
             modelBuilder.ApplyConfiguration(new AttachmentConfiguration());
             modelBuilder.ApplyConfiguration(new AttachmentTypeConfiguration());
             modelBuilder.ApplyConfiguration(new SheathConfiguration());

@@ -4,26 +4,17 @@ using Newtonsoft.Json;
 
 namespace Application.Orders.Support.DeliveryTypes.Data;
 
-public class DeliveryTypeDtoMapper
+public class DeliveryTypeDtoMapper : IDeliveryTypeDtoMapper
 {
     public async Task<DeliveryType> Map(DeliveryTypeDto dto)
     {
         Guid id = dto.Id ?? Guid.NewGuid();
-        Translations names;
+        Translations names = new Translations(dto.Names);
         Translations? comment = null;
-        try
-        {
-            names = JsonConvert.DeserializeObject<Translations>(dto.NamesJson) 
-                ?? throw new Exception("Names can't be empty");
-        }
-        catch (Exception e)
-        {
-            throw new Exception("Delivery type name can't be empty", e);
-        }
         
-        if(dto.CommentJson != null)
+        if(dto.Comment != null)
         {
-            comment = JsonConvert.DeserializeObject<Translations>(dto.CommentJson);
+            comment = new Translations(dto.Comment);
         }
 
         return new DeliveryType(

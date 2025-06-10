@@ -17,6 +17,7 @@ public class BladeShapeRepository : ComponentRepository<BladeShape>
         return await this.Set
             .Include(shape => shape.Sheath)
             .Include(shape => shape.Type)
+            .Include(shape => shape.BladeShapeModel)
             .ToListAsync();
     }
 
@@ -25,6 +26,7 @@ public class BladeShapeRepository : ComponentRepository<BladeShape>
         return await this.Set.Where(shape => shape.IsActive == true)
             .Include(shape => shape.Sheath)
             .Include(shape => shape.Type)
+            .Include(shape => shape.BladeShapeModel)
             .ToListAsync();
     }
     
@@ -33,6 +35,7 @@ public class BladeShapeRepository : ComponentRepository<BladeShape>
         return await this.Set
                 .Include(shape => shape.Sheath)
                 .Include(shape => shape.Type)
+                .Include(shape => shape.BladeShapeModel)
                 .FirstOrDefaultAsync(shape =>  shape.Id == id) 
                 ?? throw new ObjectNotFoundException("Entity not found");
     }

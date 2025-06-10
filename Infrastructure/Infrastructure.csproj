@@ -18,7 +18,6 @@
 
     <ItemGroup>
       <Folder Include="Data\Translation\" />
-      <Folder Include="Data\Users\" />
     </ItemGroup>
 
 </Project>

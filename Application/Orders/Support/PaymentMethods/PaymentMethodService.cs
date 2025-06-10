@@ -7,11 +7,11 @@ namespace Application.Orders.Support.PaymentMethods;
 public class PaymentMethodService : IPaymentMethodService
 {
     private readonly IPaymentMethodRepository _paymentMethodRepository;
-    private readonly PaymentMethodDtoMapper _paymentMethodDtoMapper;
+    private readonly IPaymentMethodDtoMapper _paymentMethodDtoMapper;
     
     public PaymentMethodService(
         IPaymentMethodRepository paymentMethodRepository,
-        PaymentMethodDtoMapper paymentMethodDtoMapper
+        IPaymentMethodDtoMapper paymentMethodDtoMapper
     )
     {
         this._paymentMethodRepository = paymentMethodRepository;

@@ -1,10 +1,44 @@
 using System.Text;
 using Application;
+using Application.Components.Activate;
+using Application.Components.ComponentsWithType.SheathColors;
+using Application.Components.ComponentsWithType.SheathColors.Activate;
+using Application.Components.ComponentsWithType.SheathColors.Deactivate;
+using Application.Components.ComponentsWithType.UseCases.Create;
+using Application.Components.ComponentsWithType.UseCases.Deactivate;
+using Application.Components.ComponentsWithType.UseCases.Get;
+using Application.Components.ComponentsWithType.UseCases.Update;
+using Application.Components.Deactivate;
 using Application.Components.Prices.Engravings;
+using Application.Components.Products;
+using Application.Components.Products.Attachments;
+using Application.Components.Products.Attachments.Type;
+using Application.Components.Products.CompletedSheaths;
+using Application.Components.Products.Knives;
+using Application.Components.Products.UseCases.Activate;
+using Application.Components.Products.UseCases.Create;
+using Application.Components.Products.UseCases.Deactivate;
+using Application.Components.Products.UseCases.Update;
+using Application.Components.SimpleComponents.BladeShapes;
+using Application.Components.SimpleComponents.Engravings;
+using Application.Components.SimpleComponents.Engravings.EngravingTags;
+using Application.Components.SimpleComponents.Products.ProductTags;
+using Application.Components.SimpleComponents.Sheaths;
+using Application.Components.SimpleComponents.Textures;
+using Application.Components.SimpleComponents.UseCases;
+using Application.Components.SimpleComponents.UseCases.Create;
+using Application.Components.SimpleComponents.UseCases.Update;
 using Application.Components.TexturedComponents.Data;
 using Application.Components.TexturedComponents.Data.Dto.BladeCoatings;
+using Application.Components.TexturedComponents.Data.Dto.HandleColors;
 using Application.Files;
-using Domain.Component;
+using Application.Orders.Support.DeliveryTypes;
+using Application.Orders.Support.DeliveryTypes.Data;
+using Application.Orders.Support.PaymentMethods;
+using Application.Orders.Support.PaymentMethods.Data;
+using Application.Users.UseCases.Authentication;
+using Application.Users.UseCases.Registration;
+using Application.Users.UseCases.Update;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Infrastructure.Data;
@@ -19,10 +53,8 @@ using Domain.Component.Product.Attachments;
 using Domain.Component.Product.CompletedSheath;
 using Domain.Component.Product.Knife;
 using Domain.Component.Sheaths;
-using Domain.Component.Sheaths.Color;
 using Domain.Component.Textures;
 using Domain.Files;
-using Domain.Order;
 using Domain.Order.Support;
 using Domain.Users;
 using Infrastructure;
@@ -35,32 +67,47 @@ using Infrastructure.Components.Products;
 using Infrastructure.Components.Products.Attachments;
 using Infrastructure.Components.Sheaths;
 using Infrastructure.Components.Sheaths.Color;
+using Infrastructure.Components.Textures;
 using Infrastructure.Currencies;
 using Infrastructure.Orders;
+using Infrastructure.Orders.Support.DeliveryTypes;
+using Infrastructure.Orders.Support.PaymentMethods;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Application.Components.TexturedComponents.UseCases.Create;
+using Application.Components.TexturedComponents.UseCases.Update;
+using Domain.Component.Sheaths.Color;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = builder.Configuration.GetValue<string>("DATABASE_URL");
-if (connectionString != null)
+if (builder.Environment.IsEnvironment("Test"))
 {
-    var databaseUrl = new Uri(connectionString);
-    var userInfo = databaseUrl.UserInfo.Split(':');
-
-    connectionString = $"Host={databaseUrl.Host};" +
-                      $"Port={databaseUrl.Port};" +
-                      $"Database={databaseUrl.AbsolutePath.Trim('/')};" +
-                      $"Username={userInfo[0]};" +
-                      $"Password={userInfo[1]};" +
-                      $"SSL Mode=Require;Trust Server Certificate=True;";
+    builder.Services.AddDbContext<DBContext>(options =>
+        options.UseInMemoryDatabase("TestDb"));
 }
 else
 {
-    connectionString = builder.Configuration.GetConnectionString("DBContext");
+
+    var connectionString = builder.Configuration.GetValue<string>("DATABASE_URL");
+    if (connectionString != null)
+    {
+        var databaseUrl = new Uri(connectionString);
+        var userInfo = databaseUrl.UserInfo.Split(':');
+
+        connectionString = $"Host={databaseUrl.Host};" +
+                           $"Port={databaseUrl.Port};" +
+                           $"Database={databaseUrl.AbsolutePath.Trim('/')};" +
+                           $"Username={userInfo[0]};" +
+                           $"Password={userInfo[1]};" +
+                           $"SSL Mode=Require;Trust Server Certificate=True;";
+    }
+    else
+    {
+        connectionString = builder.Configuration.GetConnectionString("DBContext");
+    }
+    builder.Services.AddDbContext<DBContext>(options =>
+        options.UseNpgsql(connectionString));
 }
-builder.Services.AddDbContext<DBContext>(options =>
-    options.UseNpgsql(connectionString));
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowLocalhost",
@@ -144,6 +191,8 @@ builder.Services.AddSwaggerGen(options =>
             new string[] {}
         }
     });
+    
+    options.EnableAnnotations();
 });
 builder.Services.Configure<IdentityOptions>(options =>
 {
@@ -154,7 +203,7 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequiredLength = 1;
 });
 
-builder.Services.AddIdentity<User, IdentityRole>()
+builder.Services.AddIdentity<User, IdentityRole<Guid>>()
     .AddEntityFrameworkStores<DBContext>()
     .AddDefaultTokenProviders();
 
@@ -168,6 +217,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 #region repositories
+
 builder.Services.AddScoped<IComponentRepository<BladeCoatingColor>, BladeCoatingColorRepository>();
 builder.Services.AddScoped<IComponentRepository<BladeShape>, BladeShapeRepository>();
 builder.Services.AddScoped<IComponentRepository<Handle>, HandleRepository>();
@@ -180,7 +230,7 @@ builder.Services.AddScoped<IRepository<EngravingPrice>, BaseRepository<Engraving
 builder.Services.AddScoped<IComponentRepository<Attachment>, AttachmentRepository>();
 builder.Services.AddScoped<IComponentRepository<Knife>, ComponentRepository<Knife>>();
 builder.Services.AddScoped<IComponentRepository<CompletedSheath>, ComponentRepository<CompletedSheath>>();
-builder.Services.AddScoped<IRepository<Texture>, BaseRepository<Texture>>();
+builder.Services.AddScoped<IRepository<Texture>, TextureRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IRepository<DeliveryType>, BaseRepository<DeliveryType>>();
 builder.Services.AddScoped<IRepository<PaymentMethod>, BaseRepository<PaymentMethod>>();
@@ -189,11 +239,17 @@ builder.Services.AddScoped<IRepository<ProductTag>, BaseRepository<ProductTag>>(
 builder.Services.AddScoped<IRepository<AttachmentType>, BaseRepository<AttachmentType>>();
 builder.Services.AddScoped<ICurrencyRepository, CurrencyRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IDeliveryTypeRepository, DeliveryTypeRepository>();
+builder.Services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository>();
+builder.Services.AddScoped<IRepository<User>, BaseRepository<User>>();
 #endregion
 
 #region Mappers
 
 builder.Services.AddScoped<ITexturedComponentDtoMapper<BladeCoatingColor, BladeCoatingDto>, BladeCoatingMapper>();
+builder.Services.AddScoped<ITexturedComponentDtoMapper<Handle, HandleColorDto>, HandleColorDtoMapper>();
+builder.Services.AddScoped<IComponentDtoMapper<Sheath, SheathDto>, SheathDtoMapper>();
+builder.Services.AddScoped<IComponentWithTypeDtoMapper<SheathColor, SheathColorDto>, SheathColorDtoMapper>();
 
 #endregion
 
@@ -206,24 +262,105 @@ builder.Services.AddScoped<ITexturedComponentDto<BladeCoatingColor>, BladeCoatin
 builder.Services.AddHttpContextAccessor();
 
 #region services
+
 builder.Services.AddScoped<ICustomEmailSender, EmailSenderService>();
 builder.Services.AddScoped<IFileService, AwsService>();
 builder.Services.AddScoped<IGetEngravingPrice, GetEngravingPriceService>();
-/*builder.Services.AddScoped<BladeCoatingColorService>();
-builder.Services.AddScoped<BladeShapeService>();
-builder.Services.AddScoped<CloudinarySettings>();
-builder.Services.AddScoped<DeliveryTypeService>();
-builder.Services.AddScoped<EngravingService>();
-builder.Services.AddScoped<EngravingPriceService>();
-builder.Services.AddScoped<FasteningService>();
-builder.Services.AddScoped<HandleColorService>();
-builder.Services.AddScoped<KnifeService>();
-builder.Services.AddScoped<OrderService>();
-builder.Services.AddScoped<OrderStatusesService>();
-builder.Services.AddScoped<SheathColorService>();
-builder.Services.AddScoped<AuthService>();
-builder.Services.AddScoped<UserService>();
-*/
+
+builder.Services.AddScoped<ISimpleCreateService<EngravingTag, EngravingTagDto>, SimpleCreateService<EngravingTag, EngravingTagDto>>();
+builder.Services.AddScoped<IComponentDtoMapper<EngravingTag, EngravingTagDto>, EngravingTagDtoMapper>();
+builder.Services.AddScoped<ISimpleUpdateService<EngravingTag, EngravingTagDto>, SimpleUpdateService<EngravingTag, EngravingTagDto>>();
+
+builder.Services.AddScoped<ISimpleCreateService<ProductTag, ProductTagDto>, SimpleCreateService<ProductTag, ProductTagDto>>();
+builder.Services.AddScoped<IComponentDtoMapper<ProductTag, ProductTagDto>, ProductTagDtoMapper>();
+builder.Services.AddScoped<ISimpleUpdateService<ProductTag, ProductTagDto>, SimpleUpdateService<ProductTag, ProductTagDto>>();
+
+builder.Services.AddScoped<ISimpleCreateService<AttachmentType, AttachmentTypeDto>, SimpleCreateService<AttachmentType, AttachmentTypeDto>>();
+builder.Services.AddScoped<IComponentDtoMapper<AttachmentType, AttachmentTypeDto>, AttachmentTypeDtoMapper>();
+
+builder.Services.AddScoped<ISimpleCreateService<Texture, TextureDto>, SimpleCreateService<Texture, TextureDto>>();
+builder.Services.AddScoped<ISimpleUpdateService<Texture, TextureDto>, SimpleUpdateService<Texture, TextureDto>>();
+builder.Services.AddScoped<IComponentDtoMapper<Texture, TextureDto>, TextureDtoMapper>();
+
+builder.Services.AddScoped<IDeliveryTypeService, DeliveryTypeService>();
+builder.Services.AddScoped<IDeliveryTypeDtoMapper, DeliveryTypeDtoMapper>();
+
+builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
+builder.Services.AddScoped<IPaymentMethodDtoMapper, PaymentMethodDtoMapper>();
+
+builder.Services.AddScoped<IAuthService, AuthService>();
+
+builder.Services.AddScoped<IRegistrationService, RegistrationService>();
+builder.Services.AddScoped<IUpdateUserService, UpdateUserService>();
+
+builder.Services.AddScoped<ICreateProductService<Attachment, AttachmentDto>, CreateProductService<Attachment, AttachmentDto>>();
+builder.Services.AddScoped<IUpdateProductService<Attachment, AttachmentDto>, UpdateProductService<Attachment, AttachmentDto>>();
+builder.Services.AddScoped<IProductDtoMapper<Attachment, AttachmentDto>, AttachmentDtoMapper>();
+builder.Services.AddScoped<IActivateProduct<Attachment>, ActivateProductService<Attachment>>();
+builder.Services.AddScoped<IDeactivateProduct<Attachment>, DeactivateProductService<Attachment>>();
+
+builder.Services.AddScoped<ICreateProductService<CompletedSheath, CompletedSheathDto>, CreateProductService<CompletedSheath, CompletedSheathDto>>();
+builder.Services.AddScoped<IUpdateProductService<CompletedSheath, CompletedSheathDto>, UpdateProductService<CompletedSheath, CompletedSheathDto>>();
+builder.Services.AddScoped<IProductDtoMapper<CompletedSheath, CompletedSheathDto>, CompletedSheathDtoMapper>();
+builder.Services.AddScoped<IActivateProduct<CompletedSheath>, ActivateProductService<CompletedSheath>>();
+builder.Services.AddScoped<IDeactivateProduct<CompletedSheath>, DeactivateProductService<CompletedSheath>>();
+
+builder.Services.AddScoped<ICreateProductService<Knife, KnifeDto>, CreateProductService<Knife, KnifeDto>>();
+builder.Services.AddScoped<IUpdateProductService<Knife, KnifeDto>, UpdateProductService<Knife, KnifeDto>>();
+builder.Services.AddScoped<IProductDtoMapper<Knife, KnifeDto>, KnifeDtoMapper>();
+builder.Services.AddScoped<IActivateProduct<Knife>, ActivateProductService<Knife>>();
+builder.Services.AddScoped<IDeactivateProduct<Knife>, DeactivateProductService<Knife>>();
+
+
+builder.Services.AddScoped<IActivate<BladeCoatingColor>, ActivateComponentService<BladeCoatingColor>>();
+builder.Services.AddScoped<IDeactivate<BladeCoatingColor>, DeactivateComponentService<BladeCoatingColor>>();
+builder.Services.AddScoped<ICreateTexturedComponent<BladeCoatingColor, BladeCoatingDto>, 
+    CreateTexturedComponent<BladeCoatingColor, BladeCoatingDto>>();
+builder.Services.AddScoped<IUpdateTexturedComponent<BladeCoatingColor, BladeCoatingDto>, 
+    UpdateTexturedComponent<BladeCoatingColor, BladeCoatingDto>>();
+
+builder.Services.AddScoped<IComponentDtoMapper<BladeShape, BladeShapeDto>, BladeShapeDtoMapper>();
+builder.Services.AddScoped<IActivate<BladeShape>, ActivateComponentService<BladeShape>>();
+builder.Services.AddScoped<IDeactivate<BladeShape>, DeactivateComponentService<BladeShape>>();
+builder.Services.AddScoped<ICreateService<BladeShape, BladeShapeDto>, 
+    CreateComponent<BladeShape, BladeShapeDto>>();
+builder.Services.AddScoped<IUpdateService<BladeShape, BladeShapeDto>, 
+    UpdateService<BladeShape, BladeShapeDto>>();
+
+builder.Services.AddScoped<IComponentDtoMapper<Engraving, EngravingDto>, EngravingDtoMapper>();
+builder.Services.AddScoped<IActivate<Engraving>, ActivateComponentService<Engraving>>();
+builder.Services.AddScoped<IDeactivate<Engraving>, DeactivateComponentService<Engraving>>();
+builder.Services.AddScoped<ICreateService<Engraving, EngravingDto>, 
+    CreateComponent<Engraving, EngravingDto>>();
+builder.Services.AddScoped<IUpdateService<Engraving, EngravingDto>, 
+    UpdateService<Engraving, EngravingDto>>();
+
+builder.Services.AddScoped<IActivate<Handle>, ActivateComponentService<Handle>>();
+builder.Services.AddScoped<IDeactivate<Handle>, DeactivateComponentService<Handle>>();
+builder.Services.AddScoped<ICreateTexturedComponent<Handle, HandleColorDto>, 
+    CreateTexturedComponent<Handle, HandleColorDto>>();
+builder.Services.AddScoped<IUpdateTexturedComponent<Handle, HandleColorDto>, 
+    UpdateTexturedComponent<Handle, HandleColorDto>>();
+
+
+builder.Services.AddScoped<IActivate<Sheath>, ActivateComponentService<Sheath>>();
+builder.Services.AddScoped<IDeactivate<Sheath>, DeactivateComponentService<Sheath>>();
+builder.Services.AddScoped<ICreateService<Sheath, SheathDto>, 
+    CreateComponent<Sheath, SheathDto>>();
+builder.Services.AddScoped<IUpdateService<Sheath, SheathDto>, 
+    UpdateService<Sheath, SheathDto>>();
+
+builder.Services.AddScoped<IActivateSheathColorService, ActivateSheathColor>();
+builder.Services.AddScoped<IDeactivateSheathColorService, DeactivateSheathColor>();
+builder.Services.AddScoped<ICreateTypeDependencyComponentService<SheathColor, SheathColorDto>, 
+    CreateSheathColor>();
+builder.Services.AddScoped<IUpdateTypeDependencyComponentService<SheathColor, SheathColorDto>, 
+    UpdateSheathColorService>();
+
+builder.Services.AddScoped<ISheathColorRepository, SheathColorRepository>();
+builder.Services.AddScoped<ISheathColorMapper, SheathColorMapper>();
+builder.Services.AddScoped<ISheathColorViewService, SheathColorViewService>();
+
 #endregion
 
 #region Seeder
@@ -241,9 +378,8 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
-    app.UseSwagger();
-    app.UseSwaggerUI();
-
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
@@ -252,16 +388,10 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-#region Seeder
-using var seederScope = app.Services.CreateScope();
-var mainSeeder = seederScope.ServiceProvider.GetRequiredService<MainSeeder>();
-await mainSeeder.SeedAsync();
-#endregion
-
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
 
     var roles = new[] { "User", "Admin" };
 
@@ -269,9 +399,19 @@ using (var scope = app.Services.CreateScope())
     {
         if (!await roleManager.RoleExistsAsync(role))
         {
-            await roleManager.CreateAsync(new IdentityRole(role));
+            await roleManager.CreateAsync(new IdentityRole<Guid>(role));
         }
     }
 }
 
+#region Seeder
+using var seederScope = app.Services.CreateScope();
+var mainSeeder = seederScope.ServiceProvider.GetRequiredService<MainSeeder>();
+await mainSeeder.SeedAsync();
+#endregion
+
 app.Run();
+
+app.Run();
+
+public partial class Program {}

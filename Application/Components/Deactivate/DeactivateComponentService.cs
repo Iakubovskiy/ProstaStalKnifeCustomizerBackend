@@ -14,9 +14,10 @@ public class DeactivateComponentService<T> : IDeactivate<T> where T: class, IEnt
         this._componentRepository = componentRepository;
     }
     
-    public void Deactivate(T component)
+    public async Task Deactivate(Guid id)
     {
-        component.Activate();
-        this._componentRepository.Update(component.Id, component);
+        T component = await this._componentRepository.GetById(id);
+        component.Deactivate();
+        await this._componentRepository.Update(id, component);
     }
 }
