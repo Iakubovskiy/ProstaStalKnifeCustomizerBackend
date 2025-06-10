@@ -363,16 +363,16 @@ builder.Services.AddScoped<ISheathColorViewService, SheathColorViewService>();
 
 #endregion
 
-#region Seeder
-builder.Services.Scan(scan => scan
-    .FromAssemblyOf<ISeeder>()
-    .AddClasses(classes => classes.AssignableTo<ISeeder>())
-    .AsImplementedInterfaces()
-    .WithTransientLifetime());
-
-builder.Services.AddTransient<MainSeeder>();
-
-#endregion
+// #region Seeder
+// builder.Services.Scan(scan => scan
+//     .FromAssemblyOf<ISeeder>()
+//     .AddClasses(classes => classes.AssignableTo<ISeeder>())
+//     .AsImplementedInterfaces()
+//     .WithTransientLifetime());
+//
+// builder.Services.AddTransient<MainSeeder>();
+//
+// #endregion
 
 var app = builder.Build();
 
@@ -404,11 +404,11 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-#region Seeder
-using var seederScope = app.Services.CreateScope();
-var mainSeeder = seederScope.ServiceProvider.GetRequiredService<MainSeeder>();
-await mainSeeder.SeedAsync();
-#endregion
+// #region Seeder
+// using var seederScope = app.Services.CreateScope();
+// var mainSeeder = seederScope.ServiceProvider.GetRequiredService<MainSeeder>();
+// await mainSeeder.SeedAsync();
+// #endregion
 
 app.Run();
 

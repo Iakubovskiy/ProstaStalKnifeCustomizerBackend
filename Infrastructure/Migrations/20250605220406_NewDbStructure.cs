@@ -412,9 +412,17 @@ namespace Infrastructure.Migrations
             migrationBuilder.Sql(@"
                 ALTER TABLE ""Orders""
                 ALTER COLUMN ""Number"" TYPE integer
-                USING ""Number""::integer;
+                USING CASE 
+                    WHEN ""Number"" ~ '^ORD-[0-9]+$' THEN 
+                        LEFT(REPLACE(""Number"", 'ORD-', ''), 3)::integer
+                    WHEN ""Number"" ~ '^[0-9]+$' THEN 
+                        CASE 
+                            WHEN LENGTH(""Number"") > 9 THEN LEFT(""Number"", 9)::integer
+                            ELSE ""Number""::integer
+                        END
+                    ELSE NULL
+                END;
             ");
-
             migrationBuilder.AlterColumn<string>(
                 name: "ClientData_Email",
                 table: "Orders",

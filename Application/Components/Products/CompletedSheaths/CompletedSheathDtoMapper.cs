@@ -23,7 +23,7 @@ public class CompletedSheathDtoMapper : IProductDtoMapper<CompletedSheath, Compl
     private readonly IComponentRepository<Engraving> _engravingRepository;
     private readonly IComponentRepository<Attachment> _attachmentRepository;
     private readonly IComponentDtoMapper<Engraving, EngravingDto> _engravingDtoMapper;
-    private readonly IComponentDtoMapper<Attachment, AttachmentDto> _attachmentDtoMapper;
+    private readonly IProductDtoMapper<Attachment, AttachmentDto> _attachmentDtoMapper;
 
     public CompletedSheathDtoMapper(
         IRepository<FileEntity> fileRepository,
@@ -33,7 +33,7 @@ public class CompletedSheathDtoMapper : IProductDtoMapper<CompletedSheath, Compl
         IComponentRepository<Engraving> engravingRepository,
         IComponentRepository<Attachment> attachmentRepository,
         IComponentDtoMapper<Engraving, EngravingDto> engravingDtoMapper,
-        IComponentDtoMapper<Attachment, AttachmentDto> attachmentDtoMapper
+        IProductDtoMapper<Attachment, AttachmentDto> attachmentDtoMapper
     )
     {
         this._fileRepository = fileRepository;
