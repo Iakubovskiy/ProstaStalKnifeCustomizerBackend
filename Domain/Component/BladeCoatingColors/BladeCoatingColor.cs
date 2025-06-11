@@ -3,9 +3,11 @@ using Domain.Component.Textures;
 using Domain.Files;
 using Domain.Translation;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.EntityFrameworkCore;
 
 namespace Domain.Component.BladeCoatingColors;
 
+[Index(nameof(ColorCode))]
 public class BladeCoatingColor : IEntity, IComponent, IUpdatable<BladeCoatingColor>, ITextured
 {
     private BladeCoatingColor()
