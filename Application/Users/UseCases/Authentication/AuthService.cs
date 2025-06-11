@@ -43,12 +43,12 @@ namespace Application.Users.UseCases.Authentication
             var enumerable = claims.ToList();
             var claimsList = enumerable.ToList();
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"] ?? _configuration.GetValue<string>("Jwt_Key") ?? throw new NullReferenceException()));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"] ?? _configuration.GetValue<string>("JWT_KEY") ?? throw new NullReferenceException()));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"] ?? _configuration.GetValue<string>("Jwt_Issuer"),
-                audience: _configuration["Jwt:Issuer"] ?? _configuration.GetValue<string>("Jwt_Issuer"),
+                issuer: _configuration["Jwt:Issuer"] ?? _configuration.GetValue<string>("JWT_ISSUER"),
+                audience: _configuration["Jwt:Issuer"] ?? _configuration.GetValue<string>("JWT_ISSUER"),
                 claims: claimsList,
                 expires: DateTime.Now.AddHours(1),
                 signingCredentials: creds
