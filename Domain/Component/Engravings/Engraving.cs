@@ -75,7 +75,7 @@ public class Engraving : IEntity, IComponent, IUpdatable<Engraving>
     
     public double GetPrice(double exchangerRate)
     {
-        return Price / exchangerRate;
+        return Math.Ceiling(Price / exchangerRate);
     }
 
     public void Update(Engraving engraving)

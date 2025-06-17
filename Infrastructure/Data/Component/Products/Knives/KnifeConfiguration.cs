@@ -10,5 +10,9 @@ public class KnifeConfiguration : IEntityTypeConfiguration<Knife>
     {
         builder.HasMany(k => k.Engravings)
             .WithMany();
+        builder.HasMany(k => k.Attachments)
+            .WithMany();
+        builder.Property(k => k.TotalPriceInUah)
+            .HasComputedColumnSql("public.get_knife_total_price(\"Id\")", stored:true);
     }
 }

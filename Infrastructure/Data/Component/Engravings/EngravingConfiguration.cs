@@ -28,5 +28,9 @@ public class EngravingConfiguration : IEntityTypeConfiguration<Engraving>
                 )
                 .HasColumnType("jsonb");
         });
+        
+        builder.HasMany(e => e.Tags)
+            .WithMany() 
+            .UsingEntity(j => j.ToTable("Engraving_EngravingTag"));
     }
 }

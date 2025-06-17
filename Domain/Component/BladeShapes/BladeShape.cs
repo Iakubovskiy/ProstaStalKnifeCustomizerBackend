@@ -60,7 +60,7 @@ public class BladeShape : IEntity, IComponent, IUpdatable<BladeShape>
 
     public double GetPrice(double exchangerRate)
     {
-        return this.Price / exchangerRate;
+        return Math.Ceiling(this.Price / exchangerRate);
     }
 
     public void Update(BladeShape bladeShape)

@@ -1,4 +1,5 @@
 using System.Data.Entity.Core;
+using Domain.Component.Product;
 using Domain.Component.Product.Knife;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -47,10 +48,12 @@ public class KnifeRepository : ComponentRepository<Knife>
         return await this.Set
                    .Include(product => product.Tags)
                    .Include(product => product.Blade)
+                   .ThenInclude(blade => blade.Type)
                    .Include(product => product.Color)
                    .Include(product => product.Handle)
                    .Include(product => product.Sheath)
                    .Include(product => product.SheathColor)
+                   .ThenInclude(sc => sc.Prices)
                    .Include(product => product.Engravings)
                    .Include(product => product.Attachments)
                    .FirstOrDefaultAsync(product => product.Id == id)

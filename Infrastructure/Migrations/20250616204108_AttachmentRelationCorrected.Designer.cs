@@ -3,17 +3,20 @@ using System;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace WorkshopBackend.Migrations
+namespace Infrastructure.Migrations
 {
     [DbContext(typeof(DBContext))]
-    partial class DBContextModelSnapshot : ModelSnapshot
+    [Migration("20250616204108_AttachmentRelationCorrected")]
+    partial class AttachmentRelationCorrected
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -802,11 +805,6 @@ namespace WorkshopBackend.Migrations
                     b.Property<Guid>("SheathId")
                         .HasColumnType("uuid");
 
-                    b.Property<double>("TotalPriceInUah")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("double precision")
-                        .HasComputedColumnSql("public.get_completed_sheath_total_price(\"Id\")", true);
-
                     b.HasIndex("SheathColorId");
 
                     b.HasIndex("SheathId");
@@ -818,9 +816,6 @@ namespace WorkshopBackend.Migrations
 
                             t.Property("SheathId")
                                 .HasColumnName("CompletedSheath_SheathId");
-
-                            t.Property("TotalPriceInUah")
-                                .HasColumnName("CompletedSheath_TotalPriceInUah");
                         });
 
                     b.HasDiscriminator().HasValue("CompletedSheath");
@@ -844,11 +839,6 @@ namespace WorkshopBackend.Migrations
 
                     b.Property<Guid?>("SheathId")
                         .HasColumnType("uuid");
-
-                    b.Property<double>("TotalPriceInUah")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("double precision")
-                        .HasComputedColumnSql("public.get_knife_total_price(\"Id\")", true);
 
                     b.HasIndex("BladeId");
 

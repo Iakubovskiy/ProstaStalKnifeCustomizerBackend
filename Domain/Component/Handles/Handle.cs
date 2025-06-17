@@ -56,7 +56,7 @@ public class Handle : IComponent, IEntity, IUpdatable<Handle>, ITextured
     
     public double GetPrice(double exchangerRate)
     {
-        return this.Price / exchangerRate;
+        return Math.Ceiling(this.Price / exchangerRate);
     }
 
     public void Update(Handle handle)

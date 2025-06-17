@@ -39,7 +39,7 @@ public class Sheath : IEntity, IComponent, IUpdatable<Sheath>
     
     public double GetPrice(double exchangerRate)
     {
-        return this.Price / exchangerRate;
+        return Math.Ceiling(this.Price / exchangerRate);
     }
 
     public void Update(Sheath sheath)

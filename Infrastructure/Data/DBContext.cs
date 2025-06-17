@@ -21,6 +21,7 @@ using Infrastructure.Data.Component.Engravings.EngravingTags;
 using Infrastructure.Data.Component.Handles;
 using Infrastructure.Data.Component.Products;
 using Infrastructure.Data.Component.Products.Attachments;
+using Infrastructure.Data.Component.Products.CompletedSheaths;
 using Infrastructure.Data.Component.Products.Knives;
 using Infrastructure.Data.Component.Sheaths;
 using Infrastructure.Data.Component.Sheaths.Color;
@@ -73,6 +74,7 @@ namespace Infrastructure.Data
             modelBuilder.ApplyConfiguration(new EngravingConfiguration());
             modelBuilder.ApplyConfiguration(new EngravingTagConfiguration());
             modelBuilder.ApplyConfiguration(new KnifeConfiguration());
+            modelBuilder.ApplyConfiguration(new CompletedSheathConfiguration());
             modelBuilder.ApplyConfiguration(new OrderConfiguration());
             modelBuilder.ApplyConfiguration(new ProductConfiguration());
             modelBuilder.ApplyConfiguration(new ProductTagConfiguration());

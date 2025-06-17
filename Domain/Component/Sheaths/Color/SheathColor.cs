@@ -53,7 +53,7 @@ public class SheathColor : IEntity, IComponentWithTypeDependency, IUpdatable<She
 
     public double GetPrice(BladeShapeType type, double exchangerRate)
     {
-        return this.Prices.First(p => p.Type == type).Price / exchangerRate;
+        return Math.Ceiling(this.Prices.First(p => p.TypeId == type.Id).Price / exchangerRate);
     }
     
     public void Update(SheathColor sheathColor)

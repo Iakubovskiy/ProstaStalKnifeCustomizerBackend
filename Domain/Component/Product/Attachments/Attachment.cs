@@ -61,7 +61,7 @@ public class Attachment : Product, IUpdatable<Attachment>
     
     public override double GetPrice(double exchangerRate)
     {
-        return this.Price / exchangerRate;
+        return Math.Ceiling(this.Price / exchangerRate);
     }
 
     public void Update(Attachment attachment)

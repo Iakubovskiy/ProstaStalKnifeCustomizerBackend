@@ -77,19 +77,11 @@ public class Knife : Product, IUpdatable<Knife>
     public SheathColor? SheathColor { get; private set; }
     public List<Engraving>? Engravings { get; private set; }
     public List<Attachment>? Attachments { get; private set; }
+    public double TotalPriceInUah { get; private set; }
 
     public override double GetPrice(double exchangerRate)
     {
-        double price = 0;
-        price += this.Blade.GetPrice(exchangerRate);
-        price += this.Color.GetPrice(exchangerRate);
-        price += this.Handle?.GetPrice(exchangerRate) ?? 0;
-        price += this.Sheath?.GetPrice(exchangerRate) ?? 0;
-        price += this.SheathColor?.GetPrice(this.Blade.Type , exchangerRate) ?? 0;
-        price += this.Engravings?.Sum(x => x.GetPrice(exchangerRate)) ?? 0;
-        price += this.Attachments?.Sum(x => x.GetPrice(exchangerRate)) ?? 0;
-        
-        return price;
+        return TotalPriceInUah / exchangerRate;
     }
 
     public void Update(Knife knife)

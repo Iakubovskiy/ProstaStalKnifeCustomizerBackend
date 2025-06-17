@@ -50,7 +50,7 @@ public class BladeCoatingColor : IEntity, IComponent, IUpdatable<BladeCoatingCol
 
     public double GetPrice(double exchangerRate)
     {
-        return this.Price / exchangerRate;
+        return Math.Ceiling(this.Price / exchangerRate);
     }
     
     public void Update(BladeCoatingColor bladeCoatingColor)

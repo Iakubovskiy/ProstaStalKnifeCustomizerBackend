@@ -14,7 +14,7 @@ where TEntity : class, IEntity, IUpdatable<TEntity>
     public BaseRepository(DBContext context)
     {
         this.Context = context;
-        Set = context.Set<TEntity>();
+        this.Set = context.Set<TEntity>();
     }
     
     public virtual IQueryable<TEntity> List()

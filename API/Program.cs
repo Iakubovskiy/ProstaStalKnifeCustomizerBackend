@@ -1,4 +1,5 @@
 using System.Text;
+using API.Components.Products.AllProducts.Presenters;
 using Application;
 using Application.Components.Activate;
 using Application.Components.ComponentsWithType.SheathColors;
@@ -6,9 +7,9 @@ using Application.Components.ComponentsWithType.SheathColors.Activate;
 using Application.Components.ComponentsWithType.SheathColors.Deactivate;
 using Application.Components.ComponentsWithType.UseCases.Create;
 using Application.Components.ComponentsWithType.UseCases.Deactivate;
-using Application.Components.ComponentsWithType.UseCases.Get;
 using Application.Components.ComponentsWithType.UseCases.Update;
 using Application.Components.Deactivate;
+using Application.Components.Prices;
 using Application.Components.Prices.Engravings;
 using Application.Components.Products;
 using Application.Components.Products.Attachments;
@@ -77,13 +78,19 @@ using Microsoft.IdentityModel.Tokens;
 using Application.Components.TexturedComponents.UseCases.Create;
 using Application.Components.TexturedComponents.UseCases.Update;
 using Domain.Component.Sheaths.Color;
+using Infrastructure.Components.Products.CompletedSheaths;
+using Infrastructure.Components.Products.Filters.Characteristics;
+using Infrastructure.Components.Products.Filters.Colors;
+using Infrastructure.Components.Products.Filters.Price;
+using Infrastructure.Components.Products.Filters.Styles;
+using Infrastructure.Components.Products.Knives;
 
 var builder = WebApplication.CreateBuilder(args);
 
 if (builder.Environment.IsEnvironment("Test"))
 {
-    builder.Services.AddDbContext<DBContext>(options =>
-        options.UseInMemoryDatabase("TestDb"));
+    // builder.Services.AddDbContext<DBContext>(options =>
+    //     options.UseInMemoryDatabase("TestDb"));
 }
 else
 {
@@ -228,8 +235,8 @@ builder.Services.AddScoped<IComponentRepository<Engraving>, EngravingRepository>
 builder.Services.AddScoped<IRepository<EngravingTag>, BaseRepository<EngravingTag>>();
 builder.Services.AddScoped<IRepository<EngravingPrice>, BaseRepository<EngravingPrice>>();
 builder.Services.AddScoped<IComponentRepository<Attachment>, AttachmentRepository>();
-builder.Services.AddScoped<IComponentRepository<Knife>, ComponentRepository<Knife>>();
-builder.Services.AddScoped<IComponentRepository<CompletedSheath>, ComponentRepository<CompletedSheath>>();
+builder.Services.AddScoped<IComponentRepository<Knife>, KnifeRepository>();
+builder.Services.AddScoped<IComponentRepository<CompletedSheath>, CompletedSheathRepository>();
 builder.Services.AddScoped<IRepository<Texture>, TextureRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IRepository<DeliveryType>, BaseRepository<DeliveryType>>();
@@ -242,6 +249,11 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IDeliveryTypeRepository, DeliveryTypeRepository>();
 builder.Services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository>();
 builder.Services.AddScoped<IRepository<User>, BaseRepository<User>>();
+builder.Services.AddScoped<IFilterStylesRepository, FilterStylesRepository>();
+builder.Services.AddScoped<IGetBladeShapeCharacteristicsFilterRepository, GetBladeShapeCharacteristicsFilterRepository>();
+builder.Services.AddScoped<IColorsFilterRepository, ColorsFilterRepository>();
+builder.Services.AddScoped<IPriceFilterRepository, PriceFilterRepository>();
+builder.Services.AddScoped<IGetProductPaginatedList, ProductRepository>();
 #endregion
 
 #region Mappers
@@ -358,8 +370,9 @@ builder.Services.AddScoped<IUpdateTypeDependencyComponentService<SheathColor, Sh
     UpdateSheathColorService>();
 
 builder.Services.AddScoped<ISheathColorRepository, SheathColorRepository>();
-builder.Services.AddScoped<ISheathColorMapper, SheathColorMapper>();
-builder.Services.AddScoped<ISheathColorViewService, SheathColorViewService>();
+builder.Services.AddScoped<IGetComponentPrice, GetComponentPriceService>();
+
+builder.Services.AddScoped<ProductPresenter>();
 
 #endregion
 
@@ -388,18 +401,21 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-using (var scope = app.Services.CreateScope())
+if (!app.Environment.IsEnvironment("Test"))
 {
-    var services = scope.ServiceProvider;
-    var roleManager = services.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
-
-    var roles = new[] { "User", "Admin" };
-
-    foreach (var role in roles)
+    using (var scope = app.Services.CreateScope())
     {
-        if (!await roleManager.RoleExistsAsync(role))
+        var services = scope.ServiceProvider;
+        var roleManager = services.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+
+        var roles = new[] { "User", "Admin" };
+
+        foreach (var role in roles)
         {
-            await roleManager.CreateAsync(new IdentityRole<Guid>(role));
+            if (!await roleManager.RoleExistsAsync(role))
+            {
+                await roleManager.CreateAsync(new IdentityRole<Guid>(role));
+            }
         }
     }
 }

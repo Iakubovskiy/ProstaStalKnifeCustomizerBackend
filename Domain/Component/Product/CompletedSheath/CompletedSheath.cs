@@ -50,16 +50,11 @@ public class CompletedSheath : Product, IUpdatable<CompletedSheath>
     public SheathColor SheathColor { get; private set; }
     public List<Engraving>? Engravings { get; private set; }
     public List<Attachment>? Attachments { get; private set; }
+    public double TotalPriceInUah { get; private set; }
 
     public override double GetPrice(double exchangerRate)
     {
-        double price = 0;
-        price += this.Sheath.GetPrice(exchangerRate);
-        price += this.SheathColor.GetPrice(this.Sheath.Type, exchangerRate);
-        price += this.Engravings?.Sum(x => x.GetPrice(exchangerRate)) ?? 0;
-        price += this.Attachments?.Sum(x => x.GetPrice(exchangerRate)) ?? 0;
-        
-        return price;
+        return TotalPriceInUah / exchangerRate;
     }
     
     public void Update(CompletedSheath completedSheath)

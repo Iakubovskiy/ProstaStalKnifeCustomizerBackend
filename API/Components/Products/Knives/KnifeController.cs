@@ -51,7 +51,8 @@ public class KnifeController : ControllerBase
     {
         try
         {
-            return Ok(await this._knifeRepository.GetById(id));
+            Knife knife = await this._knifeRepository.GetById(id); 
+            return Ok(knife);
         }
         catch (Exception)
         {

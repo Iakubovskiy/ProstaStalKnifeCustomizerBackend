@@ -1,7 +1,6 @@
 using System.Net;
 using System.Text;
 using System.Text.Json;
-using Application.Components.ComponentsWithType.UseCases.Get;
 using Domain.Component.Sheaths.Color;
 using FluentAssertions;
 using Xunit;
@@ -51,7 +50,7 @@ public class SheathColorControllerTest : IClassFixture<CustomWebAppFactory>
     {
         var response = await this._client.GetAsync("/api/sheath-colors");
         response.EnsureSuccessStatusCode();
-        var data = await response.Content.ReadFromJsonAsync<List<SheathColorResponsePresenter>>();
+        var data = await response.Content.ReadFromJsonAsync<List<SheathColor>>();
         
         data.Should().NotBeNull();
         data.Count.Should().Be(10);
@@ -62,7 +61,7 @@ public class SheathColorControllerTest : IClassFixture<CustomWebAppFactory>
     {
         var response = await this._client.GetAsync("/api/sheath-colors/active");
         response.EnsureSuccessStatusCode();
-        var data = await response.Content.ReadFromJsonAsync<List<SheathColorResponsePresenter>>();
+        var data = await response.Content.ReadFromJsonAsync<List<SheathColor>>();
 
         data.Should().NotBeNull();
         data.Count.Should().Be(8);
@@ -80,9 +79,9 @@ public class SheathColorControllerTest : IClassFixture<CustomWebAppFactory>
 
         if (expectedStatusCode == HttpStatusCode.OK)
         {
-            var sheathColor = await response.Content.ReadFromJsonAsync<SheathColorResponsePresenter>();
+            var sheathColor = await response.Content.ReadFromJsonAsync<SheathColor>();
             sheathColor.Should().NotBeNull();
-            sheathColor.Color["en"].Should().Be("Black");
+            sheathColor.Color.TranslationDictionary["en"].Should().Be("Black");
         }
     }
 
@@ -100,9 +99,9 @@ public class SheathColorControllerTest : IClassFixture<CustomWebAppFactory>
         
         var responseFromGet = await this._client.GetAsync($"/api/sheath-colors/{newId}");
         responseFromGet.EnsureSuccessStatusCode();
-        var fetched = await responseFromGet.Content.ReadFromJsonAsync<SheathColorResponsePresenter>();
+        var fetched = await responseFromGet.Content.ReadFromJsonAsync<SheathColor>();
         fetched.Should().NotBeNull();
-        fetched.Color["en"].Should().Be("Test Color");
+        fetched.Color.TranslationDictionary["en"].Should().Be("Test Color");
         fetched.Prices.Should().NotBeEmpty();
 
         await this._client.DeleteAsync($"/api/sheath-colors/{newId}");
@@ -126,9 +125,9 @@ public class SheathColorControllerTest : IClassFixture<CustomWebAppFactory>
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         
         var getResponse = await this._client.GetAsync($"/api/sheath-colors/{idToUpdate}");
-        var fetched = await getResponse.Content.ReadFromJsonAsync<SheathColorResponsePresenter>();
+        var fetched = await getResponse.Content.ReadFromJsonAsync<SheathColor>();
         fetched.Should().NotBeNull();
-        fetched.Color["en"].Should().Be("Updated Color");
+        fetched.Color.TranslationDictionary["en"].Should().Be("Updated Color");
         
         await this._client.DeleteAsync($"/api/sheath-colors/{idToUpdate}");
     }
@@ -162,7 +161,7 @@ public class SheathColorControllerTest : IClassFixture<CustomWebAppFactory>
         deactivateResponse.StatusCode.Should().Be(HttpStatusCode.OK);
         
         var getAfterDeactivate = await this._client.GetAsync($"/api/sheath-colors/{id}");
-        var itemAfterDeactivate = await getAfterDeactivate.Content.ReadFromJsonAsync<SheathColorResponsePresenter>();
+        var itemAfterDeactivate = await getAfterDeactivate.Content.ReadFromJsonAsync<SheathColor>();
         itemAfterDeactivate.Should().NotBeNull();
         itemAfterDeactivate.IsActive.Should().BeFalse();
         
@@ -170,7 +169,7 @@ public class SheathColorControllerTest : IClassFixture<CustomWebAppFactory>
         activateResponse.StatusCode.Should().Be(HttpStatusCode.OK);
         
         var getAfterActivate = await this._client.GetAsync($"/api/sheath-colors/{id}");
-        var itemAfterActivate = await getAfterActivate.Content.ReadFromJsonAsync<SheathColorResponsePresenter>();
+        var itemAfterActivate = await getAfterActivate.Content.ReadFromJsonAsync<SheathColor>();
         itemAfterActivate.Should().NotBeNull();
         itemAfterActivate.IsActive.Should().BeTrue();
 
