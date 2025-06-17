@@ -14,7 +14,7 @@ public class ProductPresenter
 
     public ProductPresenter(IGetComponentPrice getComponentPriceService)
     {
-        _getComponentPriceService = getComponentPriceService;
+        this._getComponentPriceService = getComponentPriceService;
     }
 
     public Guid Id { get; set; }

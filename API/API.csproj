@@ -39,8 +39,4 @@
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Components\Products\Knives\Presenter\" />
-  </ItemGroup>
-
 </Project>

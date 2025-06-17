@@ -47,15 +47,55 @@ public class KnifeRepository : ComponentRepository<Knife>
     {
         return await this.Set
                    .Include(product => product.Tags)
+                   .Include(knife => knife.Image)
+                   
                    .Include(product => product.Blade)
                    .ThenInclude(blade => blade.Type)
+                   .Include(product => product.Blade)
+                   .ThenInclude(blade => blade.BladeShapeModel)
+                   .Include(product => product.Blade)
+                   .ThenInclude(blade => blade.Sheath)
+                   .ThenInclude(sheath => sheath.Model)
+                   
                    .Include(product => product.Color)
+                   .ThenInclude(color => color.Texture)
+                   .ThenInclude(t => t.NormalMap)
+                   .Include(product => product.Color)
+                   .ThenInclude(color => color.Texture)
+                   .ThenInclude(t => t.RoughnessMap)
+                   .Include(product => product.Color)
+                   .ThenInclude(color => color.ColorMap)
+                   
                    .Include(product => product.Handle)
+                   .ThenInclude(handle => handle.Texture)
+                   .ThenInclude(t => t.NormalMap)
+                   .Include(product => product.Handle)
+                   .ThenInclude(handle => handle.Texture)
+                   .ThenInclude(t => t.RoughnessMap)
+                   .Include(product => product.Handle)
+                   .ThenInclude(handle => handle.HandleModel)
+                   .Include(product => product.Handle)
+                   .ThenInclude(handle => handle.ColorMap)
+                   
                    .Include(product => product.Sheath)
+                   
+                   .Include(product => product.SheathColor)
+                   .ThenInclude(color => color.Texture)
+                   .ThenInclude(t => t.NormalMap)
+                   .Include(product => product.SheathColor)
+                   .ThenInclude(color => color.Texture)
+                   .ThenInclude(t => t.RoughnessMap)
                    .Include(product => product.SheathColor)
                    .ThenInclude(sc => sc.Prices)
+                   .Include(product => product.SheathColor)
+                   .ThenInclude(sc => sc.ColorMap)
+                   
                    .Include(product => product.Engravings)
+                   .ThenInclude(engraving => engraving.Picture)
+                   
                    .Include(product => product.Attachments)
+                   .ThenInclude(a => a.Model)
+                   
                    .FirstOrDefaultAsync(product => product.Id == id)
                ?? throw new ObjectNotFoundException("Entity not found");
     }

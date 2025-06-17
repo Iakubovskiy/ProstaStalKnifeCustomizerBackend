@@ -54,7 +54,7 @@ public class CompletedSheath : Product, IUpdatable<CompletedSheath>
 
     public override double GetPrice(double exchangerRate)
     {
-        return TotalPriceInUah / exchangerRate;
+        return Math.Ceiling(TotalPriceInUah / exchangerRate);
     }
     
     public void Update(CompletedSheath completedSheath)

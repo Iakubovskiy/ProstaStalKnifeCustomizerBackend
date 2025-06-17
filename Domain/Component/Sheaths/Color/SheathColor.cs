@@ -18,7 +18,7 @@ public class SheathColor : IEntity, IComponentWithTypeDependency, IUpdatable<She
         Guid id, 
         Translations color, 
         bool isActive,
-        string? colorCode,
+        string colorCode,
         List<SheathColorPriceByType> prices,
         Translations material, 
         string engravingColorCode, 
@@ -42,7 +42,7 @@ public class SheathColor : IEntity, IComponentWithTypeDependency, IUpdatable<She
     public Translations Color { get; private set; }
     public bool IsActive { get; private set; }
     [MaxLength(10)]
-    public string? ColorCode { get; private set; }
+    public string ColorCode { get; private set; }
     public Translations Material { get; private set; }
     [MaxLength(10)]
     public string EngravingColorCode { get; private set; }
