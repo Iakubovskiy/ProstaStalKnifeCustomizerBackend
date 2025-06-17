@@ -1,6 +1,4 @@
-﻿using System.Data.Entity.Core;
-using API.Components.Products.Knives.Presenter;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Application.Components.Products.Knives;
 using Application.Components.Products.UseCases.Activate;
 using Application.Components.Products.UseCases.Create;
@@ -20,15 +18,13 @@ public class KnifeController : ControllerBase
     private readonly IComponentRepository<Knife> _knifeRepository;
     private readonly IActivateProduct<Knife> _activateProductService;
     private readonly IDeactivateProduct<Knife> _deactivateProductService;
-    private readonly KnifePresenter _knifePresenter;
 
     public KnifeController(
         ICreateProductService<Knife, KnifeDto> createProductService,
         IUpdateProductService<Knife, KnifeDto> updateProductService,
         IComponentRepository<Knife> knifeRepository,
         IActivateProduct<Knife> activateProductService,
-        IDeactivateProduct<Knife> deactivateProductService,
-        KnifePresenter knifePresenter
+        IDeactivateProduct<Knife> deactivateProductService
     )
     {
         this._createKnifeService = createProductService;
@@ -36,7 +32,6 @@ public class KnifeController : ControllerBase
         this._knifeRepository = knifeRepository;
         this._activateProductService = activateProductService;
         this._deactivateProductService = deactivateProductService;
-        this._knifePresenter = knifePresenter;
     }
 
     [HttpGet]
@@ -52,19 +47,14 @@ public class KnifeController : ControllerBase
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetKnifesById(
-        [FromHeader(Name = "Locale")] string locale, 
-        [FromHeader(Name = "Currency")] string currency, 
-        Guid id
-    )
+    public async Task<IActionResult> GetKnifesById(Guid id)
     {
         try
         {
-            Knife knife = await this._knifeRepository.GetById(id);
-            await this._knifePresenter.Present(knife, locale, currency);
-            return Ok(this._knifePresenter);
+            Knife knife = await this._knifeRepository.GetById(id); 
+            return Ok(knife);
         }
-        catch (ObjectNotFoundException)
+        catch (Exception)
         {
             return NotFound("Can't find knife");
         }

@@ -74,17 +74,14 @@ namespace WorkshopBackend.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("ColorCode")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("character varying(10)");
+                        .HasColumnType("text");
 
                     b.Property<Guid?>("ColorMapId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("EngravingColorCode")
                         .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("character varying(10)");
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
@@ -100,8 +97,6 @@ namespace WorkshopBackend.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ColorCode");
 
                     b.HasIndex("ColorMapId");
 
@@ -231,9 +226,8 @@ namespace WorkshopBackend.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("ColorCode")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("character varying(10)");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.Property<Guid?>("ColorMapId")
                         .HasColumnType("uuid");
@@ -329,7 +323,6 @@ namespace WorkshopBackend.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("ColorCode")
-                        .IsRequired()
                         .HasMaxLength(10)
                         .HasColumnType("character varying(10)");
 

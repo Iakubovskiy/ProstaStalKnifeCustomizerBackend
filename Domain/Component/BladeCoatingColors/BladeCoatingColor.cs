@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Domain.Component.BladeCoatingColors.Validators;
+﻿using Domain.Component.BladeCoatingColors.Validators;
 using Domain.Component.Textures;
 using Domain.Files;
 using Domain.Translation;
@@ -21,7 +20,7 @@ public class BladeCoatingColor : IEntity, IComponent, IUpdatable<BladeCoatingCol
         Translations type, 
         double price, 
         Translations color, 
-        string colorCode, 
+        string? colorCode, 
         string engravingColorCode, 
         Texture? texture, 
         FileEntity? colorMap,
@@ -43,9 +42,7 @@ public class BladeCoatingColor : IEntity, IComponent, IUpdatable<BladeCoatingCol
     public Translations Type { get; private set; }
     public double Price { get; private set; }
     public Translations Color { get; private set; }
-    [MaxLength(10)]
-    public string ColorCode { get; private set; }
-    [MaxLength(10)]
+    public string? ColorCode { get; private set; }
     public string EngravingColorCode { get; private set; }
     public bool IsActive { get; private set; }
     public Texture? Texture { get; private set; }

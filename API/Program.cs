@@ -1,6 +1,5 @@
 using System.Text;
 using API.Components.Products.AllProducts.Presenters;
-using API.Components.Products.Knives.Presenter;
 using Application;
 using Application.Components.Activate;
 using Application.Components.ComponentsWithType.SheathColors;
@@ -374,7 +373,6 @@ builder.Services.AddScoped<ISheathColorRepository, SheathColorRepository>();
 builder.Services.AddScoped<IGetComponentPrice, GetComponentPriceService>();
 
 builder.Services.AddScoped<ProductPresenter>();
-builder.Services.AddScoped<KnifePresenter>();
 
 #endregion
 

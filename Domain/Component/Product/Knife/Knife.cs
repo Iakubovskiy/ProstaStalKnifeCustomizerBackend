@@ -81,7 +81,7 @@ public class Knife : Product, IUpdatable<Knife>
 
     public override double GetPrice(double exchangerRate)
     {
-        return Math.Ceiling(TotalPriceInUah / exchangerRate);
+        return TotalPriceInUah / exchangerRate;
     }
 
     public void Update(Knife knife)
