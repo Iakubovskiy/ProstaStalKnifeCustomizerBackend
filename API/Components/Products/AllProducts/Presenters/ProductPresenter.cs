@@ -1,9 +1,10 @@
 using Application.Components.Prices;
 using Domain.Component.BladeShapes.BladeCharacteristic;
 using Domain.Component.Product;
+using Domain.Component.Product.Attachments;
+using Domain.Component.Product.CompletedSheath;
 using Domain.Component.Product.Knife;
 using Infrastructure;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace API.Components.Products.AllProducts.Presenters;
 
@@ -21,6 +22,7 @@ public class ProductPresenter
     public string ImageUrl { get; set; }
     public double Price { get; set; }
     
+    public string Type { get; set; }
     public BladeCharacteristics? Characteristics { get; set; }
 
     public async Task<ProductPresenter> Present(Product product, string locale, string currency)
@@ -32,6 +34,15 @@ public class ProductPresenter
         if (product is Knife knife)
         {
             this.Characteristics = knife.Blade.BladeCharacteristics;
+            this.Type = "knife";
+        }
+        else if (product is CompletedSheath)
+        {
+            this.Type = "completed_sheath";
+        }
+        else if (product is Attachment)
+        {
+            this.Type = "attachment";
         }
         return this;
     }
