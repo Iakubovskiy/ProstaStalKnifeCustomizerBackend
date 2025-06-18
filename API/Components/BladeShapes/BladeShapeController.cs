@@ -65,10 +65,17 @@ public class BladeShapeController : ControllerBase
         [FromBody] BladeShapeDto newShape
     )
     {
-        return Created(
-            nameof(this.GetBladeShapesById),
-            await this._bladeCoatingColorCreateService.Create(newShape)
-        );
+        try
+        {
+            return Created(
+                nameof(this.GetBladeShapesById),
+                await this._bladeCoatingColorCreateService.Create(newShape)
+            );
+        }
+        catch (ArgumentException e)
+        {
+            return BadRequest(e.Message);
+        }
 
     }
 
@@ -96,7 +103,14 @@ public class BladeShapeController : ControllerBase
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteBladeShape(Guid id)
     {
-        return Ok(new { isDeleted = await this._bladeShapeRepository.Delete(id) });
+        try
+        {
+            return Ok(new { isDeleted = await this._bladeShapeRepository.Delete(id) });
+        }
+        catch (ObjectNotFoundException e)
+        {
+            return NotFound(e.Message);
+        }
     }
 
     [HttpPatch("deactivate/{id:guid}")]

@@ -27,7 +27,7 @@ public class BladeShapeValidator
                 throw new ArgumentException("BladeShapePhotoUrl is not a valid absolute URL.", nameof(bladeShapePhoto.FileUrl));
             }
         }
-        if (price < 0)
+        if (price <= 0)
         {
             throw new ArgumentOutOfRangeException(nameof(price), "Price cannot be negative.");
         }
