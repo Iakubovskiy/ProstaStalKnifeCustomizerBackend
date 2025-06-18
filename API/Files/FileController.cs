@@ -29,4 +29,9 @@ public class FileController : ControllerBase
         return Created("/", await this._fileRepository.Create(newFile));
     }
     
+    [HttpGet]
+    public async Task<IActionResult> GetAllFiles()
+    {
+        return Ok(await this._fileRepository.GetAll());
+    }
 }
