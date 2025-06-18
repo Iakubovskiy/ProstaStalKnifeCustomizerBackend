@@ -420,11 +420,11 @@ if (!app.Environment.IsEnvironment("Test"))
     }
 }
 
-#region Seeder
-using var seederScope = app.Services.CreateScope();
-var mainSeeder = seederScope.ServiceProvider.GetRequiredService<MainSeeder>();
-await mainSeeder.SeedAsync();
-#endregion
+// #region Seeder
+// using var seederScope = app.Services.CreateScope();
+// var mainSeeder = seederScope.ServiceProvider.GetRequiredService<MainSeeder>();
+// await mainSeeder.SeedAsync();
+// #endregion
 
 app.Run();
 
