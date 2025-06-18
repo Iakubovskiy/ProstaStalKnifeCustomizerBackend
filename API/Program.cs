@@ -1,4 +1,5 @@
 using System.Text;
+using API.Components.BladeShapes.Presenters;
 using API.Components.Products.AllProducts.Presenters;
 using Application;
 using Application.Components.Activate;
@@ -77,6 +78,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Application.Components.TexturedComponents.UseCases.Create;
 using Application.Components.TexturedComponents.UseCases.Update;
+using Application.Orders;
+using Application.Orders.Dto;
+using Application.Orders.UseCases.ChangeClientData;
+using Application.Orders.UseCases.Create;
+using Application.Orders.UseCases.UpdateStatus;
 using Domain.Component.Sheaths.Color;
 using Infrastructure.Components.Products.CompletedSheaths;
 using Infrastructure.Components.Products.Filters.Characteristics;
@@ -84,6 +90,7 @@ using Infrastructure.Components.Products.Filters.Colors;
 using Infrastructure.Components.Products.Filters.Price;
 using Infrastructure.Components.Products.Filters.Styles;
 using Infrastructure.Components.Products.Knives;
+using Infrastructure.Users;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -254,6 +261,7 @@ builder.Services.AddScoped<IGetBladeShapeCharacteristicsFilterRepository, GetBla
 builder.Services.AddScoped<IColorsFilterRepository, ColorsFilterRepository>();
 builder.Services.AddScoped<IPriceFilterRepository, PriceFilterRepository>();
 builder.Services.AddScoped<IGetProductPaginatedList, ProductRepository>();
+builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 #endregion
 
 #region Mappers
@@ -262,6 +270,7 @@ builder.Services.AddScoped<ITexturedComponentDtoMapper<BladeCoatingColor, BladeC
 builder.Services.AddScoped<ITexturedComponentDtoMapper<Handle, HandleColorDto>, HandleColorDtoMapper>();
 builder.Services.AddScoped<IComponentDtoMapper<Sheath, SheathDto>, SheathDtoMapper>();
 builder.Services.AddScoped<IComponentWithTypeDtoMapper<SheathColor, SheathColorDto>, SheathColorDtoMapper>();
+builder.Services.AddScoped<IOrderDtoMapper, OrderDtoMapper>();
 
 #endregion
 
@@ -372,7 +381,15 @@ builder.Services.AddScoped<IUpdateTypeDependencyComponentService<SheathColor, Sh
 builder.Services.AddScoped<ISheathColorRepository, SheathColorRepository>();
 builder.Services.AddScoped<IGetComponentPrice, GetComponentPriceService>();
 
+builder.Services.AddScoped<ICreateOrderService, CreateOrderService>();
+builder.Services.AddScoped<IUpdateOrderStatusService, UpdateOrderStatusService>();
+builder.Services.AddScoped<IChangeClientDataService, ChangeClientDataService>();
+#endregion
+
+#region Presenters
+
 builder.Services.AddScoped<ProductPresenter>();
+builder.Services.AddScoped<BladeShapePresenter>();
 
 #endregion
 

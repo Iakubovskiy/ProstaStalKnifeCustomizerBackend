@@ -5,5 +5,5 @@ namespace Application.Orders.UseCases.ChangeClientData;
 
 public interface IChangeClientDataService
 {
-    public Task<Order> ChangeClientData(Guid id, ClientData order);
+    public Task<Order> ChangeClientData(Guid id, ClientData clientData);
 }

@@ -10,9 +10,9 @@ using Domain.Order;
 using Domain.Order.Support;
 using Infrastructure.Orders;
 
-namespace API.Controllers;
+namespace API.Orders;
 
-[Route("api/[controller]")]
+[Route("api/orders")]
 [ApiController]
 public class OrderController : ControllerBase
 {
@@ -58,11 +58,11 @@ public class OrderController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateOrder([FromBody] OrderDto orderDto)
+    public async Task<IActionResult> CreateOrder([FromHeader] string locale,[FromBody] OrderDto orderDto)
     {
         try
         {
-            return Ok(new { newOrder = await this._createOrderService.Create(orderDto) });
+            return Ok(new { newOrder = await this._createOrderService.Create(orderDto, locale) });
         }
         catch (Exception e)
         {

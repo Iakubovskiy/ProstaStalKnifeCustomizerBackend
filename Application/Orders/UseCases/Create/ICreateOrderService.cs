@@ -5,5 +5,5 @@ namespace Application.Orders.UseCases.Create;
 
 public interface ICreateOrderService
 {
-    public Task<Order> Create(OrderDto orderDto);
+    public Task<Order> Create(OrderDto orderDto, string locale);
 }

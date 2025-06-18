@@ -57,4 +57,18 @@ public class Order : IEntity, IUpdatable<Order>
         this.Status = order.Status;
         this.PaymentMethod = order.PaymentMethod;
     }
+
+    public void ChangeClientData(ClientData clientData)
+    {
+        this.ClientData = clientData;
+    }
+
+    public void ChangeStatus(string status)
+    {
+        if (!Enum.IsDefined(typeof(OrderStatuses), status))
+        {
+            throw new ArgumentException("Status is not valid");
+        }
+        this.Status = status;
+    }
 }
