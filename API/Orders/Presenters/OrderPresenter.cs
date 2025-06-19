@@ -1,22 +1,23 @@
 using API.Orders.Support.DeliveryTypes.Presenters;
 using API.Orders.Support.PaymentMethods.Presenters;
+using Application.Currencies;
 using Domain.Orders;
 
 namespace API.Orders.Presenters;
 
 public class OrderPresenter
 {
-    private readonly DeliveryTypePresenter _deliveryTypePresenter;
+    private readonly IPriceService _priceService;
     private readonly PaymentMethodPresenter _paymentMethodPresenter;
     private readonly OrderItemPresenter _orderItemPresenter;
 
     public OrderPresenter(
-        DeliveryTypePresenter deliveryTypePresenter,
+        IPriceService priceService,
         PaymentMethodPresenter paymentMethodPresenter,
         OrderItemPresenter orderItemPresenter
     )
     {
-        this._deliveryTypePresenter = deliveryTypePresenter;
+        this._priceService = priceService;
         this._paymentMethodPresenter = paymentMethodPresenter;
         this._orderItemPresenter = orderItemPresenter;
     }
@@ -42,7 +43,7 @@ public class OrderPresenter
         this.Id = order.Id;
         this.Number = order.Number;
         this.Total = order.Total;
-        this.DeliveryType = await this._deliveryTypePresenter.Present(order.DeliveryType, locale, currency);
+        this.DeliveryType = await DeliveryTypePresenter.Present(order.DeliveryType, locale, currency, this._priceService);
         this.ClientFullName = order.ClientData.ClientFullName;
         this.ClientPhoneNumber = order.ClientData.ClientPhoneNumber;
         this.CountryForDelivery = order.ClientData.CountryForDelivery;
@@ -64,7 +65,7 @@ public class OrderPresenter
         foreach (var order in orders)
         {
             OrderPresenter orderPresenter = new OrderPresenter(
-                this._deliveryTypePresenter, 
+                this._priceService, 
                 this._paymentMethodPresenter,
                 this._orderItemPresenter
             );

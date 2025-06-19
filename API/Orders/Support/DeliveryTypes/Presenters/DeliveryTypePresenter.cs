@@ -5,13 +5,6 @@ namespace API.Orders.Support.DeliveryTypes.Presenters;
 
 public class DeliveryTypePresenter
 {
-    private readonly IPriceService _priceService;
-
-    public DeliveryTypePresenter(IPriceService priceService)
-    {
-        this._priceService = priceService;
-    }
-    
     public Guid Id { get; set; }
     public string Name { get; set; }
     public Dictionary<string, string> Names { get; set; }
@@ -20,33 +13,44 @@ public class DeliveryTypePresenter
     public Dictionary<string, string>? Comments { get; set; }
     public bool IsActive { get; set; }
 
-    public async Task<DeliveryTypePresenter> Present(DeliveryType deliveryType, string locale, string currency)
+    public static async Task<DeliveryTypePresenter> Present(
+        DeliveryType deliveryType, 
+        string locale, 
+        string currency, 
+        IPriceService priceService)
     {
-        this.Id = deliveryType.Id;
-        this.Name = deliveryType.Name.GetTranslation(locale);
-        this.Price = await this._priceService.GetPrice(deliveryType.Price, currency);
-        this.Comment = deliveryType.Comment?.GetTranslation(locale);
-        this.IsActive = deliveryType.IsActive;
-        
-        return this;
-    }
-    
-    public async Task<DeliveryTypePresenter> PresentWithTranslations(DeliveryType deliveryType, string locale, string currency)
-    {
-        await this.Present(deliveryType, locale, currency);
-        this.Names = deliveryType.Name.TranslationDictionary;
-        this.Comments = deliveryType.Comment?.TranslationDictionary;
-        return this;
+        return new DeliveryTypePresenter
+        {
+            Id = deliveryType.Id,
+            Name = deliveryType.Name.GetTranslation(locale),
+            Price = await priceService.GetPrice(deliveryType.Price, currency),
+            Comment = deliveryType.Comment?.GetTranslation(locale),
+            IsActive = deliveryType.IsActive
+        };
     }
 
-    public async Task<List<DeliveryTypePresenter>> PresentList(List<DeliveryType> deliveryTypes, string locale,
-        string currency)
+    public static async Task<DeliveryTypePresenter> PresentWithTranslations(
+        DeliveryType deliveryType, 
+        string locale, 
+        string currency, 
+        IPriceService priceService)
+    {
+        DeliveryTypePresenter presenter = await Present(deliveryType, locale, currency, priceService);
+        presenter.Names = deliveryType.Name.TranslationDictionary;
+        presenter.Comments = deliveryType.Comment?.TranslationDictionary;
+        return presenter;
+    }
+
+    public static async Task<List<DeliveryTypePresenter>> PresentList(
+        List<DeliveryType> deliveryTypes, 
+        string locale, 
+        string currency, 
+        IPriceService priceService)
     {
         List<DeliveryTypePresenter> deliveryTypesPresenters = new List<DeliveryTypePresenter>();
         foreach (DeliveryType deliveryType in deliveryTypes)
         {
-            DeliveryTypePresenter deliveryTypePresenter = new DeliveryTypePresenter(this._priceService);
-            await deliveryTypePresenter.Present(deliveryType, locale, currency);
+            DeliveryTypePresenter deliveryTypePresenter = await Present(deliveryType, locale, currency, priceService);
             deliveryTypesPresenters.Add(deliveryTypePresenter);
         }
         

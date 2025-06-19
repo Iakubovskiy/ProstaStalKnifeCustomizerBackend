@@ -1,4 +1,5 @@
 ﻿using API.Orders.Support.DeliveryTypes.Presenters;
+using Application.Currencies;
 using Application.Orders.Support.DeliveryTypes;
 using Application.Orders.Support.DeliveryTypes.Data;
 using Microsoft.AspNetCore.Mvc;
@@ -12,17 +13,17 @@ public class DeliveryTypeController : ControllerBase
 {
     private readonly IDeliveryTypeRepository _deliveryTypeRepository;
     private readonly IDeliveryTypeService _deliveryTypeService;
-    private readonly DeliveryTypePresenter _presenter;
+    private readonly IPriceService _priceService;
 
     public DeliveryTypeController(
         IDeliveryTypeRepository deliveryTypeRepository,
         IDeliveryTypeService deliveryTypeService,
-        DeliveryTypePresenter presenter
+        IPriceService priceService
     )
     {
         this._deliveryTypeRepository = deliveryTypeRepository;
         this._deliveryTypeService = deliveryTypeService;
-        this._presenter = presenter;
+        this._priceService = priceService;
     }
 
     [HttpGet]
@@ -31,7 +32,12 @@ public class DeliveryTypeController : ControllerBase
         [FromHeader(Name = "Currency")] string currency
     )
     {
-        return Ok(await this._presenter.PresentList(await this._deliveryTypeRepository.GetAll(), locale, currency));
+        return Ok(await DeliveryTypePresenter.PresentList(
+            await this._deliveryTypeRepository.GetAll(), 
+            locale, 
+            currency,
+            this._priceService
+        ));
     }
 
     [HttpGet("active")]
@@ -40,7 +46,12 @@ public class DeliveryTypeController : ControllerBase
         [FromHeader(Name = "Currency")] string currency
     )
     {
-        return Ok(await this._presenter.PresentList(await this._deliveryTypeRepository.GetAllActive(), locale, currency));
+        return Ok(await DeliveryTypePresenter.PresentList(
+            await this._deliveryTypeRepository.GetAllActive(), 
+            locale, 
+            currency,
+            this._priceService
+        ));
     }
 
     [HttpGet("{id:guid}")]
@@ -52,7 +63,12 @@ public class DeliveryTypeController : ControllerBase
     {
         try
         {
-            return Ok(await this._presenter.PresentWithTranslations(await this._deliveryTypeRepository.GetById(id), locale, currency));
+            return Ok(await DeliveryTypePresenter.PresentWithTranslations(
+                await this._deliveryTypeRepository.GetById(id), 
+                locale, 
+                currency,
+                this._priceService
+            ));
         }
         catch (Exception)
         {
