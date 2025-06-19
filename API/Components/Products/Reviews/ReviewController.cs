@@ -63,14 +63,23 @@ public class ReviewController : ControllerBase
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (string.IsNullOrEmpty(userId))
             return Unauthorized(new { message = "User not authenticated" });
-
         try
         {
+            Review review = await this._reviewRepository.GetById(id);
+            if (review.User.Id != new Guid(userId))
+                return StatusCode(StatusCodes.Status403Forbidden, new { message = "User is not allowed to delete this review" });
+            
             return Ok(new { isDeleted = await this._reviewRepository.Delete(id) });
         }
         catch (ObjectNotFoundException e)
         {
             return StatusCode(StatusCodes.Status404NotFound, new { message = e.Message });
         }
+    }
+
+    [HttpGet("product/{productId:guid}/allowed/{userId:guid}")]
+    public async Task<IActionResult> IsReviewAllowed(Guid userId, Guid productId)
+    {
+        return Ok(await this._reviewService.IsReviewAllowed(productId, userId));
     }
 }
