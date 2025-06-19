@@ -30,8 +30,7 @@ public class EngravingTagController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllEngravingTags([FromHeader(Name = "Locale")] string locale)
     {
-        EngravingTagPresenter engravingTagPresenter = new EngravingTagPresenter();
-        return Ok(await engravingTagPresenter.PresentList(await this._engravingRepository.GetAll(), locale));
+        return Ok(await EngravingTagPresenter.PresentList(await this._engravingRepository.GetAll(), locale));
     }
     
     [HttpGet ("{id:guid}")]
@@ -39,8 +38,7 @@ public class EngravingTagController : ControllerBase
     {
         try
         {
-            EngravingTagPresenter engravingTagPresenter = new EngravingTagPresenter();
-            return Ok(await engravingTagPresenter.PresentWithTranslations(await this._engravingRepository.GetById(id), locale));
+            return Ok(await EngravingTagPresenter.PresentWithTranslations(await this._engravingRepository.GetById(id), locale));
         }
         catch (Exception)
         {

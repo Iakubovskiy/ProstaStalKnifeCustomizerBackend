@@ -10,13 +10,6 @@ namespace API.Components.BladeShapes.Presenters;
 
 public class BladeShapePresenter
 {
-    private readonly IGetComponentPrice _getComponentPriceService;
-
-    public BladeShapePresenter(IGetComponentPrice getComponentPriceService)
-    {
-        this._getComponentPriceService = getComponentPriceService;
-    }
-    
     public Guid Id { get; set; }
     public BladeShapeType ShapeType { get; set; }
     public string Name { get; set; }
@@ -27,38 +20,52 @@ public class BladeShapePresenter
     public Sheath? SheathModelUrl { get; set; }
     public BladeCharacteristics BladeCharacteristicsModel { get; set; }
 
-    public async Task<BladeShapePresenter> Present(BladeShape bladeShape, string locale, string currency)
+    public static async Task<BladeShapePresenter> Present(
+        BladeShape bladeShape, 
+        string locale, 
+        string currency, 
+        IGetComponentPrice getComponentPriceService)
     {
-        this.Id = bladeShape.Id;
-        this.ShapeType = bladeShape.Type;
-        this.Price = await this._getComponentPriceService.GetPrice(bladeShape, locale);
-        this.Name = bladeShape.Name.GetTranslation(locale);
-        this.BladeShapeModel = bladeShape.BladeShapeModel;
-        this.BladeShapeImage = bladeShape.BladeShapeModel;
-        this.BladeCharacteristicsModel = bladeShape.BladeCharacteristics;
+        var presenter = new BladeShapePresenter
+        {
+            Id = bladeShape.Id,
+            ShapeType = bladeShape.Type,
+            Price = await getComponentPriceService.GetPrice(bladeShape, locale),
+            Name = bladeShape.Name.GetTranslation(locale),
+            BladeShapeModel = bladeShape.BladeShapeModel,
+            BladeShapeImage = bladeShape.BladeShapeModel,
+            BladeCharacteristicsModel = bladeShape.BladeCharacteristics
+        };
+
         if(bladeShape.Sheath != null)
         {
-            this.SheathModelUrl = bladeShape.Sheath;
+            presenter.SheathModelUrl = bladeShape.Sheath;
         }
         
-        return this;
+        return presenter;
     }
 
-    public async Task<BladeShapePresenter> PresentWithTranslations(BladeShape bladeShape, string locale,
-        string currency)
+    public static async Task<BladeShapePresenter> PresentWithTranslations(
+        BladeShape bladeShape, 
+        string locale,
+        string currency, 
+        IGetComponentPrice getComponentPriceService)
     {
-        await this.Present(bladeShape, locale, currency);
-        this.Names = bladeShape.Name.TranslationDictionary;
-        return this;
+        BladeShapePresenter presenter = await Present(bladeShape, locale, currency, getComponentPriceService);
+        presenter.Names = bladeShape.Name.TranslationDictionary;
+        return presenter;
     }
 
-    public async Task<List<BladeShapePresenter>> PresentList(List<BladeShape> bladeShapes, string locale, string currency)
+    public static async Task<List<BladeShapePresenter>> PresentList(
+        List<BladeShape> bladeShapes, 
+        string locale, 
+        string currency, 
+        IGetComponentPrice getComponentPriceService)
     {
-        List<BladeShapePresenter> bladeShapesPresenters = new List<BladeShapePresenter>();
+        var bladeShapesPresenters = new List<BladeShapePresenter>();
         foreach (BladeShape bladeShape in bladeShapes)
         {
-            BladeShapePresenter bladeShapePresenter = new BladeShapePresenter(_getComponentPriceService);
-            await bladeShapePresenter.Present(bladeShape, locale, currency);
+            BladeShapePresenter bladeShapePresenter = await Present(bladeShape, locale, currency, getComponentPriceService);
             bladeShapesPresenters.Add(bladeShapePresenter);
         }
         

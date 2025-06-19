@@ -7,13 +7,6 @@ namespace API.Components.Handles.Presenters;
 
 public class HandlePresenter
 {
-    private readonly IGetComponentPrice _getComponentPrice;
-
-    public HandlePresenter(IGetComponentPrice getComponentPrice)
-    {
-        this._getComponentPrice = getComponentPrice;
-    }
-    
     public Guid Id { get; set; }
     public string Color { get; set; }
     public Dictionary<string, string> Colors { get; set; }
@@ -25,35 +18,47 @@ public class HandlePresenter
     public FileEntity? ColorMap { get; set; }
     public double Price { get; set; }
 
-    public async Task<HandlePresenter> Present(Handle handle, string locale, string currency)
+    public static async Task<HandlePresenter> Present(
+        Handle handle, 
+        string locale, 
+        string currency, 
+        IGetComponentPrice getComponentPrice)
     {
-        this.Id = handle.Id;
-        this.Color = handle.Color.GetTranslation(locale);
-        this.ColorCode = handle.ColorCode;
-        this.Material = handle.Material.GetTranslation(locale);
-        this.Texture = handle.Texture;
-        this.ColorMap = handle.ColorMap;
-        this.IsActive = handle.IsActive;
-        this.Price = await this._getComponentPrice.GetPrice(handle, currency);
-        
-        return this;
+        return new HandlePresenter
+        {
+            Id = handle.Id,
+            Color = handle.Color.GetTranslation(locale),
+            ColorCode = handle.ColorCode,
+            Material = handle.Material.GetTranslation(locale),
+            Texture = handle.Texture,
+            ColorMap = handle.ColorMap,
+            IsActive = handle.IsActive,
+            Price = await getComponentPrice.GetPrice(handle, currency)
+        };
     }
 
-    public async Task<HandlePresenter> PresentWithTranslations(Handle handle, string locale, string currency)
+    public static async Task<HandlePresenter> PresentWithTranslations(
+        Handle handle, 
+        string locale, 
+        string currency, 
+        IGetComponentPrice getComponentPrice)
     {
-        await this.Present(handle, locale, currency);
-        this.Colors = handle.Color.TranslationDictionary;
-        this.Materials = handle.Material.TranslationDictionary;
-        return this;
+        HandlePresenter presenter = await Present(handle, locale, currency, getComponentPrice);
+        presenter.Colors = handle.Color.TranslationDictionary;
+        presenter.Materials = handle.Material.TranslationDictionary;
+        return presenter;
     }
 
-    public async Task<List<HandlePresenter>> PresentList(List<Handle> handles, string locale, string currency)
+    public static async Task<List<HandlePresenter>> PresentList(
+        List<Handle> handles, 
+        string locale, 
+        string currency, 
+        IGetComponentPrice getComponentPrice)
     {
-        List<HandlePresenter> presenters = new List<HandlePresenter>();
+        var presenters = new List<HandlePresenter>();
         foreach (Handle handle in handles)
         {
-            HandlePresenter presenter = new HandlePresenter(this._getComponentPrice);
-            await presenter.Present(handle, locale, currency);
+            HandlePresenter presenter = await Present(handle, locale, currency, getComponentPrice);
             presenters.Add(presenter);
         }
         return presenters;

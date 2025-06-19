@@ -8,7 +8,6 @@ using Application.Components.SimpleComponents.UseCases.Update;
 using Microsoft.AspNetCore.Mvc;
 using Domain.Component.Engravings;
 using Infrastructure.Components;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace API.Components.Engravings;
 
@@ -40,15 +39,13 @@ public class EngravingController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllEngravings([FromHeader(Name = "Locale")] string locale)
     {
-        EngravingPresenter engravingPresenter = new EngravingPresenter();
-        return Ok(await engravingPresenter.PresentList(await this._engravingRepository.GetAll(), locale));
+        return Ok(await EngravingPresenter.PresentList(await this._engravingRepository.GetAll(), locale));
     }
     
     [HttpGet("active")]
     public async Task<IActionResult> GetAllActiveBladeShapes([FromHeader(Name = "Locale")] string locale)
     {
-        EngravingPresenter engravingPresenter = new EngravingPresenter();
-        return Ok(await engravingPresenter.PresentList(await this._engravingRepository.GetAllActive(), locale));
+        return Ok(await EngravingPresenter.PresentList(await this._engravingRepository.GetAllActive(), locale));
     }
 
     [HttpGet ("{id:guid}")]
@@ -56,8 +53,7 @@ public class EngravingController : ControllerBase
     {
         try
         {
-            EngravingPresenter engravingPresenter = new EngravingPresenter();
-            return Ok(await engravingPresenter.PresentWithTranslations(await this._engravingRepository.GetById(id), locale));
+            return Ok(await EngravingPresenter.PresentWithTranslations(await this._engravingRepository.GetById(id), locale));
         }
         catch (Exception)
         {

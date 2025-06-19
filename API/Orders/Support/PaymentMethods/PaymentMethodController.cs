@@ -87,7 +87,7 @@ public class PaymentMethodController : ControllerBase
     {
         try
         {
-            this._paymentMethodService.DeactivatePaymentMethod(id);
+            await this._paymentMethodService.DeactivatePaymentMethod(id);
             return Ok();
         }
         catch (Exception)
@@ -101,7 +101,7 @@ public class PaymentMethodController : ControllerBase
     {
         try
         {
-            this._paymentMethodService.ActivatePaymentMethod(id);
+            await this._paymentMethodService.ActivatePaymentMethod(id);
             return Ok();
         }
         catch (Exception)

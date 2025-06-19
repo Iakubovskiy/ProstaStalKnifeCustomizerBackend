@@ -24,41 +24,41 @@ public class EngravingPresenter
     public Dictionary<string, string> Descriptions {get; set;}
     public bool IsActive {get; set;}
 
-    public async Task<EngravingPresenter> Present(Engraving engraving, string locale)
+    public static async Task<EngravingPresenter> Present(Engraving engraving, string locale)
     {
-        this.Id = engraving.Id;
-        this.Name = engraving.Name.GetTranslation(locale);
-        this.Side = engraving.Side;
-        this.Text = engraving.Text;
-        this.Font = engraving.Font;
-        this.Picture = engraving.Picture;
-        this.Position = engraving.EngravingPosition;
-        this.Rotation = engraving.EngravingRotation;
-        this.Scale = engraving.EngravingScale;
-        this.Description = engraving.Description.GetTranslation(locale);
-        this.IsActive = engraving.IsActive;
-        
-        EngravingTagPresenter presenter = new EngravingTagPresenter();
-        this.Tags = await presenter.PresentList(engraving.Tags, locale);
+        var presenter = new EngravingPresenter
+        {
+            Id = engraving.Id,
+            Name = engraving.Name.GetTranslation(locale),
+            Side = engraving.Side,
+            Text = engraving.Text,
+            Font = engraving.Font,
+            Picture = engraving.Picture,
+            Position = engraving.EngravingPosition,
+            Rotation = engraving.EngravingRotation,
+            Scale = engraving.EngravingScale,
+            Description = engraving.Description.GetTranslation(locale),
+            IsActive = engraving.IsActive,
+            Tags = await EngravingTagPresenter.PresentList(engraving.Tags, locale)
+        };
 
-        return this;
+        return presenter;
     }
     
-    public async Task<EngravingPresenter> PresentWithTranslations(Engraving engraving, string locale)
+    public static async Task<EngravingPresenter> PresentWithTranslations(Engraving engraving, string locale)
     {
-        await this.Present(engraving, locale);
-        this.Names = engraving.Name.TranslationDictionary;
-        this.Descriptions = engraving.Description.TranslationDictionary;
-        return this;
+        EngravingPresenter presenter = await Present(engraving, locale);
+        presenter.Names = engraving.Name.TranslationDictionary;
+        presenter.Descriptions = engraving.Description.TranslationDictionary;
+        return presenter;
     }
 
-    public async Task<List<EngravingPresenter>> PresentList(List<Engraving> engravings, string locale)
+    public static async Task<List<EngravingPresenter>> PresentList(List<Engraving> engravings, string locale)
     {
-        List<EngravingPresenter> presenters = new List<EngravingPresenter>();
+        var presenters = new List<EngravingPresenter>();
         foreach (Engraving engraving in engravings)
         {
-            EngravingPresenter presenter = new EngravingPresenter();
-            await presenter.Present(engraving, locale);
+            EngravingPresenter presenter = await Present(engraving, locale);
             presenters.Add(presenter);
         }
         

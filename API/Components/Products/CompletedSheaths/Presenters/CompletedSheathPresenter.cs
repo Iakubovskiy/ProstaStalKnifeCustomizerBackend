@@ -66,8 +66,7 @@ public class CompletedSheathPresenter : AbstractProductPresenter
         
         if(sheath.Engravings != null)
         {
-            EngravingPresenter engravingPresenter = new EngravingPresenter();
-            this.Engravings = await engravingPresenter.PresentList(sheath.Engravings, locale);
+            this.Engravings = await EngravingPresenter.PresentList(sheath.Engravings, locale);
         }
 
         if (sheath.Attachments != null)

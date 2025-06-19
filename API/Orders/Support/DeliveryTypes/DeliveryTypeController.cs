@@ -113,7 +113,7 @@ public class DeliveryTypeController : ControllerBase
     {
         try
         {
-            this._deliveryTypeService.DeactivateDeliveryType(id);
+            await this._deliveryTypeService.DeactivateDeliveryType(id);
             return Ok();
         }
         catch (Exception)
@@ -127,7 +127,7 @@ public class DeliveryTypeController : ControllerBase
     {
         try
         {
-            this._deliveryTypeService.ActivateDeliveryType(id);
+            await this._deliveryTypeService.ActivateDeliveryType(id);
             return Ok();
         }
         catch (Exception)

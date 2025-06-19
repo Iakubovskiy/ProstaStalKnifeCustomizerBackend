@@ -7,14 +7,6 @@ namespace API.Components.BladeCoatingColors.Presenters;
 
 public class BladeCoatingColorPresenter
 {
-    private readonly IGetComponentPrice _getComponentPrice;
-    public BladeCoatingColorPresenter(
-        IGetComponentPrice getComponentPrice
-    )
-    {
-        this._getComponentPrice = getComponentPrice;    
-    }
-    
     public Guid Id { get; set; }
     public double Price { get; set; }
     public string Color { get; set; }
@@ -25,37 +17,46 @@ public class BladeCoatingColorPresenter
     public Texture? Texture { get; set; }
     public FileEntity? ColorMap { get; set; }
 
-    public async Task<BladeCoatingColorPresenter> Present(BladeCoatingColor color, string locale, string currency)
+    public static async Task<BladeCoatingColorPresenter> Present(
+        BladeCoatingColor color, 
+        string locale, 
+        string currency, 
+        IGetComponentPrice getComponentPrice)
     {
-        this.Id = color.Id;
-        this.Price = await this._getComponentPrice.GetPrice(color, currency);
-        this.Color = color.Color.TranslationDictionary[locale];
-        this.ColorCode = color.ColorCode;
-        this.EngravingColorCode = color.EngravingColorCode;
-        this.IsActive = color.IsActive;
-        this.Texture = color.Texture;
-        this.ColorMap = color.ColorMap;
-        
-        return this;
+        return new BladeCoatingColorPresenter
+        {
+            Id = color.Id,
+            Price = await getComponentPrice.GetPrice(color, currency),
+            Color = color.Color.TranslationDictionary[locale],
+            ColorCode = color.ColorCode,
+            EngravingColorCode = color.EngravingColorCode,
+            IsActive = color.IsActive,
+            Texture = color.Texture,
+            ColorMap = color.ColorMap
+        };
     }
 
-    public async Task<BladeCoatingColorPresenter> PresentWithTranslations(BladeCoatingColor color, string locale, string currency)
+    public static async Task<BladeCoatingColorPresenter> PresentWithTranslations(
+        BladeCoatingColor color, 
+        string locale, 
+        string currency, 
+        IGetComponentPrice getComponentPrice)
     {
-        await this.Present(color, locale, currency);
-        this.Colors = color.Color.TranslationDictionary;
-        return this;
+        BladeCoatingColorPresenter presenter = await Present(color, locale, currency, getComponentPrice);
+        presenter.Colors = color.Color.TranslationDictionary;
+        return presenter;
     }
-    public async Task<List<BladeCoatingColorPresenter>> PresentList(
+
+    public static async Task<List<BladeCoatingColorPresenter>> PresentList(
         List<BladeCoatingColor> colors, 
         string locale,
-        string currency
-    )
+        string currency,
+        IGetComponentPrice getComponentPrice)
     {
-        List<BladeCoatingColorPresenter> colorsPresenters = new List<BladeCoatingColorPresenter>();
+        var colorsPresenters = new List<BladeCoatingColorPresenter>();
         foreach (BladeCoatingColor bladeCoatingColor in colors)
         {
-            BladeCoatingColorPresenter colorsPresenter = new BladeCoatingColorPresenter(this._getComponentPrice);
-            await colorsPresenter.Present(bladeCoatingColor, locale, currency);
+            BladeCoatingColorPresenter colorsPresenter = await Present(bladeCoatingColor, locale, currency, getComponentPrice);
             colorsPresenters.Add(colorsPresenter);
         }
         return colorsPresenters;

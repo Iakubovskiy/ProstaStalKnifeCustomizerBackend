@@ -2,6 +2,7 @@
 using API.Components.BladeCoatingColors.Presenters;
 using Application.Components.Activate;
 using Application.Components.Deactivate;
+using Application.Components.Prices;
 using Application.Components.TexturedComponents.Data.Dto.BladeCoatings;
 using Application.Components.TexturedComponents.UseCases.Create;
 using Application.Components.TexturedComponents.UseCases.Update;
@@ -20,7 +21,7 @@ public class BladeCoatingColorController : ControllerBase
     private readonly IDeactivate<BladeCoatingColor> _deactivateService;
     private readonly ICreateTexturedComponent<BladeCoatingColor, BladeCoatingDto> _bladeCoatingColorCreateService;
     private readonly IUpdateTexturedComponent<BladeCoatingColor, BladeCoatingDto> _bladeCoatingColorUpdateService;
-    private readonly BladeCoatingColorPresenter _coatingColorPresenter;
+    private readonly IGetComponentPrice _getComponentPrice;
 
     public BladeCoatingColorController (
         IComponentRepository<BladeCoatingColor> bladeCoatingColorRepository,
@@ -28,7 +29,7 @@ public class BladeCoatingColorController : ControllerBase
         IDeactivate<BladeCoatingColor> deactivateService,
         ICreateTexturedComponent<BladeCoatingColor, BladeCoatingDto> bladeCoatingColorCreateService,
         IUpdateTexturedComponent<BladeCoatingColor, BladeCoatingDto> bladeCoatingColorUpdateService,
-        BladeCoatingColorPresenter coatingColorPresenter
+        IGetComponentPrice getComponentPrice
     )
     {
         this._bladeCoatingColorRepository = bladeCoatingColorRepository;
@@ -36,19 +37,24 @@ public class BladeCoatingColorController : ControllerBase
         this._activateService = activateService;
         this._deactivateService = deactivateService;
         this._bladeCoatingColorUpdateService = bladeCoatingColorUpdateService;
-        this._coatingColorPresenter = coatingColorPresenter;
+        this._getComponentPrice = getComponentPrice;
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllBladeCoatingColors([FromHeader(Name = "Locale")] string locale, [FromHeader(Name = "Currency")] string currency)
+    public async Task<IActionResult> GetAllBladeCoatingColors(
+        [FromHeader(Name = "Locale")] string locale, 
+        [FromHeader(Name = "Currency")] string currency
+    )
     {
-        return Ok(await this._coatingColorPresenter.PresentList(await this._bladeCoatingColorRepository.GetAll(), locale, currency));
+        return Ok(await BladeCoatingColorPresenter
+            .PresentList(await this._bladeCoatingColorRepository.GetAll(), locale, currency, this._getComponentPrice));
     }
 
     [HttpGet("active")]
     public async Task<IActionResult> GetAllActiveBladeCoatingColors([FromHeader(Name = "Locale")] string locale, [FromHeader(Name = "Currency")] string currency)
     {
-        return Ok(await this._coatingColorPresenter.PresentList(await this._bladeCoatingColorRepository.GetAllActive(), locale, currency));
+        return Ok(await BladeCoatingColorPresenter
+            .PresentList(await this._bladeCoatingColorRepository.GetAllActive(), locale, currency, this._getComponentPrice));
     }
 
     [HttpGet("{id:guid}")]
@@ -60,8 +66,13 @@ public class BladeCoatingColorController : ControllerBase
     {
         try
         {
-            return Ok(await this._coatingColorPresenter
-                .PresentWithTranslations(await this._bladeCoatingColorRepository.GetById(id), locale, currency));
+            return Ok(await BladeCoatingColorPresenter
+                .PresentWithTranslations(
+                    await this._bladeCoatingColorRepository.GetById(id), 
+                    locale, 
+                    currency, 
+                    this._getComponentPrice
+                ));
         }
         catch (ObjectNotFoundException e)
         {

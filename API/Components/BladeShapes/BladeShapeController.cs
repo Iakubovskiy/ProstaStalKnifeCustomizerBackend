@@ -2,6 +2,7 @@
 using API.Components.BladeShapes.Presenters;
 using Application.Components.Activate;
 using Application.Components.Deactivate;
+using Application.Components.Prices;
 using Application.Components.SimpleComponents.BladeShapes;
 using Application.Components.SimpleComponents.UseCases.Create;
 using Application.Components.SimpleComponents.UseCases.Update;
@@ -20,7 +21,7 @@ public class BladeShapeController : ControllerBase
     private readonly IDeactivate<BladeShape> _deactivateService;
     private readonly ICreateService<BladeShape, BladeShapeDto> _bladeCoatingColorCreateService;
     private readonly IUpdateService<BladeShape, BladeShapeDto> _bladeCoatingColorUpdateService;
-    private readonly BladeShapePresenter _bladeShapePresenter;
+    private readonly IGetComponentPrice _getComponentPrice;
 
     public BladeShapeController(
         IComponentRepository<BladeShape> bladeShapeRepository, 
@@ -28,7 +29,7 @@ public class BladeShapeController : ControllerBase
         IDeactivate<BladeShape> deactivateService,
         ICreateService<BladeShape, BladeShapeDto> bladeShapeCreateService,
         IUpdateService<BladeShape, BladeShapeDto> bladeShapeUpdateService,
-        BladeShapePresenter bladeShapePresenter
+        IGetComponentPrice getComponentPrice
     )
     {
         this._bladeShapeRepository = bladeShapeRepository;
@@ -36,21 +37,23 @@ public class BladeShapeController : ControllerBase
         this._deactivateService = deactivateService;
         this._bladeCoatingColorCreateService = bladeShapeCreateService;
         this._bladeCoatingColorUpdateService = bladeShapeUpdateService;
-        this._bladeShapePresenter = bladeShapePresenter;
+        this._getComponentPrice = getComponentPrice;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAllBladeShapes(
         [FromHeader(Name = "Locale")] string locale, [FromHeader(Name = "Currency")] string currency)
     {
-        return Ok(await this._bladeShapePresenter.PresentList(await this._bladeShapeRepository.GetAll(), locale, currency));
+        return Ok(await BladeShapePresenter
+            .PresentList(await this._bladeShapeRepository.GetAll(), locale, currency, this._getComponentPrice));
     }
 
     [HttpGet("active")]
     public async Task<IActionResult> GetAllActiveBladeShapes(
         [FromHeader(Name = "Locale")] string locale, [FromHeader(Name = "Currency")] string currency)
     {
-        return Ok(await this._bladeShapePresenter.PresentList(await this._bladeShapeRepository.GetAllActive(), locale, currency));
+        return Ok(await BladeShapePresenter
+            .PresentList(await this._bladeShapeRepository.GetAllActive(), locale, currency, this._getComponentPrice));
     }
 
     [HttpGet("{id:guid}")]
@@ -62,7 +65,8 @@ public class BladeShapeController : ControllerBase
     {
         try
         {
-            return Ok(await this._bladeShapePresenter.PresentWithTranslations(await this._bladeShapeRepository.GetById(id), locale, currency));
+            return Ok(await BladeShapePresenter
+                .PresentWithTranslations(await this._bladeShapeRepository.GetById(id), locale, currency, this._getComponentPrice));
         }
         catch (ObjectNotFoundException e)
         {

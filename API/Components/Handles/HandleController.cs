@@ -1,6 +1,7 @@
 ﻿using API.Components.Handles.Presenters;
 using Application.Components.Activate;
 using Application.Components.Deactivate;
+using Application.Components.Prices;
 using Application.Components.TexturedComponents.Data.Dto.HandleColors;
 using Application.Components.TexturedComponents.UseCases.Create;
 using Application.Components.TexturedComponents.UseCases.Update;
@@ -19,7 +20,7 @@ public class HandleController : ControllerBase
     private readonly IUpdateTexturedComponent<Handle, HandleColorDto> _handleUpdateService;
     private readonly IActivate<Handle> _activateService;
     private readonly IDeactivate<Handle> _deactivateService;
-    private readonly HandlePresenter _presenter;
+    private readonly IGetComponentPrice _getComponentPrice;
     
     public HandleController(
         IComponentRepository<Handle> handleRepository,
@@ -27,7 +28,7 @@ public class HandleController : ControllerBase
         IUpdateTexturedComponent<Handle, HandleColorDto> handleUpdateService,
         IActivate<Handle> activateService,
         IDeactivate<Handle> deactivateService,
-        HandlePresenter presenter
+        IGetComponentPrice getComponentPrice
     )
     {
         this._handleRepository = handleRepository;
@@ -35,7 +36,7 @@ public class HandleController : ControllerBase
         this._handleUpdateService = handleUpdateService;
         this._activateService = activateService;
         this._deactivateService = deactivateService;
-        this._presenter = presenter;
+        this._getComponentPrice = getComponentPrice;
     }
 
     [HttpGet]
@@ -44,7 +45,8 @@ public class HandleController : ControllerBase
         [FromHeader(Name = "Currency")] string currency
     )
     {
-        return Ok(await this._presenter.PresentList(await this._handleRepository.GetAll(), locale, currency));
+        return Ok(await HandlePresenter
+            .PresentList(await this._handleRepository.GetAll(), locale, currency, this._getComponentPrice));
     }
 
     [HttpGet("active")]
@@ -53,7 +55,8 @@ public class HandleController : ControllerBase
         [FromHeader(Name = "Currency")] string currency
     )
     {
-        return Ok(await this._presenter.PresentList(await this._handleRepository.GetAllActive(), locale, currency));
+        return Ok(await HandlePresenter
+            .PresentList(await this._handleRepository.GetAllActive(), locale, currency, this._getComponentPrice));
     }
 
     [HttpGet("{id:guid}")]
@@ -65,7 +68,8 @@ public class HandleController : ControllerBase
     {
         try
         {
-            return Ok(await this._presenter.PresentWithTranslations(await this._handleRepository.GetById(id), locale, currency));
+            return Ok(await HandlePresenter
+                .PresentWithTranslations(await this._handleRepository.GetById(id), locale, currency, this._getComponentPrice));
         }
         catch (Exception)
         {
