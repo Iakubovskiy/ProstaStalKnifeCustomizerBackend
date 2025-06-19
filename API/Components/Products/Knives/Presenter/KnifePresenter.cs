@@ -1,6 +1,7 @@
 using API.Components.Products.AllProducts.Presenters;
 using Application.Components.Prices;
 using Domain.Component.Product.Knife;
+using Domain.Files;
 using Domain.Translation;
 
 namespace API.Components.Products.Knives.Presenter;
@@ -25,7 +26,7 @@ public class KnifePresenter : AbstractProductPresenter
     public string Description {get; set;}
     public Dictionary<string, string> Descriptions {get; set;}
     public double Price {get; set;}
-    public string ImageUrl {get; set;}
+    public FileEntity ImageUrl {get; set;}
     public double TotalLength { get; set; }
     public double BladeLength { get; set; }
     public double BladeWidth { get; set; }
@@ -49,7 +50,7 @@ public class KnifePresenter : AbstractProductPresenter
         this.Name = knife.Name.GetTranslation(locale);
         this.Description = knife.Description.GetTranslation(locale);
         this.Price = await this._getComponentPriceService.GetPrice(knife, currency);
-        this.ImageUrl = knife.Image.FileUrl;
+        this.ImageUrl = knife.Image;
         this.TotalLength = knife.Blade.BladeCharacteristics.TotalLength;
         this.BladeLength = knife.Blade.BladeCharacteristics.BladeLength;
         this.BladeWidth = knife.Blade.BladeCharacteristics.BladeWidth;

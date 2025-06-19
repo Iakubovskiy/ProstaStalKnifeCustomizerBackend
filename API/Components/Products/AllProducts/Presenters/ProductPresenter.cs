@@ -2,6 +2,7 @@ using Application.Components.Prices;
 using Domain.Component.BladeShapes.BladeCharacteristic;
 using Domain.Component.Product;
 using Domain.Component.Product.Knife;
+using Domain.Files;
 using Infrastructure;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -19,7 +20,7 @@ public class ProductPresenter
     public Guid Id { get; set; }
     public string Name { get; set; }
     public Dictionary<string, string> Names { get; set; }
-    public string ImageUrl { get; set; }
+    public FileEntity Image { get; set; }
     public double Price { get; set; }
     public List<ReviewPresenter> Reviews { get; set; } = new List<ReviewPresenter>();
     
@@ -29,7 +30,7 @@ public class ProductPresenter
     {
         this.Id = product.Id;
         this.Name = product.Name.GetTranslation(locale);
-        this.ImageUrl = product.Image.FileUrl;
+        this.Image = product.Image;
         this.Price = await this._getComponentPriceService.GetPrice(product, currency);
         if (product is Knife knife)
         {
