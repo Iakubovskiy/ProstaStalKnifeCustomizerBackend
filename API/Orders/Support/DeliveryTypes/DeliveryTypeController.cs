@@ -52,7 +52,7 @@ public class DeliveryTypeController : ControllerBase
     {
         try
         {
-            return Ok(await this._presenter.Present(await this._deliveryTypeRepository.GetById(id), locale, currency));
+            return Ok(await this._presenter.PresentWithTranslations(await this._deliveryTypeRepository.GetById(id), locale, currency));
         }
         catch (Exception)
         {

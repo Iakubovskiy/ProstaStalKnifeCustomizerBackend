@@ -20,6 +20,7 @@ public class BladeShapePresenter
     public Guid Id { get; set; }
     public BladeShapeType ShapeType { get; set; }
     public string Name { get; set; }
+    public Dictionary<string, string> Names { get; set; }
     public double Price { get; set; }
     public FileEntity BladeShapeModel { get; set; }
     public FileEntity BladeShapeImage { get; set; }
@@ -40,6 +41,14 @@ public class BladeShapePresenter
             this.SheathModelUrl = bladeShape.Sheath;
         }
         
+        return this;
+    }
+
+    public async Task<BladeShapePresenter> PresentWithTranslations(BladeShape bladeShape, string locale,
+        string currency)
+    {
+        await this.Present(bladeShape, locale, currency);
+        this.Names = bladeShape.Name.TranslationDictionary;
         return this;
     }
 

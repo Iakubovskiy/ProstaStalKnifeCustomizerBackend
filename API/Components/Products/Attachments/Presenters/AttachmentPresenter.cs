@@ -20,12 +20,18 @@ public class AttachmentPresenter : AbstractProductPresenter
     public bool IsActive { get; set; }
     public FileEntity Image { get; set; }
     public string Name { get; set; }
+    public Dictionary<string, string> Names { get; set; }
     public string Title { get; set; }
+    public Dictionary<string, string> Titles { get; set; }
     public string Description { get; set; }
+    public Dictionary<string, string> Descriptions { get; set; }
     public string MetaTitle { get; set; }
+    public Dictionary<string, string> MetaTitles { get; set; }
     public string MetaDescription { get; set; }
+    public Dictionary<string, string> MetaDescriptions { get; set; }
     public AttachmentTypePresenter Type { get; set; }
     public string Material { get; set; }
+    public Dictionary<string, string> Materials { get; set; }
     public double Price { get; set; }
     public FileEntity Model { get; set; }
     public List<ReviewPresenter>? Reviews {get; set;}
@@ -53,6 +59,19 @@ public class AttachmentPresenter : AbstractProductPresenter
             this.Reviews = reviewPresenter.PresentList(attachment.Reviews);
             this.AverageRating = Math.Round(((double)this.Reviews.Sum(r => r.Rating) / this.Reviews.Count), 2);
         }
+        
+        return this;
+    }
+    
+    public async Task<AttachmentPresenter> PresentWithTranslations(Attachment attachment, string locale, string currency)
+    {
+        await this.Present(attachment, locale, currency);
+        this.Names = attachment.Name.TranslationDictionary;
+        this.Titles = attachment.Title.TranslationDictionary;
+        this.Descriptions = attachment.Description.TranslationDictionary;
+        this.MetaTitles = attachment.MetaTitle.TranslationDictionary;
+        this.MetaDescriptions = attachment.MetaDescription.TranslationDictionary;
+        this.Materials = attachment.Material.TranslationDictionary;
         
         return this;
     }

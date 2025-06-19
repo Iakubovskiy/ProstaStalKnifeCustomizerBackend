@@ -15,9 +15,11 @@ public class SheathColorPresenter
     
     public Guid Id { get; set; }
     public string Color { get; set; }
+    public Dictionary<string, string> Colors { get; set; }
     public string ColorCode { get; set; }
     public bool IsActive { get; set; }
     public string Material { get; set; }
+    public Dictionary<string, string> Materials { get; set; }
     public string EngravingColorCode { get; set; }
     public Texture? Texture { get; set; }
     public FileEntity? ColorMap { get; set; }
@@ -36,6 +38,14 @@ public class SheathColorPresenter
         this.IsActive = color.IsActive;
         this.Prices = await this._sheathColorPriceByTypePresenter.PresentList(color.Prices, locale, currency);
         
+        return this;
+    }
+
+    public async Task<SheathColorPresenter> PresentWithTranslations(SheathColor color, string locale, string currency)
+    {
+        await this.Present(color, locale, currency);
+        this.Colors = color.Color.TranslationDictionary;
+        this.Materials = color.Material.TranslationDictionary;
         return this;
     }
 

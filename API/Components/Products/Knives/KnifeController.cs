@@ -66,7 +66,7 @@ public class KnifeController : ControllerBase
         try
         {
             Knife knife = await this._knifeRepository.GetById(id); 
-            return Ok(await this._presenter.Present(knife, locale, currency));
+            return Ok(await this._presenter.PresentWithTranslations(knife, locale, currency));
         }
         catch (Exception)
         {

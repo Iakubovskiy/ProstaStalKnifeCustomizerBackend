@@ -1,6 +1,7 @@
 using System.Text;
 using API.Components.BladeCoatingColors.Presenters;
 using API.Components.BladeShapes.Presenters;
+using API.Components.Handles.Presenters;
 using API.Components.Products.AllProducts.Presenters;
 using API.Components.Products.Attachments.Presenters;
 using API.Components.Products.CompletedSheaths.Presenters;
@@ -423,6 +424,7 @@ builder.Services.AddScoped<CompletedSheathPresenter>();
 builder.Services.AddScoped<OrderItemPresenter>();
 builder.Services.AddScoped<OrderPresenter>();
 builder.Services.AddScoped<PaymentMethodPresenter>();
+builder.Services.AddScoped<HandlePresenter>();
 
 #endregion
 

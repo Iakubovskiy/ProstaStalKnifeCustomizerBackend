@@ -6,11 +6,19 @@ public class EngravingTagPresenter
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
+    public Dictionary<string, string> Names { get; set; }
 
     public async Task<EngravingTagPresenter> Present(EngravingTag engravingTag, string locale)
     {
         this.Id = engravingTag.Id;
         this.Name = engravingTag.Name.GetTranslation(locale);
+        return this;
+    }
+
+    public async Task<EngravingTagPresenter> PresentWithTranslations(EngravingTag engravingTag, string locale)
+    {
+        await this.Present(engravingTag, locale);
+        this.Names = engravingTag.Name.TranslationDictionary;
         return this;
     }
 

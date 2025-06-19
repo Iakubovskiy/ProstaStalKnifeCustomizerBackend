@@ -28,6 +28,6 @@ public class CompletedSheathController : ControllerBase
         [FromHeader(Name = "Currency")] string currency
     )
     {
-        return Ok(await this._completedSheathPresenter.Present(await this._completedSheathRepository.GetById(id), locale, currency));
+        return Ok(await this._completedSheathPresenter.PresentWithTranslations(await this._completedSheathRepository.GetById(id), locale, currency));
     }
 }

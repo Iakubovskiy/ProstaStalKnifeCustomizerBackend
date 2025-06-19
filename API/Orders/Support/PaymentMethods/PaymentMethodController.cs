@@ -42,7 +42,7 @@ public class PaymentMethodController : ControllerBase
         try
         {
             PaymentMethodPresenter paymentMethodPresenter = new PaymentMethodPresenter();
-            return Ok(await paymentMethodPresenter.Present(await this._paymentMethodRepository.GetById(id), locale));
+            return Ok(await paymentMethodPresenter.PresentWithTranslations(await this._paymentMethodRepository.GetById(id), locale));
         }
         catch (Exception)
         {

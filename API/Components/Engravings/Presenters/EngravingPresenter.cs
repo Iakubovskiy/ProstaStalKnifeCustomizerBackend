@@ -11,6 +11,7 @@ public class EngravingPresenter
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
+    public Dictionary<string, string> Names { get; set; }
     public int Side { get; set; }
     public string? Text { get; set; }
     public string? Font { get; set; }
@@ -20,6 +21,7 @@ public class EngravingPresenter
     public EngravingScale Scale { get; set; }
     public List<EngravingTagPresenter> Tags { get; set; }
     public string Description {get; set;}
+    public Dictionary<string, string> Descriptions {get; set;}
     public bool IsActive {get; set;}
 
     public async Task<EngravingPresenter> Present(Engraving engraving, string locale)
@@ -39,6 +41,14 @@ public class EngravingPresenter
         EngravingTagPresenter presenter = new EngravingTagPresenter();
         this.Tags = await presenter.PresentList(engraving.Tags, locale);
 
+        return this;
+    }
+    
+    public async Task<EngravingPresenter> PresentWithTranslations(Engraving engraving, string locale)
+    {
+        await this.Present(engraving, locale);
+        this.Names = engraving.Name.TranslationDictionary;
+        this.Descriptions = engraving.Description.TranslationDictionary;
         return this;
     }
 

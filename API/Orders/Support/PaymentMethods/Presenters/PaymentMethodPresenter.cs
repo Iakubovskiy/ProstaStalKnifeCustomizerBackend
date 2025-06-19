@@ -6,6 +6,7 @@ public class PaymentMethodPresenter
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
+    public Dictionary<string, string> Names { get; set; }
     public string Description { get; set; }
     public bool IsActive { get; set; }
 
@@ -16,6 +17,13 @@ public class PaymentMethodPresenter
         this.Description = paymentMethod.Description.GetTranslation(locale);
         this.IsActive = paymentMethod.IsActive;
         
+        return this;
+    }
+    
+    public async Task<PaymentMethodPresenter> PresentWithTranslations(PaymentMethod paymentMethod, string locale)
+    {
+        await this.Present(paymentMethod, locale);
+        this.Names = paymentMethod.Name.TranslationDictionary;
         return this;
     }
 

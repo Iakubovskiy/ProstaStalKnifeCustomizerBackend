@@ -40,7 +40,7 @@ public class EngravingTagController : ControllerBase
         try
         {
             EngravingTagPresenter engravingTagPresenter = new EngravingTagPresenter();
-            return Ok(await engravingTagPresenter.Present(await this._engravingRepository.GetById(id), locale));
+            return Ok(await engravingTagPresenter.PresentWithTranslations(await this._engravingRepository.GetById(id), locale));
         }
         catch (Exception)
         {

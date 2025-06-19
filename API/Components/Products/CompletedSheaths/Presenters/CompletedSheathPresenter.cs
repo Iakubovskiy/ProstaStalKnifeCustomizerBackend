@@ -33,10 +33,15 @@ public class CompletedSheathPresenter : AbstractProductPresenter
     public bool IsActive { get; set; }
     public FileEntity Image { get; set; }
     public string Name { get; set; }
+    public Dictionary<string, string> Names { get; set; }
     public string Title { get; set; }
+    public Dictionary<string, string> Titles { get; set; }
     public string Description { get; set; }
+    public Dictionary<string, string> Descriptions { get; set; }
     public string MetaTitle { get; set; }
+    public Dictionary<string, string> MetaTitles { get; set; }
     public string MetaDescription { get; set; }
+    public Dictionary<string, string> MetaDescriptions { get; set; }
     public SheathPresenter Sheath { get; set; }
     public SheathColorPresenter SheathColor { get; set; }
     public List<EngravingPresenter>? Engravings { get; set; }
@@ -77,6 +82,17 @@ public class CompletedSheathPresenter : AbstractProductPresenter
             this.AverageRating = Math.Round(((double)this.Reviews.Sum(r => r.Rating) / this.Reviews.Count), 2);
         }
         
+        return this;
+    }
+    
+    public async Task<CompletedSheathPresenter> PresentWithTranslations(CompletedSheath sheath, string locale, string currency)
+    {
+        await this.Present(sheath, locale, currency);
+        this.Names = sheath.Name.TranslationDictionary;
+        this.Titles = sheath.Title.TranslationDictionary;
+        this.Descriptions = sheath.Description.TranslationDictionary;
+        this.MetaTitles = sheath.MetaTitle.TranslationDictionary;
+        this.MetaDescriptions = sheath.MetaDescription.TranslationDictionary;
         return this;
     }
 

@@ -34,4 +34,10 @@ public class FileController : ControllerBase
     {
         return Ok(await this._fileRepository.GetAll());
     }
+    
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetFileById(Guid id)
+    {
+        return Ok(await this._fileRepository.GetById(id));
+    }
 }

@@ -1,4 +1,5 @@
-﻿using Application.Components.Activate;
+﻿using API.Components.Handles.Presenters;
+using Application.Components.Activate;
 using Application.Components.Deactivate;
 using Application.Components.TexturedComponents.Data.Dto.HandleColors;
 using Application.Components.TexturedComponents.UseCases.Create;
@@ -18,13 +19,15 @@ public class HandleController : ControllerBase
     private readonly IUpdateTexturedComponent<Handle, HandleColorDto> _handleUpdateService;
     private readonly IActivate<Handle> _activateService;
     private readonly IDeactivate<Handle> _deactivateService;
+    private readonly HandlePresenter _presenter;
     
     public HandleController(
         IComponentRepository<Handle> handleRepository,
         ICreateTexturedComponent<Handle, HandleColorDto> handleCreateService,
         IUpdateTexturedComponent<Handle, HandleColorDto> handleUpdateService,
         IActivate<Handle> activateService,
-        IDeactivate<Handle> deactivateService
+        IDeactivate<Handle> deactivateService,
+        HandlePresenter presenter
     )
     {
         this._handleRepository = handleRepository;
@@ -32,26 +35,37 @@ public class HandleController : ControllerBase
         this._handleUpdateService = handleUpdateService;
         this._activateService = activateService;
         this._deactivateService = deactivateService;
+        this._presenter = presenter;
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllHandles()
+    public async Task<IActionResult> GetAllHandles(
+        [FromHeader(Name = "Locale")] string locale,
+        [FromHeader(Name = "Currency")] string currency
+    )
     {
-        return Ok(await this._handleRepository.GetAll());
+        return Ok(await this._presenter.PresentList(await this._handleRepository.GetAll(), locale, currency));
     }
 
     [HttpGet("active")]
-    public async Task<IActionResult> GetAllActiveHandles()
+    public async Task<IActionResult> GetAllActiveHandles(
+        [FromHeader(Name = "Locale")] string locale,
+        [FromHeader(Name = "Currency")] string currency
+    )
     {
-        return Ok(await this._handleRepository.GetAllActive());
+        return Ok(await this._presenter.PresentList(await this._handleRepository.GetAllActive(), locale, currency));
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetHandleColorsById(Guid id)
+    public async Task<IActionResult> GetHandleColorsById(
+        Guid id,
+        [FromHeader(Name = "Locale")] string locale,
+        [FromHeader(Name = "Currency")] string currency
+    )
     {
         try
         {
-            return Ok(await this._handleRepository.GetById(id));
+            return Ok(await this._presenter.PresentWithTranslations(await this._handleRepository.GetById(id), locale, currency));
         }
         catch (Exception)
         {

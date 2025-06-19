@@ -1,6 +1,7 @@
 using API.Components.Products.AllProducts.Presenters;
 using Application.Components.Prices;
 using Domain.Component.Product.Knife;
+using Domain.Translation;
 
 namespace API.Components.Products.Knives.Presenter;
 
@@ -13,10 +14,16 @@ public class KnifePresenter : AbstractProductPresenter
         this._getComponentPriceService = getComponentPriceService;
     }
     public Guid Id { get; set; }
+    public string Title { get; set; }
+    public Dictionary<string, string> Titles { get; set; }
     public string MetaTitle { get; set; }
+    public Dictionary<string, string> MetaTitles { get; set; }
     public string MetaDescription { get; set; }
+    public Dictionary<string, string> MetaDescriptions { get; set; }
     public string Name {get; set;}
+    public Dictionary<string, string> Names {get; set;}
     public string Description {get; set;}
+    public Dictionary<string, string> Descriptions {get; set;}
     public double Price {get; set;}
     public string ImageUrl {get; set;}
     public double TotalLength { get; set; }
@@ -38,6 +45,7 @@ public class KnifePresenter : AbstractProductPresenter
     public async Task<KnifePresenter> Present(Knife knife, string locale, string currency)
     {
         this.Id = knife.Id;
+        this.Title = knife.Title.GetTranslation(locale);
         this.Name = knife.Name.GetTranslation(locale);
         this.Description = knife.Description.GetTranslation(locale);
         this.Price = await this._getComponentPriceService.GetPrice(knife, currency);
@@ -78,6 +86,17 @@ public class KnifePresenter : AbstractProductPresenter
             this.AverageRating = Math.Round(((double)this.Reviews.Sum(r => r.Rating) / this.Reviews.Count), 2);
         }
         
+        return this;
+    }
+
+    public async Task<KnifePresenter> PresentWithTranslations(Knife knife, string locale, string currency)
+    {
+        await this.Present(knife, locale, currency);
+        this.Names = knife.Name.TranslationDictionary;
+        this.Titles = knife.Title.TranslationDictionary;
+        this.Descriptions = knife.Description.TranslationDictionary;
+        this.MetaTitles = knife.MetaTitle.TranslationDictionary;
+        this.MetaDescriptions = knife.MetaDescription.TranslationDictionary;
         return this;
     }
     

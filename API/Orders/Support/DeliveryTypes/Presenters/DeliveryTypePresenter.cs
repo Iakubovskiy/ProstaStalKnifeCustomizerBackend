@@ -5,10 +5,6 @@ namespace API.Orders.Support.DeliveryTypes.Presenters;
 
 public class DeliveryTypePresenter
 {
-    // id: number;
-    // name: string;
-    // price: number;
-    // comment: string;
     private readonly IPriceService _priceService;
 
     public DeliveryTypePresenter(IPriceService priceService)
@@ -18,6 +14,7 @@ public class DeliveryTypePresenter
     
     public Guid Id { get; set; }
     public string Name { get; set; }
+    public Dictionary<string, string> Names { get; set; }
     public double Price { get; set; }
     public string? Comment { get; set; }
     public bool IsActive { get; set; }
@@ -30,6 +27,13 @@ public class DeliveryTypePresenter
         this.Comment = deliveryType.Comment?.GetTranslation(locale);
         this.IsActive = deliveryType.IsActive;
         
+        return this;
+    }
+    
+    public async Task<DeliveryTypePresenter> PresentWithTranslations(DeliveryType deliveryType, string locale, string currency)
+    {
+        await this.Present(deliveryType, locale, currency);
+        this.Names = deliveryType.Name.TranslationDictionary;
         return this;
     }
 

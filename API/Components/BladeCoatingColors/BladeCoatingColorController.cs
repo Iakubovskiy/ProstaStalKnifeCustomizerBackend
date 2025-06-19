@@ -61,7 +61,7 @@ public class BladeCoatingColorController : ControllerBase
         try
         {
             return Ok(await this._coatingColorPresenter
-                .Present(await this._bladeCoatingColorRepository.GetById(id), locale, currency));
+                .PresentWithTranslations(await this._bladeCoatingColorRepository.GetById(id), locale, currency));
         }
         catch (ObjectNotFoundException e)
         {

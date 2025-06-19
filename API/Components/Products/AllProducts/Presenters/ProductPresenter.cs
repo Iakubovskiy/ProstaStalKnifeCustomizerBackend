@@ -18,6 +18,7 @@ public class ProductPresenter
 
     public Guid Id { get; set; }
     public string Name { get; set; }
+    public Dictionary<string, string> Names { get; set; }
     public string ImageUrl { get; set; }
     public double Price { get; set; }
     public List<ReviewPresenter> Reviews { get; set; } = new List<ReviewPresenter>();
@@ -40,6 +41,13 @@ public class ProductPresenter
             ReviewPresenter presenter = new ReviewPresenter();
             this.Reviews = presenter.PresentList(product.Reviews);
         }
+        return this;
+    }
+    
+    public async Task<ProductPresenter> PresentWithTranslations(Product product, string locale, string currency)
+    {
+        await this.Present(product, locale, currency);
+        this.Names = product.Name.TranslationDictionary;
         return this;
     }
 

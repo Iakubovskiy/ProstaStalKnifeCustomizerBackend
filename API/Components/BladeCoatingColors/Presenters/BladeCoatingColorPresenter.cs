@@ -18,6 +18,7 @@ public class BladeCoatingColorPresenter
     public Guid Id { get; set; }
     public double Price { get; set; }
     public string Color { get; set; }
+    public Dictionary<string, string> Colors { get; set; }
     public string? ColorCode { get; set; }
     public string EngravingColorCode { get; set; }
     public bool IsActive { get; set; }
@@ -38,6 +39,12 @@ public class BladeCoatingColorPresenter
         return this;
     }
 
+    public async Task<BladeCoatingColorPresenter> PresentWithTranslations(BladeCoatingColor color, string locale, string currency)
+    {
+        await this.Present(color, locale, currency);
+        this.Colors = color.Color.TranslationDictionary;
+        return this;
+    }
     public async Task<List<BladeCoatingColorPresenter>> PresentList(
         List<BladeCoatingColor> colors, 
         string locale,

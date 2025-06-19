@@ -66,7 +66,7 @@ public class SheathColorController : ControllerBase
     {
         try
         {
-            return Ok(await this._presenter.Present(await this._sheathColorRepository.GetById(id), locale, currency));
+            return Ok(await this._presenter.PresentWithTranslations(await this._sheathColorRepository.GetById(id), locale, currency));
         }
         catch (ObjectNotFoundException)
         {

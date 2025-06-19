@@ -62,7 +62,7 @@ public class BladeShapeController : ControllerBase
     {
         try
         {
-            return Ok(await this._bladeShapePresenter.Present(await this._bladeShapeRepository.GetById(id), locale, currency));
+            return Ok(await this._bladeShapePresenter.PresentWithTranslations(await this._bladeShapeRepository.GetById(id), locale, currency));
         }
         catch (ObjectNotFoundException e)
         {

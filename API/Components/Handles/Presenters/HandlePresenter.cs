@@ -16,9 +16,11 @@ public class HandlePresenter
     
     public Guid Id { get; set; }
     public string Color { get; set; }
+    public Dictionary<string, string> Colors { get; set; }
     public string ColorCode { get; set; }
     public bool IsActive { get; set; }
     public string Material { get; set; }
+    public Dictionary<string, string> Materials { get; set; }
     public Texture? Texture { get; set; }
     public FileEntity? ColorMap { get; set; }
     public double Price { get; set; }
@@ -34,6 +36,14 @@ public class HandlePresenter
         this.IsActive = handle.IsActive;
         this.Price = await this._getComponentPrice.GetPrice(handle, currency);
         
+        return this;
+    }
+
+    public async Task<HandlePresenter> PresentWithTranslations(Handle handle, string locale, string currency)
+    {
+        await this.Present(handle, locale, currency);
+        this.Colors = handle.Color.TranslationDictionary;
+        this.Materials = handle.Material.TranslationDictionary;
         return this;
     }
 

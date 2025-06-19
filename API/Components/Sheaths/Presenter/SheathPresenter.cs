@@ -16,6 +16,7 @@ public class SheathPresenter
     
     public Guid Id { get; set; }
     public string Name { get; set; }
+    public Dictionary<string, string> Names { get; set; }
     public FileEntity? Model { get; set; }
     public BladeShapeType ShapeType { get; set; }
     public double Price { get; set; }
@@ -29,6 +30,13 @@ public class SheathPresenter
         this.Price = await this._getComponentPrice.GetPrice(sheath,currency);
         this.IsActive = sheath.IsActive;
         
+        return this;
+    }
+    
+    public async Task<SheathPresenter> PresentWithTranslations(Sheath sheath, string locale, string currency)
+    {
+        await this.Present(sheath, locale, currency);
+        this.Names = sheath.Name.TranslationDictionary;
         return this;
     }
 

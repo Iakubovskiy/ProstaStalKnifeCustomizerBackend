@@ -40,7 +40,7 @@ public class ProductTagController : ControllerBase
         try
         {
             ProductTagPresenter presenter = new ProductTagPresenter();
-            return Ok(await presenter.Present(await this._productRepository.GetById(id), locale));
+            return Ok(await presenter.PresentWithTranslations(await this._productRepository.GetById(id), locale));
         }
         catch (Exception)
         {

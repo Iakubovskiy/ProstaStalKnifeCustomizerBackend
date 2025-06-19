@@ -67,7 +67,7 @@ public class SheathController: ControllerBase
     {
         try
         {
-            return Ok(await this._sheathPresenter.Present(await this._sheathRepository.GetById(id), locale, currency));
+            return Ok(await this._sheathPresenter.PresentWithTranslations(await this._sheathRepository.GetById(id), locale, currency));
         }
         catch (ObjectNotFoundException e)
         {

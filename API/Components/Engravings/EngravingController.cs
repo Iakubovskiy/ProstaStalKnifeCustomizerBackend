@@ -57,7 +57,7 @@ public class EngravingController : ControllerBase
         try
         {
             EngravingPresenter engravingPresenter = new EngravingPresenter();
-            return Ok(await engravingPresenter.Present(await this._engravingRepository.GetById(id), locale));
+            return Ok(await engravingPresenter.PresentWithTranslations(await this._engravingRepository.GetById(id), locale));
         }
         catch (Exception)
         {
