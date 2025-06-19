@@ -25,15 +25,13 @@ public class PaymentMethodController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllPaymentMethods([FromHeader(Name = "Locale")] string locale)
     {
-        PaymentMethodPresenter paymentMethodPresenter = new PaymentMethodPresenter();
-        return Ok(await paymentMethodPresenter.PresentList(await this._paymentMethodRepository.GetAll(), locale));
+        return Ok(await PaymentMethodPresenter.PresentList(await this._paymentMethodRepository.GetAll(), locale));
     }
 
     [HttpGet("active")]
     public async Task<IActionResult> GetAllActivePaymentMethods([FromHeader(Name = "Locale")] string locale)
     {
-        PaymentMethodPresenter paymentMethodPresenter = new PaymentMethodPresenter();
-        return Ok(await paymentMethodPresenter.PresentList(await this._paymentMethodRepository.GetAllActive(), locale));
+        return Ok(await PaymentMethodPresenter.PresentList(await this._paymentMethodRepository.GetAllActive(), locale));
     }
 
     [HttpGet("{id:guid}")]
@@ -41,8 +39,7 @@ public class PaymentMethodController : ControllerBase
     {
         try
         {
-            PaymentMethodPresenter paymentMethodPresenter = new PaymentMethodPresenter();
-            return Ok(await paymentMethodPresenter.PresentWithTranslations(await this._paymentMethodRepository.GetById(id), locale));
+            return Ok(await PaymentMethodPresenter.PresentWithTranslations(await this._paymentMethodRepository.GetById(id), locale));
         }
         catch (Exception)
         {

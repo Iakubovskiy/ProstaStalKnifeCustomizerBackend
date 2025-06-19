@@ -21,8 +21,13 @@ public class CompletedSheathRepository : ComponentRepository<CompletedSheath>
             .Include(product => product.Reviews)
             .Include(product => product.Sheath)
             .Include(product => product.SheathColor)
+            .ThenInclude(color => color.ColorMap)
+            .Include(product => product.SheathColor)
+            .ThenInclude(color => color.Prices)
             .Include(product => product.Engravings)
+            .ThenInclude(e => e.Tags)
             .Include(product => product.Attachments)
+            .ThenInclude(a => a.Type)
             .ToListAsync();
     }
     
@@ -35,8 +40,13 @@ public class CompletedSheathRepository : ComponentRepository<CompletedSheath>
             .Include(product => product.Reviews)
             .Include(product => product.Sheath)
             .Include(product => product.SheathColor)
+            .ThenInclude(color => color.ColorMap)
+            .Include(product => product.SheathColor)
+            .ThenInclude(color => color.Prices)
             .Include(product => product.Engravings)
+            .ThenInclude(e => e.Tags)
             .Include(product => product.Attachments)
+            .ThenInclude(a => a.Type)
             .ToListAsync();
     }
 
@@ -48,8 +58,15 @@ public class CompletedSheathRepository : ComponentRepository<CompletedSheath>
                    .Include(product => product.Reviews)
                    .Include(product => product.Sheath)
                    .Include(product => product.SheathColor)
+                   .ThenInclude(color => color.ColorMap)
+                   .Include(product => product.SheathColor)
+                   .ThenInclude(color => color.Prices)
                    .Include(product => product.Engravings)
+                   .ThenInclude(e => e.Tags)
+                   .Include(product => product.Engravings)
+                   .ThenInclude(e => e.Picture)
                    .Include(product => product.Attachments)
+                   .ThenInclude(a => a.Type)
                    .FirstOrDefaultAsync(product => product.Id == id)
                ?? throw new ObjectNotFoundException("Entity not found");
     }

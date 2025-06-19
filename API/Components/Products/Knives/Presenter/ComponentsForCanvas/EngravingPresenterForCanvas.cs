@@ -1,4 +1,5 @@
 using Domain.Component.Engravings;
+using Domain.Files;
 
 namespace API.Components.Products.Knives.Presenter.ComponentsForCanvas;
 
@@ -8,7 +9,7 @@ public class EngravingPresenterForCanvas
     public int Side { get; private set; }
     public string? Text { get; private set; }
     public string? Font { get; private set; }
-    public string? PictureUrl { get; private set; }
+    public FileEntity? Picture { get; private set; }
     public double LocationX { get; private set; }
     public double LocationY { get; private set; }
     public double LocationZ { get; private set; }
@@ -19,29 +20,30 @@ public class EngravingPresenterForCanvas
     public double ScaleY { get; private set; }
     public double ScaleZ { get; private set; }
 
-    public EngravingPresenterForCanvas Present(Engraving engraving)
+    public static EngravingPresenterForCanvas Present(Engraving engraving)
     {
-        this.Id = engraving.Id;
-        this.Side = engraving.Side;
-        this.Text = engraving.Text;
-        this.Font = engraving.Font;
+        EngravingPresenterForCanvas engravingPresenterForCanvas  = new EngravingPresenterForCanvas();
+        engravingPresenterForCanvas.Id = engraving.Id;
+        engravingPresenterForCanvas.Side = engraving.Side;
+        engravingPresenterForCanvas.Text = engraving.Text;
+        engravingPresenterForCanvas.Font = engraving.Font;
         if (engraving.Picture != null)
         {
-            this.PictureUrl = engraving.Picture.FileUrl;
+            engravingPresenterForCanvas.Picture = engraving.Picture;
         }
 
-        this.LocationX = engraving.EngravingPosition.LocationX;
-        this.LocationY = engraving.EngravingPosition.LocationY;
-        this.LocationZ = engraving.EngravingPosition.LocationZ;
+        engravingPresenterForCanvas.LocationX = engraving.EngravingPosition.LocationX;
+        engravingPresenterForCanvas.LocationY = engraving.EngravingPosition.LocationY;
+        engravingPresenterForCanvas.LocationZ = engraving.EngravingPosition.LocationZ;
         
-        this.RotationX = engraving.EngravingRotation.RotationX;
-        this.RotationY = engraving.EngravingRotation.RotationY;
-        this.RotationZ = engraving.EngravingRotation.RotationZ;
+        engravingPresenterForCanvas.RotationX = engraving.EngravingRotation.RotationX;
+        engravingPresenterForCanvas.RotationY = engraving.EngravingRotation.RotationY;
+        engravingPresenterForCanvas.RotationZ = engraving.EngravingRotation.RotationZ;
         
-        this.ScaleX = engraving.EngravingScale.ScaleX;
-        this.ScaleY = engraving.EngravingScale.ScaleY;
-        this.ScaleZ = engraving.EngravingScale.ScaleZ;
+        engravingPresenterForCanvas.ScaleX = engraving.EngravingScale.ScaleX;
+        engravingPresenterForCanvas.ScaleY = engraving.EngravingScale.ScaleY;
+        engravingPresenterForCanvas.ScaleZ = engraving.EngravingScale.ScaleZ;
         
-        return this;
+        return engravingPresenterForCanvas;
     }
 }

@@ -8,22 +8,22 @@ public class ReviewPresenter
     public int Rating { get; set; }
     public string Client { get; set; }
 
-    public ReviewPresenter Present(Review review)
+    public static ReviewPresenter Present(Review review)
     {
-        this.Comment = review.Comment;
-        this.Rating = review.Rating;
-        this.Client = review.User.Email ?? review.User.UserData?.ClientFullName ?? "";
-        
-        return this;
+        return new ReviewPresenter
+        {
+            Comment = review.Comment,
+            Rating = review.Rating,
+            Client = review.User.Email ?? review.User.UserData?.ClientFullName ?? ""
+        };
     }
 
-    public List<ReviewPresenter> PresentList(List<Review> reviews)
+    public static List<ReviewPresenter> PresentList(List<Review> reviews)
     {
-        List<ReviewPresenter> presenters = new List<ReviewPresenter>();
+        var presenters = new List<ReviewPresenter>();
         foreach (Review review in reviews)
         {
-            ReviewPresenter presenter = new ReviewPresenter();
-            presenter.Present(review);
+            ReviewPresenter presenter = Present(review);
             presenters.Add(presenter);
         }
         return presenters;

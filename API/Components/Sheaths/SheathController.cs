@@ -2,13 +2,13 @@ using System.Data.Entity.Core;
 using API.Components.Sheaths.Presenter;
 using Application.Components.Activate;
 using Application.Components.Deactivate;
+using Application.Components.Prices;
 using Application.Components.SimpleComponents.Sheaths;
 using Application.Components.SimpleComponents.UseCases.Create;
 using Application.Components.SimpleComponents.UseCases.Update;
 using Domain.Component.Sheaths;
 using Infrastructure.Components;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace API.Components.Sheaths;
 
@@ -21,7 +21,7 @@ public class SheathController: ControllerBase
     private readonly IDeactivate<Sheath> _deactivateService;
     private readonly ICreateService<Sheath, SheathDto> _sheathCreateService;
     private readonly IUpdateService<Sheath, SheathDto> _sheathUpdateService;
-    private readonly SheathPresenter _sheathPresenter;
+    private readonly IGetComponentPrice _getComponentPrice;
     
     public SheathController (
         IComponentRepository<Sheath> sheathRepository,
@@ -29,7 +29,7 @@ public class SheathController: ControllerBase
         IDeactivate<Sheath> deactivateService,
         ICreateService<Sheath, SheathDto> sheathCreateService,
         IUpdateService<Sheath, SheathDto> sheathUpdateService,
-        SheathPresenter sheathPresenter
+        IGetComponentPrice getComponentPrice
     )
     {
         this._sheathRepository = sheathRepository;
@@ -37,7 +37,7 @@ public class SheathController: ControllerBase
         this._activateService = activateService;
         this._deactivateService = deactivateService;
         this._sheathUpdateService = sheathUpdateService;
-        this._sheathPresenter = sheathPresenter;
+        this._getComponentPrice = getComponentPrice;
     }
 
     [HttpGet]
@@ -46,7 +46,8 @@ public class SheathController: ControllerBase
         [FromHeader(Name = "Currency")] string currency
     )
     {
-        return Ok(await this._sheathPresenter.PresentList(await this._sheathRepository.GetAll(), locale, currency));
+        return Ok(await SheathPresenter
+            .PresentList(await this._sheathRepository.GetAll(), locale, currency, this._getComponentPrice));
     }
 
     [HttpGet("active")]
@@ -55,7 +56,8 @@ public class SheathController: ControllerBase
         [FromHeader(Name = "Currency")] string currency
     )
     {
-        return Ok(await this._sheathPresenter.PresentList(await this._sheathRepository.GetAllActive(), locale, currency));
+        return Ok(await SheathPresenter
+            .PresentList(await this._sheathRepository.GetAllActive(), locale, currency, this._getComponentPrice));
     }
 
     [HttpGet("{id:guid}")]
@@ -67,7 +69,8 @@ public class SheathController: ControllerBase
     {
         try
         {
-            return Ok(await this._sheathPresenter.PresentWithTranslations(await this._sheathRepository.GetById(id), locale, currency));
+            return Ok(await SheathPresenter
+                .PresentWithTranslations(await this._sheathRepository.GetById(id), locale, currency, this._getComponentPrice));
         }
         catch (ObjectNotFoundException e)
         {

@@ -10,30 +10,32 @@ public class PaymentMethodPresenter
     public string Description { get; set; }
     public bool IsActive { get; set; }
 
-    public async Task<PaymentMethodPresenter> Present(PaymentMethod paymentMethod, string locale)
+    public static Task<PaymentMethodPresenter> Present(PaymentMethod paymentMethod, string locale)
     {
-        this.Id = paymentMethod.Id;
-        this.Name = paymentMethod.Name.GetTranslation(locale);
-        this.Description = paymentMethod.Description.GetTranslation(locale);
-        this.IsActive = paymentMethod.IsActive;
+        var presenter = new PaymentMethodPresenter
+        {
+            Id = paymentMethod.Id,
+            Name = paymentMethod.Name.GetTranslation(locale),
+            Description = paymentMethod.Description.GetTranslation(locale),
+            IsActive = paymentMethod.IsActive
+        };
         
-        return this;
+        return Task.FromResult(presenter);
     }
     
-    public async Task<PaymentMethodPresenter> PresentWithTranslations(PaymentMethod paymentMethod, string locale)
+    public static async Task<PaymentMethodPresenter> PresentWithTranslations(PaymentMethod paymentMethod, string locale)
     {
-        await this.Present(paymentMethod, locale);
-        this.Names = paymentMethod.Name.TranslationDictionary;
-        return this;
+        PaymentMethodPresenter presenter = await Present(paymentMethod, locale);
+        presenter.Names = paymentMethod.Name.TranslationDictionary;
+        return presenter;
     }
 
-    public async Task<List<PaymentMethodPresenter>> PresentList(List<PaymentMethod> paymentMethods, string locale)
+    public static async Task<List<PaymentMethodPresenter>> PresentList(List<PaymentMethod> paymentMethods, string locale)
     {
-        List<PaymentMethodPresenter> paymentMethodsPresenters = new List<PaymentMethodPresenter>();
+        var paymentMethodsPresenters = new List<PaymentMethodPresenter>();
         foreach (PaymentMethod paymentMethod in paymentMethods)
         {
-            PaymentMethodPresenter paymentMethodPresenter = new PaymentMethodPresenter();
-            await paymentMethodPresenter.Present(paymentMethod, locale);
+            PaymentMethodPresenter paymentMethodPresenter = await Present(paymentMethod, locale);
             paymentMethodsPresenters.Add(paymentMethodPresenter);
         }
         return paymentMethodsPresenters;

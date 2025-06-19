@@ -1,4 +1,5 @@
 ﻿using API.Components.Products.Attachments.Presenters;
+using Application.Components.Prices;
 using Application.Components.Products.Attachments;
 using Application.Components.Products.UseCases.Activate;
 using Application.Components.Products.UseCases.Create;
@@ -19,7 +20,7 @@ public class AttachmentController : ControllerBase
     private readonly IComponentRepository< Attachment> _attachmentRepository;
     private readonly IActivateProduct<Attachment> _activateProductService;
     private readonly IDeactivateProduct<Attachment> _deactivateProductService;
-    private readonly AttachmentPresenter _presenter;
+    private readonly IGetComponentPrice _getComponentPrice;
 
     public AttachmentController(
         ICreateProductService<Attachment, AttachmentDto> createAttachmentService, 
@@ -27,7 +28,7 @@ public class AttachmentController : ControllerBase
         IComponentRepository<Attachment> attachmentRepository, 
         IActivateProduct<Attachment> activateProductService, 
         IDeactivateProduct<Attachment> deactivateProductService,
-        AttachmentPresenter presenter
+        IGetComponentPrice getComponentPrice
     )
     {
         this._createAttachmentService = createAttachmentService;
@@ -35,7 +36,7 @@ public class AttachmentController : ControllerBase
         this._attachmentRepository = attachmentRepository;
         this._activateProductService = activateProductService;
         this._deactivateProductService = deactivateProductService;
-        this._presenter = presenter;
+        this._getComponentPrice = getComponentPrice;
     }
 
     [HttpGet]
@@ -44,7 +45,8 @@ public class AttachmentController : ControllerBase
         [FromHeader(Name = "Currency")] string currency
     )
     {
-        return Ok(await this._presenter.PresentList(await this._attachmentRepository.GetAll(), locale, currency));
+        return Ok(await AttachmentPresenter
+            .PresentList(await this._attachmentRepository.GetAll(), locale, currency, this._getComponentPrice));
     }
 
     [HttpGet("active")]
@@ -53,7 +55,8 @@ public class AttachmentController : ControllerBase
         [FromHeader(Name = "Currency")] string currency
     )
     {
-        return Ok(await this._presenter.PresentList(await this._attachmentRepository.GetAllActive(), locale, currency));
+        return Ok(await AttachmentPresenter
+            .PresentList(await this._attachmentRepository.GetAllActive(), locale, currency, this._getComponentPrice));
     }
 
     [HttpGet("{id:guid}")]
@@ -65,7 +68,8 @@ public class AttachmentController : ControllerBase
     {
         try
         {
-            return Ok(await this._presenter.PresentWithTranslations(await this._attachmentRepository.GetById(id), locale, currency));
+            return Ok(await AttachmentPresenter
+                .PresentWithTranslations(await this._attachmentRepository.GetById(id), locale, currency, this._getComponentPrice));
         }
         catch (Exception)
         {

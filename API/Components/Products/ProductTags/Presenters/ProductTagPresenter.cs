@@ -8,28 +8,29 @@ public class ProductTagPresenter
     public string Name { get; set; }
     public Dictionary<string, string> Names { get; set; }
 
-    public async Task<ProductTagPresenter> Present(ProductTag engravingTag, string locale)
+    public static Task<ProductTagPresenter> Present(ProductTag engravingTag, string locale)
     {
-        this.Id = engravingTag.Id;
-        this.Name = engravingTag.Tag.GetTranslation(locale);
-        return this;
+        var presenter = new ProductTagPresenter
+        {
+            Id = engravingTag.Id,
+            Name = engravingTag.Tag.GetTranslation(locale)
+        };
+        return Task.FromResult(presenter);
     }
 
-    public async Task<ProductTagPresenter> PresentWithTranslations(ProductTag engravingTag, string locale)
+    public static async Task<ProductTagPresenter> PresentWithTranslations(ProductTag engravingTag, string locale)
     {
-        await this.Present(engravingTag, locale);
-        this.Names = engravingTag.Tag.TranslationDictionary;
-        return this;
+        ProductTagPresenter presenter = await Present(engravingTag, locale);
+        presenter.Names = engravingTag.Tag.TranslationDictionary;
+        return presenter;
     }
 
-    public async Task<List<ProductTagPresenter>> PresentList(List<ProductTag> engravingTags, string locale)
+    public static async Task<List<ProductTagPresenter>> PresentList(List<ProductTag> engravingTags, string locale)
     {
-        List<ProductTagPresenter> presenters = new List<ProductTagPresenter>();
-
+        var presenters = new List<ProductTagPresenter>();
         foreach (ProductTag tag in engravingTags)
         {
-            ProductTagPresenter presenter = new ProductTagPresenter();
-            await presenter.Present(tag, locale);
+            ProductTagPresenter presenter = await Present(tag, locale);
             presenters.Add(presenter);
         }
         return presenters;

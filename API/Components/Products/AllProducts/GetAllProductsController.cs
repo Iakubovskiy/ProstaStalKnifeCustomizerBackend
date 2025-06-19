@@ -1,6 +1,7 @@
 using System.Data.Entity.Core;
 using API.Components.Products.AllProducts.Filters.Presenters;
 using API.Components.Products.AllProducts.Presenters;
+using Application.Components.Prices;
 using Domain.Component.Product;
 using Domain.Currencies;
 using Infrastructure;
@@ -26,7 +27,7 @@ public class GetAllProductsController : ControllerBase
     private readonly IPriceFilterRepository _priceFilterRepository;
     private readonly IGetProductPaginatedList _getProductPaginatedList;
     private readonly ICurrencyRepository _currencyRepository;
-    private readonly ProductPresenter _productPresenter;
+    private readonly IGetComponentPrice _getComponentPrice;
     
     public GetAllProductsController(IFilterStylesRepository filterRepository,
         IGetBladeShapeCharacteristicsFilterRepository getBladeShapeCharacteristicsFilterRepository,
@@ -34,7 +35,7 @@ public class GetAllProductsController : ControllerBase
         IPriceFilterRepository priceFilterRepository,
         IGetProductPaginatedList getProductPaginatedList,
         ICurrencyRepository currencyRepository,
-        ProductPresenter productPresenter
+        IGetComponentPrice getComponentPrice
     )
     {
         this._filterRepository = filterRepository;
@@ -43,7 +44,7 @@ public class GetAllProductsController : ControllerBase
         this._priceFilterRepository = priceFilterRepository; 
         this._getProductPaginatedList = getProductPaginatedList;
         this._currencyRepository = currencyRepository;
-        this._productPresenter = productPresenter;
+        this._getComponentPrice = getComponentPrice;
     }
 
     [HttpGet]
@@ -164,7 +165,8 @@ public class GetAllProductsController : ControllerBase
                 colorPresenter,
                 priceFilterPresenter,
             },
-            products = await this._productPresenter.PresentPaginatedList(products, locale, currency),
+            products = await ProductPresenter
+                .PresentPaginatedList(products, locale, currency, this._getComponentPrice),
         });
     }
 }

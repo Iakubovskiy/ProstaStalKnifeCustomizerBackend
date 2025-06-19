@@ -1,6 +1,7 @@
 using System.Data.Entity.Core;
 using System.Security.Claims;
 using API.Components.Products.AllProducts.Presenters;
+using Application.Components.Prices;
 using Application.Components.Products.Reviews;
 using Domain.Component.Product.Reviews;
 using Infrastructure;
@@ -18,19 +19,19 @@ public class ReviewController : ControllerBase
     private readonly IReviewService _reviewService;
     private readonly IProductRepository _productRepository;
     private readonly IRepository<Review> _reviewRepository;
-    private readonly ProductPresenter _presenter;
+    private readonly IGetComponentPrice _getComponentPrice;
 
     public ReviewController(
         IReviewService reviewService,
         IProductRepository productRepository,
         IRepository<Review> reviewRepository,
-        ProductPresenter presenter
+        IGetComponentPrice getComponentPrice
     )
     {
         this._reviewService = reviewService;
         this._productRepository = productRepository;
         this._reviewRepository = reviewRepository;
-        this._presenter = presenter;
+        this._getComponentPrice = getComponentPrice;
     }
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -53,7 +54,8 @@ public class ReviewController : ControllerBase
         }
         
         await this._reviewService.AddReviewToProduct(productId, Guid.Parse(userId),review);
-        return Ok( await this._presenter.Present(await this._productRepository.GetById(productId), locale, currency));
+        return Ok( await ProductPresenter
+            .Present(await this._productRepository.GetById(productId), locale, currency, this._getComponentPrice));
     }
     
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]

@@ -4,6 +4,7 @@ using API.Components.Products.Attachments.Presenters;
 using API.Components.Sheaths.Colors.Presenters;
 using API.Components.Sheaths.Presenter;
 using Application.Components.Prices;
+using Application.Currencies;
 using Domain.Component.Product.CompletedSheath;
 using Domain.Files;
 
@@ -11,24 +12,6 @@ namespace API.Components.Products.CompletedSheaths.Presenters;
 
 public class CompletedSheathPresenter : AbstractProductPresenter
 {
-    private readonly IGetComponentPrice _getComponentPrice;
-    private readonly SheathPresenter _sheathPresenter;
-    private readonly SheathColorPresenter _sheathColorPresenter;
-    private readonly AttachmentPresenter _attachmentPresenter;
-
-    public CompletedSheathPresenter(
-        IGetComponentPrice getComponentPrice,
-        SheathPresenter sheathPresenter,
-        SheathColorPresenter sheathColorPresenter,
-        AttachmentPresenter attachmentPresenter
-    )
-    {
-        this._getComponentPrice = getComponentPrice;
-        this._sheathPresenter = sheathPresenter;
-        this._sheathColorPresenter = sheathColorPresenter;
-        this._attachmentPresenter = attachmentPresenter;
-    }
-    
     public Guid Id { get; set; }
     public bool IsActive { get; set; }
     public FileEntity Image { get; set; }
@@ -50,59 +33,74 @@ public class CompletedSheathPresenter : AbstractProductPresenter
     public List<ReviewPresenter>? Reviews {get; set;}
     public double? AverageRating { get; set; } = null;
 
-    public async Task<CompletedSheathPresenter> Present(CompletedSheath sheath, string locale, string currency)
+    public static async Task<CompletedSheathPresenter> Present(
+        CompletedSheath sheath, 
+        string locale, 
+        string currency,
+        IGetComponentPrice getComponentPrice,
+        IPriceService priceService)
     {
-        this.Id = sheath.Id;
-        this.IsActive = sheath.IsActive;
-        this.Name = sheath.Name.GetTranslation(locale);
-        this.Image = sheath.Image;
-        this.Title = sheath.Title.GetTranslation(locale);
-        this.Description = sheath.Description.GetTranslation(locale);
-        this.MetaTitle = sheath.MetaTitle.GetTranslation(locale);
-        this.MetaDescription = sheath.MetaDescription.GetTranslation(locale);
-        this.TotalPrice = await this._getComponentPrice.GetPrice(sheath, currency);
-        this.Sheath = await this._sheathPresenter.Present(sheath.Sheath, locale, currency);
-        this.SheathColor = await this._sheathColorPresenter.Present(sheath.SheathColor, locale, currency);
+        var presenter = new CompletedSheathPresenter
+        {
+            Id = sheath.Id,
+            IsActive = sheath.IsActive,
+            Name = sheath.Name.GetTranslation(locale),
+            Image = sheath.Image,
+            Title = sheath.Title.GetTranslation(locale),
+            Description = sheath.Description.GetTranslation(locale),
+            MetaTitle = sheath.MetaTitle.GetTranslation(locale),
+            MetaDescription = sheath.MetaDescription.GetTranslation(locale),
+            TotalPrice = await getComponentPrice.GetPrice(sheath, currency),
+            Sheath = await SheathPresenter.Present(sheath.Sheath, locale, currency, getComponentPrice),
+            SheathColor = await SheathColorPresenter.Present(sheath.SheathColor, locale, currency, priceService)
+        };
         
         if(sheath.Engravings != null)
         {
-            this.Engravings = await EngravingPresenter.PresentList(sheath.Engravings, locale);
+            presenter.Engravings = await EngravingPresenter.PresentList(sheath.Engravings, locale);
         }
 
         if (sheath.Attachments != null)
         {
-            this.Attachments = await this._attachmentPresenter.PresentList(sheath.Attachments, locale, currency);
+            presenter.Attachments = await AttachmentPresenter.PresentList(sheath.Attachments, locale, currency, getComponentPrice);
         }
         
-        if (sheath.Reviews != null)
+        if (sheath.Reviews != null && sheath.Reviews.Any())
         {
-            ReviewPresenter reviewPresenter = new ReviewPresenter();
-            this.Reviews = reviewPresenter.PresentList(sheath.Reviews);
-            this.AverageRating = Math.Round(((double)this.Reviews.Sum(r => r.Rating) / this.Reviews.Count), 2);
+            presenter.Reviews = ReviewPresenter.PresentList(sheath.Reviews);
+            presenter.AverageRating = Math.Round(presenter.Reviews.Average(r => r.Rating), 2);
         }
         
-        return this;
+        return presenter;
     }
     
-    public async Task<CompletedSheathPresenter> PresentWithTranslations(CompletedSheath sheath, string locale, string currency)
+    public static async Task<CompletedSheathPresenter> PresentWithTranslations(
+        CompletedSheath sheath, 
+        string locale, 
+        string currency,
+        IGetComponentPrice getComponentPrice,
+        IPriceService priceService)
     {
-        await this.Present(sheath, locale, currency);
-        this.Names = sheath.Name.TranslationDictionary;
-        this.Titles = sheath.Title.TranslationDictionary;
-        this.Descriptions = sheath.Description.TranslationDictionary;
-        this.MetaTitles = sheath.MetaTitle.TranslationDictionary;
-        this.MetaDescriptions = sheath.MetaDescription.TranslationDictionary;
-        return this;
+        CompletedSheathPresenter presenter = await Present(sheath, locale, currency, getComponentPrice, priceService);
+        presenter.Names = sheath.Name.TranslationDictionary;
+        presenter.Titles = sheath.Title.TranslationDictionary;
+        presenter.Descriptions = sheath.Description.TranslationDictionary;
+        presenter.MetaTitles = sheath.MetaTitle.TranslationDictionary;
+        presenter.MetaDescriptions = sheath.MetaDescription.TranslationDictionary;
+        return presenter;
     }
 
-    public async Task<List<CompletedSheathPresenter>> PresentList(List<CompletedSheath> sheaths, string locale, string currency)
+    public static async Task<List<CompletedSheathPresenter>> PresentList(
+        List<CompletedSheath> sheaths, 
+        string locale, 
+        string currency,
+        IGetComponentPrice getComponentPrice,
+        IPriceService priceService)
     {
-        List<CompletedSheathPresenter> result = new List<CompletedSheathPresenter>();
+        var result = new List<CompletedSheathPresenter>();
         foreach (var sheath in sheaths)
         {
-            CompletedSheathPresenter sheathPresenter = new CompletedSheathPresenter(this._getComponentPrice,
-                this._sheathPresenter, this._sheathColorPresenter, this._attachmentPresenter);
-            await sheathPresenter.Present(sheath, locale, currency);
+            CompletedSheathPresenter sheathPresenter = await Present(sheath, locale, currency, getComponentPrice, priceService);
             result.Add(sheathPresenter);
         }
 

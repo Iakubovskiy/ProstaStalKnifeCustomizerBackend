@@ -6,36 +6,32 @@ namespace API.Components.Sheaths.Colors.Presenters;
 
 public class SheathColorPriceByTypePresenter
 {
-    private readonly IPriceService _priceService;
-
-    public SheathColorPriceByTypePresenter(IPriceService priceService)
-    {
-        this._priceService = priceService;
-    }
-
     public BladeShapeType BladeShapeType { get; set; }
     public double Price { get; set; }
 
-    public async Task<SheathColorPriceByTypePresenter> Present(SheathColorPriceByType sheathColorPriceByType, string locale,
-        string currency)
+    public static async Task<SheathColorPriceByTypePresenter> Present(
+        SheathColorPriceByType sheathColorPriceByType, 
+        string locale,
+        string currency,
+        IPriceService priceService)
     {
-        this.BladeShapeType = sheathColorPriceByType.Type;
-        this.Price = await this._priceService.GetPrice(sheathColorPriceByType.Price, currency);
-        
-        return this;
+        return new SheathColorPriceByTypePresenter
+        {
+            BladeShapeType = sheathColorPriceByType.Type,
+            Price = await priceService.GetPrice(sheathColorPriceByType.Price, currency)
+        };
     }
 
-    public async Task<List<SheathColorPriceByTypePresenter>> PresentList(
+    public static async Task<List<SheathColorPriceByTypePresenter>> PresentList(
         List<SheathColorPriceByType> sheathColorPriceByTypes, 
         string locale, 
-        string currency
-    )
+        string currency,
+        IPriceService priceService)
     {
-        List<SheathColorPriceByTypePresenter> sheathColorPriceByTypePresenters = new List<SheathColorPriceByTypePresenter>();
+        var sheathColorPriceByTypePresenters = new List<SheathColorPriceByTypePresenter>();
         foreach (SheathColorPriceByType colorPriceByType in sheathColorPriceByTypes)
         {
-            SheathColorPriceByTypePresenter sheathColorPriceByType = new SheathColorPriceByTypePresenter(this._priceService);
-            await sheathColorPriceByType.Present(colorPriceByType, locale, currency);
+            SheathColorPriceByTypePresenter sheathColorPriceByType = await Present(colorPriceByType, locale, currency, priceService);
             sheathColorPriceByTypePresenters.Add(sheathColorPriceByType);
         }
         return sheathColorPriceByTypePresenters;

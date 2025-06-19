@@ -30,8 +30,7 @@ public class ProductTagController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllProductTags([FromHeader(Name = "Locale")] string locale)
     {
-        ProductTagPresenter presenter = new ProductTagPresenter();
-        return Ok(await presenter.PresentList(await this._productRepository.GetAll(), locale));
+        return Ok(await ProductTagPresenter.PresentList(await this._productRepository.GetAll(), locale));
     }
     
     [HttpGet ("{id:guid}")]
@@ -39,8 +38,7 @@ public class ProductTagController : ControllerBase
     {
         try
         {
-            ProductTagPresenter presenter = new ProductTagPresenter();
-            return Ok(await presenter.PresentWithTranslations(await this._productRepository.GetById(id), locale));
+            return Ok(await ProductTagPresenter.PresentWithTranslations(await this._productRepository.GetById(id), locale));
         }
         catch (Exception)
         {

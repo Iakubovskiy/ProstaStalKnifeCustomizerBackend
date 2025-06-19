@@ -7,13 +7,6 @@ namespace API.Components.Sheaths.Presenter;
 
 public class SheathPresenter
 {
-    private readonly IGetComponentPrice _getComponentPrice;
-
-    public SheathPresenter(IGetComponentPrice getComponentPrice)
-    {
-        this._getComponentPrice = getComponentPrice;
-    }
-    
     public Guid Id { get; set; }
     public string Name { get; set; }
     public Dictionary<string, string> Names { get; set; }
@@ -22,31 +15,43 @@ public class SheathPresenter
     public double Price { get; set; }
     public bool IsActive { get; set; }
 
-    public async Task<SheathPresenter> Present(Sheath sheath, string locale, string currency)
+    public static async Task<SheathPresenter> Present(
+        Sheath sheath, 
+        string locale, 
+        string currency, 
+        IGetComponentPrice getComponentPrice)
     {
-        this.Id = sheath.Id;
-        this.Name = sheath.Name.GetTranslation(locale);
-        this.Model = sheath.Model;
-        this.Price = await this._getComponentPrice.GetPrice(sheath,currency);
-        this.IsActive = sheath.IsActive;
-        
-        return this;
+        return new SheathPresenter
+        {
+            Id = sheath.Id,
+            Name = sheath.Name.GetTranslation(locale),
+            Model = sheath.Model,
+            Price = await getComponentPrice.GetPrice(sheath, currency),
+            IsActive = sheath.IsActive
+        };
     }
     
-    public async Task<SheathPresenter> PresentWithTranslations(Sheath sheath, string locale, string currency)
+    public static async Task<SheathPresenter> PresentWithTranslations(
+        Sheath sheath, 
+        string locale, 
+        string currency, 
+        IGetComponentPrice getComponentPrice)
     {
-        await this.Present(sheath, locale, currency);
-        this.Names = sheath.Name.TranslationDictionary;
-        return this;
+        SheathPresenter presenter = await Present(sheath, locale, currency, getComponentPrice);
+        presenter.Names = sheath.Name.TranslationDictionary;
+        return presenter;
     }
 
-    public async Task<List<SheathPresenter>> PresentList(List<Sheath> sheaths, string locale, string currency)
+    public static async Task<List<SheathPresenter>> PresentList(
+        List<Sheath> sheaths, 
+        string locale, 
+        string currency, 
+        IGetComponentPrice getComponentPrice)
     {
-        List<SheathPresenter> sheathPresenters = new List<SheathPresenter>();
+        var sheathPresenters = new List<SheathPresenter>();
         foreach (Sheath sheath in sheaths)
         {
-            SheathPresenter sheathPresenter = new SheathPresenter(this._getComponentPrice); 
-            await Present(sheath, locale, currency);
+            SheathPresenter sheathPresenter = await Present(sheath, locale, currency, getComponentPrice);
             sheathPresenters.Add(sheathPresenter);
         }
         return sheathPresenters;

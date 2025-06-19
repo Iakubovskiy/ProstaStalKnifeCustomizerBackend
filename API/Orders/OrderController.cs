@@ -1,6 +1,8 @@
 ﻿using System.Data.Entity.Core;
 using System.Security.Claims;
 using API.Orders.Presenters;
+using Application.Components.Prices;
+using Application.Currencies;
 using Microsoft.AspNetCore.Mvc;
 using Application.Orders.Dto;
 using Application.Orders.UseCases.ChangeClientData;
@@ -23,7 +25,8 @@ public class OrderController : ControllerBase
     private readonly IChangeClientDataService _changeClientDataService;
     private readonly IRemoveOrderItem _removeOrderItem;
     private readonly IUpdateOrderItemQuantityService _updateOrderItemQuantityService;
-    private readonly OrderPresenter _orderPresenter;
+    private readonly IPriceService _priceService;
+    private readonly IGetComponentPrice _getComponentPrice;
 
     public OrderController(
         IOrderRepository orderRepository, 
@@ -32,7 +35,8 @@ public class OrderController : ControllerBase
         IChangeClientDataService changeClientDataService,
         IRemoveOrderItem removeOrderItem,
         IUpdateOrderItemQuantityService updateOrderItemQuantityService,
-        OrderPresenter orderPresenter
+        IPriceService priceService,
+        IGetComponentPrice getComponentPrice
     )
     {
         this._orderRepository = orderRepository;
@@ -41,7 +45,8 @@ public class OrderController : ControllerBase
         this._changeClientDataService = changeClientDataService;
         this._removeOrderItem = removeOrderItem;
         this._updateOrderItemQuantityService = updateOrderItemQuantityService;
-        this._orderPresenter = orderPresenter;
+        this._priceService = priceService;
+        this._getComponentPrice = getComponentPrice;
     }
 
     [HttpGet]
@@ -50,7 +55,8 @@ public class OrderController : ControllerBase
         [FromHeader(Name = "Currency")] string currency
     )
     {
-        return Ok(await this._orderPresenter.PresentList(await this._orderRepository.GetAll(), locale, currency));
+        return Ok(await OrderPresenter
+            .PresentList(await this._orderRepository.GetAll(), locale, currency, this._priceService, this._getComponentPrice));
     }
 
     [HttpGet("{id:guid}")]
@@ -62,7 +68,8 @@ public class OrderController : ControllerBase
     {
         try
         {
-            return Ok(await this._orderPresenter.Present(await this._orderRepository.GetById(id), locale, currency));
+            return Ok(await OrderPresenter
+                .Present(await this._orderRepository.GetById(id), locale, currency, this._priceService, this._getComponentPrice));
         }
         catch (ObjectNotFoundException)
         {

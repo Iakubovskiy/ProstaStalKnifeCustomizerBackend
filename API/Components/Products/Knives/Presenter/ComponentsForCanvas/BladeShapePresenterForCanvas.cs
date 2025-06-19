@@ -1,4 +1,5 @@
 using Domain.Component.BladeShapes;
+using Domain.Files;
 
 namespace API.Components.Products.Knives.Presenter.ComponentsForCanvas;
 
@@ -6,19 +7,20 @@ public class BladeShapePresenterForCanvas
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
-    public string BladeShapeModelUrl { get; set; }
-    public string? SheathModelUrl { get; set; }
+    public FileEntity BladeShapeModel { get; set; }
+    public FileEntity? SheathModel { get; set; }
 
-    public BladeShapePresenterForCanvas Present(BladeShape bladeShape, string locale)
+    public static BladeShapePresenterForCanvas Present(BladeShape bladeShape, string locale)
     {
-        this.Id = bladeShape.Id;
-        this.Name = bladeShape.Name.GetTranslation(locale);
-        this.BladeShapeModelUrl = bladeShape.BladeShapeModel.FileUrl;
+        BladeShapePresenterForCanvas bladeShapePresenterForCanvas  = new BladeShapePresenterForCanvas();
+        bladeShapePresenterForCanvas.Id = bladeShape.Id;
+        bladeShapePresenterForCanvas.Name = bladeShape.Name.GetTranslation(locale);
+        bladeShapePresenterForCanvas.BladeShapeModel = bladeShape.BladeShapeModel;
         if(bladeShape.Sheath != null)
         {
-            this.SheathModelUrl = bladeShape.Sheath.Model?.FileUrl;
+            bladeShapePresenterForCanvas.SheathModel = bladeShape.Sheath.Model;
         }
         
-        return this;
+        return bladeShapePresenterForCanvas;
     }
 }

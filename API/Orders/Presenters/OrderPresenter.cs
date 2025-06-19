@@ -1,5 +1,6 @@
 using API.Orders.Support.DeliveryTypes.Presenters;
 using API.Orders.Support.PaymentMethods.Presenters;
+using Application.Components.Prices;
 using Application.Currencies;
 using Domain.Orders;
 
@@ -7,21 +8,6 @@ namespace API.Orders.Presenters;
 
 public class OrderPresenter
 {
-    private readonly IPriceService _priceService;
-    private readonly PaymentMethodPresenter _paymentMethodPresenter;
-    private readonly OrderItemPresenter _orderItemPresenter;
-
-    public OrderPresenter(
-        IPriceService priceService,
-        PaymentMethodPresenter paymentMethodPresenter,
-        OrderItemPresenter orderItemPresenter
-    )
-    {
-        this._priceService = priceService;
-        this._paymentMethodPresenter = paymentMethodPresenter;
-        this._orderItemPresenter = orderItemPresenter;
-    }
-    
     public Guid Id { get; set; }
     public int Number { get; set; }
     public double Total { get; set; }
@@ -38,38 +24,44 @@ public class OrderPresenter
     public PaymentMethodPresenter PaymentMethod { get; set; }
     public List<OrderItemPresenter> OrderItems { get; set; }
 
-    public async Task<OrderPresenter> Present(Order order, string locale, string currency)
+    public static async Task<OrderPresenter> Present(
+        Order order, 
+        string locale, 
+        string currency,
+        IPriceService priceService,
+        IGetComponentPrice getComponentPriceService)
     {
-        this.Id = order.Id;
-        this.Number = order.Number;
-        this.Total = order.Total;
-        this.DeliveryType = await DeliveryTypePresenter.Present(order.DeliveryType, locale, currency, this._priceService);
-        this.ClientFullName = order.ClientData.ClientFullName;
-        this.ClientPhoneNumber = order.ClientData.ClientPhoneNumber;
-        this.CountryForDelivery = order.ClientData.CountryForDelivery;
-        this.City = order.ClientData.City;
-        this.Address = order.ClientData.Address;
-        this.ZipCode = order.ClientData.ZipCode;
-        this.Email = order.ClientData.Email;
-        this.Comment = order.Comment;
-        this.Status = order.Status;
-        this.PaymentMethod = await this._paymentMethodPresenter.Present(order.PaymentMethod, locale);
-        
-        this.OrderItems = await this._orderItemPresenter.PresentList(order.OrderItems, locale, currency);
-        return this;
+        return new OrderPresenter
+        {
+            Id = order.Id,
+            Number = order.Number,
+            Total = order.Total,
+            DeliveryType = await DeliveryTypePresenter.Present(order.DeliveryType, locale, currency, priceService),
+            ClientFullName = order.ClientData.ClientFullName,
+            ClientPhoneNumber = order.ClientData.ClientPhoneNumber,
+            CountryForDelivery = order.ClientData.CountryForDelivery,
+            City = order.ClientData.City,
+            Address = order.ClientData.Address,
+            ZipCode = order.ClientData.ZipCode,
+            Email = order.ClientData.Email,
+            Comment = order.Comment,
+            Status = order.Status,
+            PaymentMethod = await PaymentMethodPresenter.Present(order.PaymentMethod, locale),
+            OrderItems = await OrderItemPresenter.PresentList(order.OrderItems, locale, currency, getComponentPriceService, priceService)
+        };
     }
 
-    public async Task<List<OrderPresenter>> PresentList(List<Order> orders, string locale, string currency)
+    public static async Task<List<OrderPresenter>> PresentList(
+        List<Order> orders, 
+        string locale, 
+        string currency,
+        IPriceService priceService,
+        IGetComponentPrice getComponentPriceService)
     {
-        List<OrderPresenter> orderPresenters = new List<OrderPresenter>();
+        var orderPresenters = new List<OrderPresenter>();
         foreach (var order in orders)
         {
-            OrderPresenter orderPresenter = new OrderPresenter(
-                this._priceService, 
-                this._paymentMethodPresenter,
-                this._orderItemPresenter
-            );
-            await orderPresenter.Present(order, locale, currency);
+            OrderPresenter orderPresenter = await Present(order, locale, currency, priceService, getComponentPriceService);
             orderPresenters.Add(orderPresenter);
         }
         

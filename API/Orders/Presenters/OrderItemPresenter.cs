@@ -2,6 +2,8 @@ using API.Components.Products;
 using API.Components.Products.Attachments.Presenters;
 using API.Components.Products.CompletedSheaths.Presenters;
 using API.Components.Products.Knives.Presenter;
+using Application.Components.Prices;
+using Application.Currencies;
 using Domain.Component.Product.Attachments;
 using Domain.Component.Product.CompletedSheath;
 using Domain.Component.Product.Knife;
@@ -11,56 +13,58 @@ namespace API.Orders.Presenters;
 
 public class OrderItemPresenter
 {
-    private readonly KnifePresenter _knifePresenter;
-    private readonly CompletedSheathPresenter _completedSheathPresenter;
-    private readonly AttachmentPresenter _attachmentPresenter;
-
-    public OrderItemPresenter(
-        KnifePresenter knifePresenter,
-        CompletedSheathPresenter completedSheathPresenter,
-        AttachmentPresenter attachmentPresenter
-    )
-    {
-        this._knifePresenter = knifePresenter;
-        this._completedSheathPresenter = completedSheathPresenter;
-        this._attachmentPresenter = attachmentPresenter;
-    }
-    
     public Guid ProductId { get; set; }
     public Guid OrderId { get; set; }
     public int Quantity { get; set; }
     public AbstractProductPresenter Product { get; set; }
 
-    public async Task<OrderItemPresenter> Present(OrderItem orderItem, string locale, string currency)
+    public static async Task<OrderItemPresenter> Present(
+        OrderItem orderItem, 
+        string locale, 
+        string currency,
+        IGetComponentPrice getComponentPriceService,
+        IPriceService priceService)
     {
-        this.OrderId = orderItem.Order.Id;
-        this.ProductId = orderItem.Product.Id;
-        this.Quantity = orderItem.Quantity;
+        var presenter = new OrderItemPresenter
+        {
+            OrderId = orderItem.Order.Id,
+            ProductId = orderItem.Product.Id,
+            Quantity = orderItem.Quantity
+        };
 
         if (orderItem.Product is Knife knife)
         {
-            this.Product = await this._knifePresenter.Present(knife, locale, currency);
+            presenter.Product = await KnifePresenter.Present(knife, locale, currency, getComponentPriceService);
         }
         else if (orderItem.Product is CompletedSheath completedSheath)
         {
-            this.Product = await this._completedSheathPresenter.Present(completedSheath, locale, currency);
+            presenter.Product = await CompletedSheathPresenter.Present(completedSheath, locale, currency, getComponentPriceService, priceService);
         }
         else if (orderItem.Product is Attachment attachment)
         {
-            this.Product = await this._attachmentPresenter.Present(attachment, locale, currency);
+            presenter.Product = await AttachmentPresenter.Present(attachment, locale, currency, getComponentPriceService);
         }
         
-        return this;
+        return presenter;
     }
 
-    public async Task<List<OrderItemPresenter>> PresentList(List<OrderItem> orderItems, string locale, string currency)
+    public static async Task<List<OrderItemPresenter>> PresentList(
+        List<OrderItem> orderItems, 
+        string locale, 
+        string currency,
+        IGetComponentPrice getComponentPriceService,
+        IPriceService priceService)
     {
-        List<OrderItemPresenter> orderItemsPresenters = new List<OrderItemPresenter>();
+        var orderItemsPresenters = new List<OrderItemPresenter>();
         foreach (OrderItem orderItem in orderItems)
         {
-            OrderItemPresenter orderItemPresenter =
-                new OrderItemPresenter(this._knifePresenter,this._completedSheathPresenter, this._attachmentPresenter );
-            await orderItemPresenter.Present(orderItem, locale, currency);
+            OrderItemPresenter orderItemPresenter = await Present(
+                orderItem, 
+                locale, 
+                currency,
+                getComponentPriceService,
+                priceService
+            );
             orderItemsPresenters.Add(orderItemPresenter);
         }
         

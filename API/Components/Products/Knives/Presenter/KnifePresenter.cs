@@ -8,12 +8,6 @@ namespace API.Components.Products.Knives.Presenter;
 
 public class KnifePresenter : AbstractProductPresenter
 {
-    private readonly IGetComponentPrice _getComponentPriceService;
-
-    public KnifePresenter(IGetComponentPrice getComponentPriceService)
-    {
-        this._getComponentPriceService = getComponentPriceService;
-    }
     public Guid Id { get; set; }
     public string Title { get; set; }
     public Dictionary<string, string> Titles { get; set; }
@@ -40,78 +34,87 @@ public class KnifePresenter : AbstractProductPresenter
     public List<string>? EngravingNames {get; set;}
     public List<ReviewPresenter>? Reviews {get; set;}
     public double? AverageRating { get; set; } = null;
-    
     public KnifeForCanvasPresenter KnifeForCanvas  {get; set;}
 
-    public async Task<KnifePresenter> Present(Knife knife, string locale, string currency)
+    public static async Task<KnifePresenter> Present(
+        Knife knife, 
+        string locale, 
+        string currency, 
+        IGetComponentPrice getComponentPriceService)
     {
-        this.Id = knife.Id;
-        this.Title = knife.Title.GetTranslation(locale);
-        this.Name = knife.Name.GetTranslation(locale);
-        this.Description = knife.Description.GetTranslation(locale);
-        this.Price = await this._getComponentPriceService.GetPrice(knife, currency);
-        this.ImageUrl = knife.Image;
-        this.TotalLength = knife.Blade.BladeCharacteristics.TotalLength;
-        this.BladeLength = knife.Blade.BladeCharacteristics.BladeLength;
-        this.BladeWidth = knife.Blade.BladeCharacteristics.BladeWidth;
-        this.BladeWeight = knife.Blade.BladeCharacteristics.BladeWeight;
-        this.SharpeningAngle = knife.Blade.BladeCharacteristics.SharpeningAngle;
-        this.RockwellHardnessUnits = knife.Blade.BladeCharacteristics.RockwellHardnessUnits;
-        this.BladeCoatingType = knife.Color.Type.GetTranslation(locale);
-        this.BladeCoatingColor = knife.Color.Color.GetTranslation(locale);
-        this.MetaTitle = knife.MetaTitle.GetTranslation(locale);
-        this.MetaDescription = knife.MetaDescription.GetTranslation(locale);
+        var presenter = new KnifePresenter
+        {
+            Id = knife.Id,
+            Title = knife.Title.GetTranslation(locale),
+            Name = knife.Name.GetTranslation(locale),
+            Description = knife.Description.GetTranslation(locale),
+            Price = await getComponentPriceService.GetPrice(knife, currency),
+            ImageUrl = knife.Image,
+            TotalLength = knife.Blade.BladeCharacteristics.TotalLength,
+            BladeLength = knife.Blade.BladeCharacteristics.BladeLength,
+            BladeWidth = knife.Blade.BladeCharacteristics.BladeWidth,
+            BladeWeight = knife.Blade.BladeCharacteristics.BladeWeight,
+            SharpeningAngle = knife.Blade.BladeCharacteristics.SharpeningAngle,
+            RockwellHardnessUnits = knife.Blade.BladeCharacteristics.RockwellHardnessUnits,
+            BladeCoatingType = knife.Color.Type.GetTranslation(locale),
+            BladeCoatingColor = knife.Color.Color.GetTranslation(locale),
+            MetaTitle = knife.MetaTitle.GetTranslation(locale),
+            MetaDescription = knife.MetaDescription.GetTranslation(locale),
+            KnifeForCanvas = await KnifeForCanvasPresenter.Present(knife, locale)
+        };
         
         if (knife.Handle != null)
         {
-            this.HandleColor = knife.Handle.Color.GetTranslation(locale);
+            presenter.HandleColor = knife.Handle.Color.GetTranslation(locale);
         }
 
-        if (knife is { SheathColor: not null })
+        if (knife.SheathColor != null)
         {
-            this.SheathColor = knife.SheathColor.Color.GetTranslation(locale);
+            presenter.SheathColor = knife.SheathColor.Color.GetTranslation(locale);
         }
 
-        if (knife.Engravings != null && knife.Engravings.Count > 0)
+        if (knife.Engravings != null && knife.Engravings.Any())
         {
-            this.EngravingNames = knife.Engravings.Select(engraving => engraving.Name.GetTranslation(locale)).ToList();
+            presenter.EngravingNames = knife.Engravings.Select(engraving => engraving.Name.GetTranslation(locale)).ToList();
         }
 
-        KnifeForCanvasPresenter knifeForCanvasPresenter = new KnifeForCanvasPresenter();
-        this.KnifeForCanvas = await knifeForCanvasPresenter.Present(knife, locale);
-
-        if (knife.Reviews != null)
+        if (knife.Reviews != null && knife.Reviews.Any())
         {
-            ReviewPresenter reviewPresenter = new ReviewPresenter();
-            this.Reviews = reviewPresenter.PresentList(knife.Reviews);
-            this.AverageRating = Math.Round(((double)this.Reviews.Sum(r => r.Rating) / this.Reviews.Count), 2);
+            presenter.Reviews = ReviewPresenter.PresentList(knife.Reviews);
+            presenter.AverageRating = Math.Round(presenter.Reviews.Average(r => r.Rating), 2);
         }
         
-        return this;
+        return presenter;
     }
 
-    public async Task<KnifePresenter> PresentWithTranslations(Knife knife, string locale, string currency)
+    public static async Task<KnifePresenter> PresentWithTranslations(
+        Knife knife, 
+        string locale, 
+        string currency, 
+        IGetComponentPrice getComponentPriceService)
     {
-        await this.Present(knife, locale, currency);
-        this.Names = knife.Name.TranslationDictionary;
-        this.Titles = knife.Title.TranslationDictionary;
-        this.Descriptions = knife.Description.TranslationDictionary;
-        this.MetaTitles = knife.MetaTitle.TranslationDictionary;
-        this.MetaDescriptions = knife.MetaDescription.TranslationDictionary;
-        return this;
+        KnifePresenter presenter = await Present(knife, locale, currency, getComponentPriceService);
+        presenter.Names = knife.Name.TranslationDictionary;
+        presenter.Titles = knife.Title.TranslationDictionary;
+        presenter.Descriptions = knife.Description.TranslationDictionary;
+        presenter.MetaTitles = knife.MetaTitle.TranslationDictionary;
+        presenter.MetaDescriptions = knife.MetaDescription.TranslationDictionary;
+        return presenter;
     }
     
-    public async Task<List<KnifePresenter>> PresentList(List<Knife> knives, string locale, string currency)
+    public static async Task<List<KnifePresenter>> PresentList(
+        List<Knife> knives, 
+        string locale, 
+        string currency, 
+        IGetComponentPrice getComponentPriceService)
     {
-        List<KnifePresenter> knifePresenters = new List<KnifePresenter>();
+        var knifePresenters = new List<KnifePresenter>();
         foreach (var knife in knives)
         {
-            KnifePresenter presenter = new KnifePresenter(this._getComponentPriceService);
-            await presenter.Present(knife, locale, currency);
+            KnifePresenter presenter = await Present(knife, locale, currency, getComponentPriceService);
             knifePresenters.Add(presenter);
         }
 
         return knifePresenters;
     }
-
 }

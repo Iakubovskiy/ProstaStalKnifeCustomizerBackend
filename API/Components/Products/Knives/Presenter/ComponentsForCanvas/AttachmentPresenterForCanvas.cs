@@ -1,18 +1,19 @@
 using Domain.Component.Product.Attachments;
+using Domain.Files;
 
 namespace API.Components.Products.Knives.Presenter.ComponentsForCanvas;
 
 public class AttachmentPresenterForCanvas
 {
     public Guid Id { get; set; }
-    public string ModelUrl { get; set; }
+    public FileEntity Model { get; set; }
 
-    public AttachmentPresenterForCanvas Present(Attachment attachment)
+    public static AttachmentPresenterForCanvas Present(Attachment attachment)
     {
-        this.Id = attachment.Id;
-        this.ModelUrl = attachment.Model.FileUrl;
-        
-        return this;
+        return new AttachmentPresenterForCanvas
+        {
+            Id = attachment.Id,
+            Model = attachment.Model
+        };
     }
-    
 }

@@ -13,37 +13,43 @@ public class KnifeForCanvasPresenter
     public List<EngravingPresenterForCanvas>? Engravings { get; set; }
     public HandleColorPresenterForCanvas? HandleColor { get; set; }
     public SheathColorPresenterForCanvas? SheathColor { get; set; }
-    public async Task<KnifeForCanvasPresenter> Present(Knife knife, string locale)
+
+    public static Task<KnifeForCanvasPresenter> Present(Knife knife, string locale)
     {
-        this.BladeCoatingColor = new BladeCoatingColorPresenterForCanvas().Present(knife.Color);
-        this.BladeShape = new BladeShapePresenterForCanvas().Present(knife.Blade, locale);
+        var presenter = new KnifeForCanvasPresenter
+        {
+            BladeCoatingColor = BladeCoatingColorPresenterForCanvas.Present(knife.Color),
+            BladeShape = BladeShapePresenterForCanvas.Present(knife.Blade, locale)
+        };
+
         if (knife.Handle != null)
         {
-            this.HandleColor = new HandleColorPresenterForCanvas().Present(knife.Handle);
+            presenter.HandleColor = HandleColorPresenterForCanvas.Present(knife.Handle);
         }
+        
         if (knife.SheathColor != null)
         {
-            this.SheathColor = new SheathColorPresenterForCanvas().Present(knife.SheathColor);
+            presenter.SheathColor = SheathColorPresenterForCanvas.Present(knife.SheathColor);
         }
 
         if (knife.Attachments != null)
         {
-            this.Attachments = new List<AttachmentPresenterForCanvas>();
+            presenter.Attachments = new List<AttachmentPresenterForCanvas>();
             foreach (Attachment attachment in knife.Attachments)
             {
-                this.Attachments.Add(new AttachmentPresenterForCanvas().Present(attachment));
+                presenter.Attachments.Add(AttachmentPresenterForCanvas.Present(attachment));
             }
         }
         
         if (knife.Engravings != null)
         {
-            this.Engravings = new List<EngravingPresenterForCanvas>();
+            presenter.Engravings = new List<EngravingPresenterForCanvas>();
             foreach (Engraving engraving in knife.Engravings)
             {
-                this.Engravings.Add(new EngravingPresenterForCanvas().Present(engraving));
+                presenter.Engravings.Add(EngravingPresenterForCanvas.Present(engraving));
             }
         }
         
-        return this;
+        return Task.FromResult(presenter);
     }
 }

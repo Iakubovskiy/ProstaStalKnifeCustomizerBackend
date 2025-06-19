@@ -5,6 +5,7 @@ using Application.Components.ComponentsWithType.SheathColors.Activate;
 using Application.Components.ComponentsWithType.UseCases.Create;
 using Application.Components.ComponentsWithType.UseCases.Deactivate;
 using Application.Components.ComponentsWithType.UseCases.Update;
+using Application.Currencies;
 using Microsoft.AspNetCore.Mvc;
 using Domain.Component.Sheaths.Color;
 using Infrastructure.Components.Sheaths.Color;
@@ -20,7 +21,7 @@ public class SheathColorController : ControllerBase
     private readonly IUpdateTypeDependencyComponentService<SheathColor, SheathColorDto> _sheathColorUpdateService;
     private readonly IActivateSheathColorService _activateSheathColorService;
     private readonly IDeactivateSheathColorService _deactivateSheathColorService;
-    private readonly SheathColorPresenter _presenter;
+    private readonly IPriceService _priceService;
 
     public SheathColorController(
         ISheathColorRepository sheathColorRepository,
@@ -28,7 +29,7 @@ public class SheathColorController : ControllerBase
         IUpdateTypeDependencyComponentService<SheathColor, SheathColorDto> sheathColorUpdateService,
         IActivateSheathColorService activateSheathColorService,
         IDeactivateSheathColorService deactivateSheathColorService,
-        SheathColorPresenter presenter
+        IPriceService priceService
     )
     {
         this._sheathColorRepository = sheathColorRepository;
@@ -36,7 +37,7 @@ public class SheathColorController : ControllerBase
         this._sheathColorUpdateService = sheathColorUpdateService;
         this._activateSheathColorService = activateSheathColorService;
         this._deactivateSheathColorService = deactivateSheathColorService;
-        this._presenter = presenter;
+        this._priceService = priceService;
     }
 
     [HttpGet]
@@ -45,7 +46,8 @@ public class SheathColorController : ControllerBase
         [FromHeader(Name = "Currency")] string currency
     )
     {
-        return Ok(await this._presenter.PresentList(await this._sheathColorRepository.GetAll(), locale, currency));
+        return Ok(await SheathColorPresenter
+            .PresentList(await this._sheathColorRepository.GetAll(), locale, currency, this._priceService));
     }
 
     [HttpGet("active")]
@@ -54,7 +56,8 @@ public class SheathColorController : ControllerBase
         [FromHeader(Name = "Currency")] string currency
     )
     {
-        return Ok(await this._presenter.PresentList(await this._sheathColorRepository.GetAllActive(), locale, currency));
+        return Ok(await SheathColorPresenter
+            .PresentList(await this._sheathColorRepository.GetAllActive(), locale, currency, this._priceService));
     }
 
     [HttpGet("{id:guid}")]
@@ -66,7 +69,8 @@ public class SheathColorController : ControllerBase
     {
         try
         {
-            return Ok(await this._presenter.PresentWithTranslations(await this._sheathColorRepository.GetById(id), locale, currency));
+            return Ok(await SheathColorPresenter
+                .PresentWithTranslations(await this._sheathColorRepository.GetById(id), locale, currency, this._priceService));
         }
         catch (ObjectNotFoundException)
         {

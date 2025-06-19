@@ -10,55 +10,61 @@ namespace API.Components.Products.AllProducts.Presenters;
 
 public class ProductPresenter
 {
-    private readonly IGetComponentPrice _getComponentPriceService;
-
-    public ProductPresenter(IGetComponentPrice getComponentPriceService)
-    {
-        _getComponentPriceService = getComponentPriceService;
-    }
-
     public Guid Id { get; set; }
     public string Name { get; set; }
     public Dictionary<string, string> Names { get; set; }
     public FileEntity Image { get; set; }
     public double Price { get; set; }
     public List<ReviewPresenter> Reviews { get; set; } = new List<ReviewPresenter>();
-    
     public BladeCharacteristics? Characteristics { get; set; }
 
-    public async Task<ProductPresenter> Present(Product product, string locale, string currency)
+    public static async Task<ProductPresenter> Present(
+        Product product, 
+        string locale, 
+        string currency, 
+        IGetComponentPrice getComponentPriceService)
     {
-        this.Id = product.Id;
-        this.Name = product.Name.GetTranslation(locale);
-        this.Image = product.Image;
-        this.Price = await this._getComponentPriceService.GetPrice(product, currency);
+        var presenter = new ProductPresenter
+        {
+            Id = product.Id,
+            Name = product.Name.GetTranslation(locale),
+            Image = product.Image,
+            Price = await getComponentPriceService.GetPrice(product, currency)
+        };
+
         if (product is Knife knife)
         {
-            this.Characteristics = knife.Blade.BladeCharacteristics;
+            presenter.Characteristics = knife.Blade.BladeCharacteristics;
         }
 
         if (product.Reviews != null)
         {
-            ReviewPresenter presenter = new ReviewPresenter();
-            this.Reviews = presenter.PresentList(product.Reviews);
+            presenter.Reviews = ReviewPresenter.PresentList(product.Reviews);
         }
-        return this;
+        return presenter;
     }
     
-    public async Task<ProductPresenter> PresentWithTranslations(Product product, string locale, string currency)
+    public static async Task<ProductPresenter> PresentWithTranslations(
+        Product product, 
+        string locale, 
+        string currency, 
+        IGetComponentPrice getComponentPriceService)
     {
-        await this.Present(product, locale, currency);
-        this.Names = product.Name.TranslationDictionary;
-        return this;
+        ProductPresenter presenter = await Present(product, locale, currency, getComponentPriceService);
+        presenter.Names = product.Name.TranslationDictionary;
+        return presenter;
     }
 
-    public async Task<PaginatedResult<ProductPresenter>> PresentPaginatedList(PaginatedResult<Product> products, string locale, string currency)
+    public static async Task<PaginatedResult<ProductPresenter>> PresentPaginatedList(
+        PaginatedResult<Product> products, 
+        string locale, 
+        string currency, 
+        IGetComponentPrice getComponentPriceService)
     {
-        List<ProductPresenter> items = new List<ProductPresenter>();
+        var items = new List<ProductPresenter>();
         foreach (Product product in products.Items)
         {
-            ProductPresenter productPresenter = new ProductPresenter(_getComponentPriceService);
-            items.Add(await productPresenter.Present(product, locale, currency));
+            items.Add(await Present(product, locale, currency, getComponentPriceService));
         }
         
         return new PaginatedResult<ProductPresenter>
