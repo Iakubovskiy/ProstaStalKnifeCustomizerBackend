@@ -1,4 +1,5 @@
-﻿using Application.Orders.Support.DeliveryTypes;
+﻿using API.Orders.Support.DeliveryTypes.Presenters;
+using Application.Orders.Support.DeliveryTypes;
 using Application.Orders.Support.DeliveryTypes.Data;
 using Microsoft.AspNetCore.Mvc;
 using Infrastructure.Orders.Support.DeliveryTypes;
@@ -11,34 +12,47 @@ public class DeliveryTypeController : ControllerBase
 {
     private readonly IDeliveryTypeRepository _deliveryTypeRepository;
     private readonly IDeliveryTypeService _deliveryTypeService;
+    private readonly DeliveryTypePresenter _presenter;
 
     public DeliveryTypeController(
         IDeliveryTypeRepository deliveryTypeRepository,
-        IDeliveryTypeService deliveryTypeService
+        IDeliveryTypeService deliveryTypeService,
+        DeliveryTypePresenter presenter
     )
     {
         this._deliveryTypeRepository = deliveryTypeRepository;
         this._deliveryTypeService = deliveryTypeService;
+        this._presenter = presenter;
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllDeliveryTypes()
+    public async Task<IActionResult> GetAllDeliveryTypes(
+        [FromHeader(Name = "Locale")] string locale,
+        [FromHeader(Name = "Currency")] string currency
+    )
     {
-        return Ok(await this._deliveryTypeRepository.GetAll());
+        return Ok(await this._presenter.PresentList(await this._deliveryTypeRepository.GetAll(), locale, currency));
     }
 
     [HttpGet("active")]
-    public async Task<IActionResult> GetAllActiveDeliveryTypes()
+    public async Task<IActionResult> GetAllActiveDeliveryTypes(
+        [FromHeader(Name = "Locale")] string locale,
+        [FromHeader(Name = "Currency")] string currency
+    )
     {
-        return Ok(await this._deliveryTypeRepository.GetAllActive());
+        return Ok(await this._presenter.PresentList(await this._deliveryTypeRepository.GetAllActive(), locale, currency));
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetDeliveryTypesById(Guid id)
+    public async Task<IActionResult> GetDeliveryTypesById(
+        Guid id,
+        [FromHeader(Name = "Locale")] string locale,
+        [FromHeader(Name = "Currency")] string currency
+    )
     {
         try
         {
-            return Ok(await this._deliveryTypeRepository.GetById(id));
+            return Ok(await this._presenter.Present(await this._deliveryTypeRepository.GetById(id), locale, currency));
         }
         catch (Exception)
         {

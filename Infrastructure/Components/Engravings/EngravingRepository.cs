@@ -17,6 +17,7 @@ public class EngravingRepository : ComponentRepository<Engraving>
     {
         return await this.Set
             .Include(engraving => engraving.Tags)
+            .Include(engraving => engraving.Picture)
             .ToListAsync();
     }
 

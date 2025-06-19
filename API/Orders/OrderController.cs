@@ -1,5 +1,6 @@
 ﻿using System.Data.Entity.Core;
 using System.Security.Claims;
+using API.Orders.Presenters;
 using Microsoft.AspNetCore.Mvc;
 using Application.Orders.Dto;
 using Application.Orders.UseCases.ChangeClientData;
@@ -7,7 +8,6 @@ using Application.Orders.UseCases.Create;
 using Application.Orders.UseCases.RemoveOrderItem;
 using Application.Orders.UseCases.UpdateOrderItemQuantity;
 using Application.Orders.UseCases.UpdateStatus;
-using Domain.Component.Product;
 using Domain.Orders.Support;
 using Infrastructure.Orders;
 
@@ -23,6 +23,7 @@ public class OrderController : ControllerBase
     private readonly IChangeClientDataService _changeClientDataService;
     private readonly IRemoveOrderItem _removeOrderItem;
     private readonly IUpdateOrderItemQuantityService _updateOrderItemQuantityService;
+    private readonly OrderPresenter _orderPresenter;
 
     public OrderController(
         IOrderRepository orderRepository, 
@@ -30,7 +31,8 @@ public class OrderController : ControllerBase
         IUpdateOrderStatusService updateOrderStatusService, 
         IChangeClientDataService changeClientDataService,
         IRemoveOrderItem removeOrderItem,
-        IUpdateOrderItemQuantityService updateOrderItemQuantityService
+        IUpdateOrderItemQuantityService updateOrderItemQuantityService,
+        OrderPresenter orderPresenter
     )
     {
         this._orderRepository = orderRepository;
@@ -39,20 +41,28 @@ public class OrderController : ControllerBase
         this._changeClientDataService = changeClientDataService;
         this._removeOrderItem = removeOrderItem;
         this._updateOrderItemQuantityService = updateOrderItemQuantityService;
+        this._orderPresenter = orderPresenter;
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllOrders()
+    public async Task<IActionResult> GetAllOrders(
+        [FromHeader(Name = "Locale")] string locale,
+        [FromHeader(Name = "Currency")] string currency
+    )
     {
-        return Ok(await this._orderRepository.GetAll());
+        return Ok(await this._orderPresenter.PresentList(await this._orderRepository.GetAll(), locale, currency));
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetOrdersById(Guid id)
+    public async Task<IActionResult> GetOrderById(
+        Guid id,
+        [FromHeader(Name = "Locale")] string locale,
+        [FromHeader(Name = "Currency")] string currency
+    )
     {
         try
         {
-            return Ok( await this._orderRepository.GetById(id));
+            return Ok(await this._orderPresenter.Present(await this._orderRepository.GetById(id), locale, currency));
         }
         catch (ObjectNotFoundException)
         {
@@ -75,7 +85,7 @@ public class OrderController : ControllerBase
             {
                 userIdGuid = new Guid(userId);
             }
-            return Created(nameof(this.GetOrdersById),
+            return Created(nameof(this.GetOrderById),
                 new { newOrder = await this._createOrderService.Create(orderDto, locale, userIdGuid) });
         }
         catch (Exception e)

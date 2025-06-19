@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using API.Components.Products.Knives.Presenter;
+using Microsoft.AspNetCore.Mvc;
 using Application.Components.Products.Knives;
 using Application.Components.Products.UseCases.Activate;
 using Application.Components.Products.UseCases.Create;
@@ -18,13 +19,15 @@ public class KnifeController : ControllerBase
     private readonly IComponentRepository<Knife> _knifeRepository;
     private readonly IActivateProduct<Knife> _activateProductService;
     private readonly IDeactivateProduct<Knife> _deactivateProductService;
+    private readonly KnifePresenter _presenter;
 
     public KnifeController(
         ICreateProductService<Knife, KnifeDto> createProductService,
         IUpdateProductService<Knife, KnifeDto> updateProductService,
         IComponentRepository<Knife> knifeRepository,
         IActivateProduct<Knife> activateProductService,
-        IDeactivateProduct<Knife> deactivateProductService
+        IDeactivateProduct<Knife> deactivateProductService,
+        KnifePresenter presenter
     )
     {
         this._createKnifeService = createProductService;
@@ -32,27 +35,38 @@ public class KnifeController : ControllerBase
         this._knifeRepository = knifeRepository;
         this._activateProductService = activateProductService;
         this._deactivateProductService = deactivateProductService;
+        this._presenter = presenter;
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllKnifes()
+    public async Task<IActionResult> GetAllKnifes(
+        [FromHeader(Name = "Locale")] string locale,
+        [FromHeader(Name = "Currency")] string currency
+    )
     {
-        return Ok(await this._knifeRepository.GetAll());
+        return Ok(await this._presenter.PresentList(await this._knifeRepository.GetAll(), locale, currency));
     }
 
     [HttpGet("active")]
-    public async Task<IActionResult> GetAllActiveKnifes()
+    public async Task<IActionResult> GetAllActiveKnifes(
+        [FromHeader(Name = "Locale")] string locale,
+        [FromHeader(Name = "Currency")] string currency
+    )
     {
-        return Ok(await this._knifeRepository.GetAllActive());
+        return Ok(await this._presenter.PresentList(await this._knifeRepository.GetAllActive(), locale, currency));
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetKnifesById(Guid id)
+    public async Task<IActionResult> GetKnifesById(
+        Guid id,
+        [FromHeader(Name = "Locale")] string locale,
+        [FromHeader(Name = "Currency")] string currency
+    )
     {
         try
         {
             Knife knife = await this._knifeRepository.GetById(id); 
-            return Ok(knife);
+            return Ok(await this._presenter.Present(knife, locale, currency));
         }
         catch (Exception)
         {

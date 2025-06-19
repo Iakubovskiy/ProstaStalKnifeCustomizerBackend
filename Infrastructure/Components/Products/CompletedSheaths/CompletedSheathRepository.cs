@@ -1,6 +1,5 @@
 using System.Data.Entity.Core;
 using Domain.Component.Product.CompletedSheath;
-using Domain.Component.Product.Knife;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +17,8 @@ public class CompletedSheathRepository : ComponentRepository<CompletedSheath>
     {
         return await this.Set
             .Include(product => product.Tags)
+            .Include(product => product.Image)
+            .Include(product => product.Reviews)
             .Include(product => product.Sheath)
             .Include(product => product.SheathColor)
             .Include(product => product.Engravings)
@@ -30,6 +31,8 @@ public class CompletedSheathRepository : ComponentRepository<CompletedSheath>
         return await this.Set
             .Where(product => product.IsActive)
             .Include(product => product.Tags)
+            .Include(product => product.Image)
+            .Include(product => product.Reviews)
             .Include(product => product.Sheath)
             .Include(product => product.SheathColor)
             .Include(product => product.Engravings)
@@ -41,6 +44,8 @@ public class CompletedSheathRepository : ComponentRepository<CompletedSheath>
     {
         return await this.Set
                    .Include(product => product.Tags)
+                   .Include(product => product.Image)
+                   .Include(product => product.Reviews)
                    .Include(product => product.Sheath)
                    .Include(product => product.SheathColor)
                    .Include(product => product.Engravings)

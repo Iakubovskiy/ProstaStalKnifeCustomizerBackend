@@ -1,4 +1,5 @@
-﻿using Application.Components.Products.Attachments;
+﻿using API.Components.Products.Attachments.Presenters;
+using Application.Components.Products.Attachments;
 using Application.Components.Products.UseCases.Activate;
 using Application.Components.Products.UseCases.Create;
 using Application.Components.Products.UseCases.Deactivate;
@@ -17,14 +18,16 @@ public class AttachmentController : ControllerBase
     private readonly IUpdateProductService< Attachment, AttachmentDto> _updateProductService;
     private readonly IComponentRepository< Attachment> _attachmentRepository;
     private readonly IActivateProduct<Attachment> _activateProductService;
-    private readonly IDeactivateProduct< Attachment> _deactivateProductService;
+    private readonly IDeactivateProduct<Attachment> _deactivateProductService;
+    private readonly AttachmentPresenter _presenter;
 
     public AttachmentController(
         ICreateProductService<Attachment, AttachmentDto> createAttachmentService, 
         IUpdateProductService<Attachment, AttachmentDto> updateProductService, 
         IComponentRepository<Attachment> attachmentRepository, 
         IActivateProduct<Attachment> activateProductService, 
-        IDeactivateProduct<Attachment> deactivateProductService
+        IDeactivateProduct<Attachment> deactivateProductService,
+        AttachmentPresenter presenter
     )
     {
         this._createAttachmentService = createAttachmentService;
@@ -32,26 +35,37 @@ public class AttachmentController : ControllerBase
         this._attachmentRepository = attachmentRepository;
         this._activateProductService = activateProductService;
         this._deactivateProductService = deactivateProductService;
+        this._presenter = presenter;
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllAttachments()
+    public async Task<IActionResult> GetAllAttachments(
+        [FromHeader(Name = "Locale")] string locale,
+        [FromHeader(Name = "Currency")] string currency
+    )
     {
-        return Ok(await this._attachmentRepository.GetAll());
+        return Ok(await this._presenter.PresentList(await this._attachmentRepository.GetAll(), locale, currency));
     }
 
     [HttpGet("active")]
-    public async Task<IActionResult> GetAllActiveAttachments()
+    public async Task<IActionResult> GetAllActiveAttachments(
+        [FromHeader(Name = "Locale")] string locale,
+        [FromHeader(Name = "Currency")] string currency
+    )
     {
-        return Ok(await this._attachmentRepository.GetAllActive());
+        return Ok(await this._presenter.PresentList(await this._attachmentRepository.GetAllActive(), locale, currency));
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetAttachmentsById(Guid id)
+    public async Task<IActionResult> GetAttachmentsById(
+        Guid id,
+        [FromHeader(Name = "Locale")] string locale,
+        [FromHeader(Name = "Currency")] string currency
+    )
     {
         try
         {
-            return Ok(await this._attachmentRepository.GetById(id));
+            return Ok(await this._presenter.Present(await this._attachmentRepository.GetById(id), locale, currency));
         }
         catch (Exception)
         {

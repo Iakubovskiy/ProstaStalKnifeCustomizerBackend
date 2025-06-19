@@ -25,6 +25,7 @@ public class KnifeRepository : ComponentRepository<Knife>
             .Include(product => product.SheathColor)
             .Include(product => product.Engravings)
             .Include(product => product.Attachments)
+            .Include(product => product.Image)
             .ToListAsync();
     }
     
@@ -40,6 +41,7 @@ public class KnifeRepository : ComponentRepository<Knife>
             .Include(product => product.SheathColor)
             .Include(product => product.Engravings)
             .Include(product => product.Attachments)
+            .Include(product => product.Image)
             .ToListAsync();
     }
 
@@ -55,7 +57,9 @@ public class KnifeRepository : ComponentRepository<Knife>
                    .Include(product => product.SheathColor)
                    .ThenInclude(sc => sc.Prices)
                    .Include(product => product.Engravings)
+                   .Include(product => product.Image)
                    .Include(product => product.Attachments)
+                   .Include(product => product.Reviews)
                    .FirstOrDefaultAsync(product => product.Id == id)
                ?? throw new ObjectNotFoundException("Entity not found");
     }

@@ -17,7 +17,7 @@ public class Handle : IComponent, IEntity, IUpdatable<Handle>, ITextured
     public Handle(
         Guid id, 
         Translations color, 
-        string? colorCode, 
+        string colorCode, 
         bool isActive, 
         Translations material,
         Texture? texture,
@@ -43,7 +43,7 @@ public class Handle : IComponent, IEntity, IUpdatable<Handle>, ITextured
     public Guid Id { get; private set; }
     public Translations Color { get; private set; }
     [MaxLength(255)]
-    public string? ColorCode { get; private set; }
+    public string ColorCode { get; private set; }
     public bool IsActive { get; set; }
     public Translations Material { get; private set; }
     public Texture? Texture { get; private set; }

@@ -1,3 +1,4 @@
+using API.Components.Products.ProductTags.Presenters;
 using Application.Components.SimpleComponents.Products.ProductTags;
 using Application.Components.SimpleComponents.UseCases.Create;
 using Application.Components.SimpleComponents.UseCases.Update;
@@ -27,17 +28,19 @@ public class ProductTagController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<IActionResult> GetAllProductTags()
+    public async Task<IActionResult> GetAllProductTags([FromHeader(Name = "Locale")] string locale)
     {
-        return Ok(await this._productRepository.GetAll());
+        ProductTagPresenter presenter = new ProductTagPresenter();
+        return Ok(await presenter.PresentList(await this._productRepository.GetAll(), locale));
     }
     
     [HttpGet ("{id:guid}")]
-    public async Task<IActionResult> GetProductsById(Guid id)
+    public async Task<IActionResult> GetProductsById(Guid id, [FromHeader(Name = "Locale")] string locale)
     {
         try
         {
-            return Ok( await this._productRepository.GetById(id));
+            ProductTagPresenter presenter = new ProductTagPresenter();
+            return Ok(await presenter.Present(await this._productRepository.GetById(id), locale));
         }
         catch (Exception)
         {

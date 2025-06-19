@@ -17,6 +17,7 @@ public class BladeCoatingColorRepository : ComponentRepository<BladeCoatingColor
     {
         return await this.Set
                    .Include(coatingColor => coatingColor.Texture)
+                   .Include(coatingColor => coatingColor.ColorMap)
                    .ToListAsync();
     }
     
@@ -25,6 +26,7 @@ public class BladeCoatingColorRepository : ComponentRepository<BladeCoatingColor
         return await this.Set
                    .Where(coatingColor => coatingColor.IsActive)
                    .Include(coatingColor => coatingColor.Texture)
+                   .Include(coatingColor => coatingColor.ColorMap)
                    .ToListAsync();
     }
     
@@ -32,6 +34,7 @@ public class BladeCoatingColorRepository : ComponentRepository<BladeCoatingColor
     {
         return await this.Set
             .Include(coatingColor => coatingColor.Texture)
+            .Include(coatingColor => coatingColor.ColorMap)
             .FirstOrDefaultAsync(coatingColor => coatingColor.Id == id) 
                ?? throw new ObjectNotFoundException("Entity not found");
     }

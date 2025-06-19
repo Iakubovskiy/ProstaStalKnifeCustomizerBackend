@@ -1,3 +1,4 @@
+using API.Components.Engravings.Support.Tags.Presenters;
 using Application.Components.SimpleComponents.Engravings.EngravingTags;
 using Application.Components.SimpleComponents.UseCases.Create;
 using Application.Components.SimpleComponents.UseCases.Update;
@@ -5,7 +6,7 @@ using Domain.Component.Engravings.Support;
 using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 
-namespace API.Components.Engravings.Support;
+namespace API.Components.Engravings.Support.Tags;
 
 [Route("api/engraving-tags")]
 [ApiController]
@@ -27,17 +28,19 @@ public class EngravingTagController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<IActionResult> GetAllEngravingTags()
+    public async Task<IActionResult> GetAllEngravingTags([FromHeader(Name = "Locale")] string locale)
     {
-        return Ok(await this._engravingRepository.GetAll());
+        EngravingTagPresenter engravingTagPresenter = new EngravingTagPresenter();
+        return Ok(await engravingTagPresenter.PresentList(await this._engravingRepository.GetAll(), locale));
     }
     
     [HttpGet ("{id:guid}")]
-    public async Task<IActionResult> GetEngravingsById(Guid id)
+    public async Task<IActionResult> GetEngravingsById(Guid id, [FromHeader(Name = "Locale")] string locale)
     {
         try
         {
-            return Ok( await this._engravingRepository.GetById(id));
+            EngravingTagPresenter engravingTagPresenter = new EngravingTagPresenter();
+            return Ok(await engravingTagPresenter.Present(await this._engravingRepository.GetById(id), locale));
         }
         catch (Exception)
         {

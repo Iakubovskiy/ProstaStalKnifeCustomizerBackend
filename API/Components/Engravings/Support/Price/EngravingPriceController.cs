@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Domain.Component.Engravings.Support;
 using Infrastructure;
 
-namespace API.Components.Engravings.Support;
+namespace API.Components.Engravings.Support.Price;
 
 [Route("api/engraving-prices")]
 [ApiController]

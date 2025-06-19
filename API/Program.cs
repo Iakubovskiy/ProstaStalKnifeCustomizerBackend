@@ -1,6 +1,15 @@
 using System.Text;
+using API.Components.BladeCoatingColors.Presenters;
 using API.Components.BladeShapes.Presenters;
 using API.Components.Products.AllProducts.Presenters;
+using API.Components.Products.Attachments.Presenters;
+using API.Components.Products.CompletedSheaths.Presenters;
+using API.Components.Products.Knives.Presenter;
+using API.Components.Sheaths.Colors.Presenters;
+using API.Components.Sheaths.Presenter;
+using API.Orders.Presenters;
+using API.Orders.Support.DeliveryTypes.Presenters;
+using API.Orders.Support.PaymentMethods.Presenters;
 using Application;
 using Application.Components.Activate;
 using Application.Components.ComponentsWithType.SheathColors;
@@ -79,6 +88,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Application.Components.TexturedComponents.UseCases.Create;
 using Application.Components.TexturedComponents.UseCases.Update;
+using Application.Currencies;
 using Application.Orders;
 using Application.Orders.Dto;
 using Application.Orders.UseCases.ChangeClientData;
@@ -394,12 +404,25 @@ builder.Services.AddScoped<IUpdateOrderStatusService, UpdateOrderStatusService>(
 builder.Services.AddScoped<IChangeClientDataService, ChangeClientDataService>();
 builder.Services.AddScoped<IUpdateOrderItemQuantityService, UpdateOrderItemQuantityService>();
 builder.Services.AddScoped<IRemoveOrderItem, RemoveOrderItemService>();
+    
+builder.Services.AddScoped<IPriceService, PriceService>();
 #endregion
 
 #region Presenters
 
 builder.Services.AddScoped<ProductPresenter>();
 builder.Services.AddScoped<BladeShapePresenter>();
+builder.Services.AddScoped<BladeCoatingColorPresenter>();
+builder.Services.AddScoped<DeliveryTypePresenter>();
+builder.Services.AddScoped<SheathPresenter>();
+builder.Services.AddScoped<SheathColorPriceByTypePresenter>();
+builder.Services.AddScoped<SheathColorPresenter>();
+builder.Services.AddScoped<AttachmentPresenter>();
+builder.Services.AddScoped<KnifePresenter>();
+builder.Services.AddScoped<CompletedSheathPresenter>();
+builder.Services.AddScoped<OrderItemPresenter>();
+builder.Services.AddScoped<OrderPresenter>();
+builder.Services.AddScoped<PaymentMethodPresenter>();
 
 #endregion
 

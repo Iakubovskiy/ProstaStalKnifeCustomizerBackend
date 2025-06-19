@@ -1,9 +1,10 @@
+using API.Components.Products.AllProducts.Presenters;
 using Application.Components.Prices;
 using Domain.Component.Product.Knife;
 
 namespace API.Components.Products.Knives.Presenter;
 
-public class KnifePresenter
+public class KnifePresenter : AbstractProductPresenter
 {
     private readonly IGetComponentPrice _getComponentPriceService;
 
@@ -11,6 +12,7 @@ public class KnifePresenter
     {
         this._getComponentPriceService = getComponentPriceService;
     }
+    public Guid Id { get; set; }
     public string MetaTitle { get; set; }
     public string MetaDescription { get; set; }
     public string Name {get; set;}
@@ -28,11 +30,14 @@ public class KnifePresenter
     public string BladeCoatingColor {get; set;}
     public string BladeCoatingType {get; set;}
     public List<string>? EngravingNames {get; set;}
+    public List<ReviewPresenter>? Reviews {get; set;}
+    public double? AverageRating { get; set; } = null;
     
     public KnifeForCanvasPresenter KnifeForCanvas  {get; set;}
 
     public async Task<KnifePresenter> Present(Knife knife, string locale, string currency)
     {
+        this.Id = knife.Id;
         this.Name = knife.Name.GetTranslation(locale);
         this.Description = knife.Description.GetTranslation(locale);
         this.Price = await this._getComponentPriceService.GetPrice(knife, currency);
@@ -65,7 +70,26 @@ public class KnifePresenter
 
         KnifeForCanvasPresenter knifeForCanvasPresenter = new KnifeForCanvasPresenter();
         this.KnifeForCanvas = await knifeForCanvasPresenter.Present(knife, locale);
+
+        if (knife.Reviews != null)
+        {
+            ReviewPresenter reviewPresenter = new ReviewPresenter();
+            this.Reviews = reviewPresenter.PresentList(knife.Reviews);
+            this.AverageRating = Math.Round(((double)this.Reviews.Sum(r => r.Rating) / this.Reviews.Count), 2);
+        }
         
         return this;
     }
+    
+    public async Task<List<KnifePresenter>> PresentList(List<Knife> knives, string locale, string currency)
+    {
+        var tasks = knives.Select(async knife =>
+        {
+            var presenter = new KnifePresenter(_getComponentPriceService);
+            return await presenter.Present(knife, locale, currency);
+        });
+
+        return (await Task.WhenAll(tasks)).ToList();
+    }
+
 }

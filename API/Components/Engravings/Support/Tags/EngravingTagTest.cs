@@ -6,7 +6,7 @@ using Domain.Component.Engravings.Support;
 using FluentAssertions;
 using Xunit;
 
-namespace API.Components.Engravings.Support;
+namespace API.Components.Engravings.Support.Tags;
 
 public class EngravingTagTest : IClassFixture<CustomWebAppFactory>
 {

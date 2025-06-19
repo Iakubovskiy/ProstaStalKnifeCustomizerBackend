@@ -1,3 +1,4 @@
+using API.Orders.Support.PaymentMethods.Presenters;
 using Application.Orders.Support.PaymentMethods;
 using Application.Orders.Support.PaymentMethods.Data;
 using Infrastructure.Orders.Support.PaymentMethods;
@@ -22,23 +23,26 @@ public class PaymentMethodController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllPaymentMethods()
+    public async Task<IActionResult> GetAllPaymentMethods([FromHeader(Name = "Locale")] string locale)
     {
-        return Ok(await this._paymentMethodRepository.GetAll());
+        PaymentMethodPresenter paymentMethodPresenter = new PaymentMethodPresenter();
+        return Ok(await paymentMethodPresenter.PresentList(await this._paymentMethodRepository.GetAll(), locale));
     }
 
     [HttpGet("active")]
-    public async Task<IActionResult> GetAllActivePaymentMethods()
+    public async Task<IActionResult> GetAllActivePaymentMethods([FromHeader(Name = "Locale")] string locale)
     {
-        return Ok(await this._paymentMethodRepository.GetAllActive());
+        PaymentMethodPresenter paymentMethodPresenter = new PaymentMethodPresenter();
+        return Ok(await paymentMethodPresenter.PresentList(await this._paymentMethodRepository.GetAllActive(), locale));
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetPaymentMethodsById(Guid id)
+    public async Task<IActionResult> GetPaymentMethodsById(Guid id, [FromHeader(Name = "Locale")] string locale)
     {
         try
         {
-            return Ok(await this._paymentMethodRepository.GetById(id));
+            PaymentMethodPresenter paymentMethodPresenter = new PaymentMethodPresenter();
+            return Ok(await paymentMethodPresenter.Present(await this._paymentMethodRepository.GetById(id), locale));
         }
         catch (Exception)
         {

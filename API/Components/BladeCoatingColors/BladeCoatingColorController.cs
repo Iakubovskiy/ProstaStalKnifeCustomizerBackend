@@ -1,4 +1,5 @@
 ﻿using System.Data.Entity.Core;
+using API.Components.BladeCoatingColors.Presenters;
 using Application.Components.Activate;
 using Application.Components.Deactivate;
 using Application.Components.TexturedComponents.Data.Dto.BladeCoatings;
@@ -19,13 +20,15 @@ public class BladeCoatingColorController : ControllerBase
     private readonly IDeactivate<BladeCoatingColor> _deactivateService;
     private readonly ICreateTexturedComponent<BladeCoatingColor, BladeCoatingDto> _bladeCoatingColorCreateService;
     private readonly IUpdateTexturedComponent<BladeCoatingColor, BladeCoatingDto> _bladeCoatingColorUpdateService;
+    private readonly BladeCoatingColorPresenter _coatingColorPresenter;
 
     public BladeCoatingColorController (
         IComponentRepository<BladeCoatingColor> bladeCoatingColorRepository,
         IActivate<BladeCoatingColor> activateService,
         IDeactivate<BladeCoatingColor> deactivateService,
         ICreateTexturedComponent<BladeCoatingColor, BladeCoatingDto> bladeCoatingColorCreateService,
-        IUpdateTexturedComponent<BladeCoatingColor, BladeCoatingDto> bladeCoatingColorUpdateService
+        IUpdateTexturedComponent<BladeCoatingColor, BladeCoatingDto> bladeCoatingColorUpdateService,
+        BladeCoatingColorPresenter coatingColorPresenter
     )
     {
         this._bladeCoatingColorRepository = bladeCoatingColorRepository;
@@ -33,26 +36,32 @@ public class BladeCoatingColorController : ControllerBase
         this._activateService = activateService;
         this._deactivateService = deactivateService;
         this._bladeCoatingColorUpdateService = bladeCoatingColorUpdateService;
+        this._coatingColorPresenter = coatingColorPresenter;
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllBladeCoatingColors()
+    public async Task<IActionResult> GetAllBladeCoatingColors([FromHeader(Name = "Locale")] string locale, [FromHeader(Name = "Currency")] string currency)
     {
-        return Ok(await this._bladeCoatingColorRepository.GetAll());
+        return Ok(await this._coatingColorPresenter.PresentList(await this._bladeCoatingColorRepository.GetAll(), locale, currency));
     }
 
     [HttpGet("active")]
-    public async Task<IActionResult> GetAllActiveBladeCoatingColors()
+    public async Task<IActionResult> GetAllActiveBladeCoatingColors([FromHeader(Name = "Locale")] string locale, [FromHeader(Name = "Currency")] string currency)
     {
-        return Ok(await this._bladeCoatingColorRepository.GetAllActive());
+        return Ok(await this._coatingColorPresenter.PresentList(await this._bladeCoatingColorRepository.GetAllActive(), locale, currency));
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetBladeCoatingColorsById(Guid id)
+    public async Task<IActionResult> GetBladeCoatingColorsById(
+        Guid id, 
+        [FromHeader(Name = "Locale")] string locale, 
+        [FromHeader(Name = "Currency")] string currency
+    )
     {
         try
         {
-            return Ok(await this._bladeCoatingColorRepository.GetById(id));
+            return Ok(await this._coatingColorPresenter
+                .Present(await this._bladeCoatingColorRepository.GetById(id), locale, currency));
         }
         catch (ObjectNotFoundException e)
         {

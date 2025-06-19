@@ -1,4 +1,5 @@
 ﻿using System.Data.Entity.Core;
+using API.Components.BladeShapes.Presenters;
 using Application.Components.Activate;
 using Application.Components.Deactivate;
 using Application.Components.SimpleComponents.BladeShapes;
@@ -19,13 +20,15 @@ public class BladeShapeController : ControllerBase
     private readonly IDeactivate<BladeShape> _deactivateService;
     private readonly ICreateService<BladeShape, BladeShapeDto> _bladeCoatingColorCreateService;
     private readonly IUpdateService<BladeShape, BladeShapeDto> _bladeCoatingColorUpdateService;
+    private readonly BladeShapePresenter _bladeShapePresenter;
 
     public BladeShapeController(
         IComponentRepository<BladeShape> bladeShapeRepository, 
         IActivate<BladeShape> activateService,
         IDeactivate<BladeShape> deactivateService,
         ICreateService<BladeShape, BladeShapeDto> bladeShapeCreateService,
-        IUpdateService<BladeShape, BladeShapeDto> bladeShapeUpdateService
+        IUpdateService<BladeShape, BladeShapeDto> bladeShapeUpdateService,
+        BladeShapePresenter bladeShapePresenter
     )
     {
         this._bladeShapeRepository = bladeShapeRepository;
@@ -33,26 +36,33 @@ public class BladeShapeController : ControllerBase
         this._deactivateService = deactivateService;
         this._bladeCoatingColorCreateService = bladeShapeCreateService;
         this._bladeCoatingColorUpdateService = bladeShapeUpdateService;
+        this._bladeShapePresenter = bladeShapePresenter;
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllBladeShapes()
+    public async Task<IActionResult> GetAllBladeShapes(
+        [FromHeader(Name = "Locale")] string locale, [FromHeader(Name = "Currency")] string currency)
     {
-        return Ok(await this._bladeShapeRepository.GetAll());
+        return Ok(await this._bladeShapePresenter.PresentList(await this._bladeShapeRepository.GetAll(), locale, currency));
     }
 
     [HttpGet("active")]
-    public async Task<IActionResult> GetAllActiveBladeShapes()
+    public async Task<IActionResult> GetAllActiveBladeShapes(
+        [FromHeader(Name = "Locale")] string locale, [FromHeader(Name = "Currency")] string currency)
     {
-        return Ok(await this._bladeShapeRepository.GetAllActive());
+        return Ok(await this._bladeShapePresenter.PresentList(await this._bladeShapeRepository.GetAllActive(), locale, currency));
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetBladeShapesById(Guid id)
+    public async Task<IActionResult> GetBladeShapesById(
+        Guid id,
+        [FromHeader(Name = "Locale")] string locale, 
+        [FromHeader(Name = "Currency")] string currency
+    )
     {
         try
         {
-            return Ok(await this._bladeShapeRepository.GetById(id));
+            return Ok(await this._bladeShapePresenter.Present(await this._bladeShapeRepository.GetById(id), locale, currency));
         }
         catch (ObjectNotFoundException e)
         {

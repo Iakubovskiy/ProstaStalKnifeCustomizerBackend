@@ -18,6 +18,7 @@ public class AttachmentRepository : ComponentRepository<Attachment>
         return await this.Set
             .Include(product => product.Tags)
             .Include(attachment => attachment.Model)
+            .Include(product => product.Image)
             .ToListAsync();
     }
     
@@ -27,6 +28,7 @@ public class AttachmentRepository : ComponentRepository<Attachment>
             .Where(product => product.IsActive)
             .Include(product => product.Tags)
             .Include(attachment => attachment.Model)
+            .Include(product => product.Image)
             .ToListAsync();
     }
 
@@ -34,7 +36,9 @@ public class AttachmentRepository : ComponentRepository<Attachment>
     {
         return await this.Set
                    .Include(product => product.Tags)
+                   .Include(product => product.Reviews)
                    .Include(product => product.Model)
+                   .Include(product => product.Image)
                    .FirstOrDefaultAsync(product => product.Id == id)
                ?? throw new ObjectNotFoundException("Entity not found");
     }

@@ -1,4 +1,5 @@
 ﻿using System.Data.Entity.Core;
+using API.Components.Engravings.Presenters;
 using Application.Components.Activate;
 using Application.Components.Deactivate;
 using Application.Components.SimpleComponents.Engravings;
@@ -37,23 +38,26 @@ public class EngravingController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllEngravings()
+    public async Task<IActionResult> GetAllEngravings([FromHeader(Name = "Locale")] string locale)
     {
-        return Ok(await this._engravingRepository.GetAll());
+        EngravingPresenter engravingPresenter = new EngravingPresenter();
+        return Ok(await engravingPresenter.PresentList(await this._engravingRepository.GetAll(), locale));
     }
     
     [HttpGet("active")]
-    public async Task<IActionResult> GetAllActiveBladeShapes()
+    public async Task<IActionResult> GetAllActiveBladeShapes([FromHeader(Name = "Locale")] string locale)
     {
-        return Ok(await this._engravingRepository.GetAllActive());
+        EngravingPresenter engravingPresenter = new EngravingPresenter();
+        return Ok(await engravingPresenter.PresentList(await this._engravingRepository.GetAllActive(), locale));
     }
 
     [HttpGet ("{id:guid}")]
-    public async Task<IActionResult> GetEngravingsById(Guid id)
+    public async Task<IActionResult> GetEngravingsById(Guid id, [FromHeader(Name = "Locale")] string locale)
     {
         try
         {
-            return Ok( await this._engravingRepository.GetById(id));
+            EngravingPresenter engravingPresenter = new EngravingPresenter();
+            return Ok(await engravingPresenter.Present(await this._engravingRepository.GetById(id), locale));
         }
         catch (Exception)
         {

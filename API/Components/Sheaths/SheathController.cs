@@ -1,4 +1,5 @@
 using System.Data.Entity.Core;
+using API.Components.Sheaths.Presenter;
 using Application.Components.Activate;
 using Application.Components.Deactivate;
 using Application.Components.SimpleComponents.Sheaths;
@@ -20,13 +21,15 @@ public class SheathController: ControllerBase
     private readonly IDeactivate<Sheath> _deactivateService;
     private readonly ICreateService<Sheath, SheathDto> _sheathCreateService;
     private readonly IUpdateService<Sheath, SheathDto> _sheathUpdateService;
-
+    private readonly SheathPresenter _sheathPresenter;
+    
     public SheathController (
         IComponentRepository<Sheath> sheathRepository,
         IActivate<Sheath> activateService,
         IDeactivate<Sheath> deactivateService,
         ICreateService<Sheath, SheathDto> sheathCreateService,
-        IUpdateService<Sheath, SheathDto> sheathUpdateService
+        IUpdateService<Sheath, SheathDto> sheathUpdateService,
+        SheathPresenter sheathPresenter
     )
     {
         this._sheathRepository = sheathRepository;
@@ -34,26 +37,37 @@ public class SheathController: ControllerBase
         this._activateService = activateService;
         this._deactivateService = deactivateService;
         this._sheathUpdateService = sheathUpdateService;
+        this._sheathPresenter = sheathPresenter;
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllSheaths()
+    public async Task<IActionResult> GetAllSheaths(
+        [FromHeader(Name = "Locale")] string locale,
+        [FromHeader(Name = "Currency")] string currency
+    )
     {
-        return Ok(await this._sheathRepository.GetAll());
+        return Ok(await this._sheathPresenter.PresentList(await this._sheathRepository.GetAll(), locale, currency));
     }
 
     [HttpGet("active")]
-    public async Task<IActionResult> GetAllActiveSheaths()
+    public async Task<IActionResult> GetAllActiveSheaths(
+        [FromHeader(Name = "Locale")] string locale,
+        [FromHeader(Name = "Currency")] string currency
+    )
     {
-        return Ok(await this._sheathRepository.GetAllActive());
+        return Ok(await this._sheathPresenter.PresentList(await this._sheathRepository.GetAllActive(), locale, currency));
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetSheathsById(Guid id)
+    public async Task<IActionResult> GetSheathsById(
+        Guid id,
+        [FromHeader(Name = "Locale")] string locale,
+        [FromHeader(Name = "Currency")] string currency
+    )
     {
         try
         {
-            return Ok(await this._sheathRepository.GetById(id));
+            return Ok(await this._sheathPresenter.Present(await this._sheathRepository.GetById(id), locale, currency));
         }
         catch (ObjectNotFoundException e)
         {
