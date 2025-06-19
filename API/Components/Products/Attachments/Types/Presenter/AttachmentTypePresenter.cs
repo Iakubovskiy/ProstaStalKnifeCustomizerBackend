@@ -9,6 +9,8 @@ public class AttachmentTypePresenter
 
     public async Task<AttachmentTypePresenter> Present(AttachmentType attachmentType, string locale)
     {
+        if (attachmentType == null)
+            throw new ArgumentNullException(nameof(attachmentType));
         this.Id = attachmentType.Id;
         this.Name = attachmentType.Name.GetTranslation(locale);
         
