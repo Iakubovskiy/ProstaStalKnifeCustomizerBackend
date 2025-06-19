@@ -18,7 +18,7 @@ public class PaymentMethodService : IPaymentMethodService
         this._paymentMethodDtoMapper = paymentMethodDtoMapper;
     }
     
-    public async void ActivatePaymentMethod(Guid paymentMethodId)
+    public async Task ActivatePaymentMethod(Guid paymentMethodId)
     {
         try
         {
@@ -32,7 +32,7 @@ public class PaymentMethodService : IPaymentMethodService
         }
     }
 
-    public async void DeactivatePaymentMethod(Guid paymentMethodId)
+    public async Task DeactivatePaymentMethod(Guid paymentMethodId)
     {
         try
         {

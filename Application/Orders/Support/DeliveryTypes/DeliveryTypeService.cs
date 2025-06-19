@@ -18,7 +18,7 @@ public class DeliveryTypeService : IDeliveryTypeService
         this._deliveryTypeDtoMapper = deliveryTypeDtoMapper;
     }
     
-    public async void ActivateDeliveryType(Guid deliveryTypeId)
+    public async Task ActivateDeliveryType(Guid deliveryTypeId)
     {
         try
         {
@@ -32,7 +32,7 @@ public class DeliveryTypeService : IDeliveryTypeService
         }
     }
 
-    public async void DeactivateDeliveryType(Guid deliveryTypeId)
+    public async Task DeactivateDeliveryType(Guid deliveryTypeId)
     {
         try
         {
