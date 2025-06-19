@@ -29,8 +29,8 @@ public class SheathColorDtoMapper : IComponentWithTypeDtoMapper<SheathColor, She
     public async Task<SheathColor> Map(SheathColorDto dto)
     {
         var id = dto.Id ?? Guid.NewGuid();
-        var colors = new Translations(dto.Color);
-        var materials = new Translations(dto.Material);
+        var colors = new Translations(dto.Colors);
+        var materials = new Translations(dto.Materials);
 
         Texture? texture = null;
         FileEntity? colorMap = null;

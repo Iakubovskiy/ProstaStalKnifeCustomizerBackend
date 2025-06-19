@@ -30,10 +30,10 @@ public class HandleControllerTest : IClassFixture<CustomWebAppFactory>
         return new HandleColorDto
         {
             Id = id,
-            Color = new Dictionary<string, string> { { "en", "Test Color" } },
+            Colors = new Dictionary<string, string> { { "en", "Test Color" } },
             ColorCode = "#123456",
             IsActive = true,
-            Material = new Dictionary<string, string> { { "en", "Test Material" } },
+            Materials = new Dictionary<string, string> { { "en", "Test Material" } },
             TextureId = new Guid("c9d0e1f2-a3b4-4567-2345-678901234567"),
             ColorMapId = new Guid("e1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c"),
             HandleModelId = new Guid("a3b4c5d6-e7f8-4a9b-0c1d-2e3f4a5b6c7d"),
@@ -112,7 +112,7 @@ public class HandleControllerTest : IClassFixture<CustomWebAppFactory>
         await this._client.PostAsync("/api/handles", initialContent);
         
         var updatedDto = this.CreateValidDto(idToUpdate);
-        updatedDto.Color["en"] = "Updated Color";
+        updatedDto.Colors["en"] = "Updated Color";
         updatedDto.Price = 5432.1;
         var updatedJson = JsonSerializer.Serialize(updatedDto, this._jsonOptions);
         var updatedContent = new StringContent(updatedJson, Encoding.UTF8, "application/json");

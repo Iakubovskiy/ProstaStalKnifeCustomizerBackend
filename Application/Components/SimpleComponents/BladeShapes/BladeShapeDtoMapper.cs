@@ -31,7 +31,7 @@ public class BladeShapeDtoMapper : IComponentDtoMapper<BladeShape, BladeShapeDto
         Guid id =dto.Id ?? Guid.NewGuid();
         Sheath sheath = null;
         BladeShapeType type = await this._typeRepository.GetById(dto.TypeId);
-        Translations name = new Translations(dto.Name);
+        Translations name = new Translations(dto.Names);
         BladeCharacteristics characteristics = new BladeCharacteristics(
             dto.TotalLength,
             dto.BladeLength,

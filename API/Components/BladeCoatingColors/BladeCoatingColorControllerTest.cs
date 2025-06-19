@@ -29,8 +29,8 @@ public class BladeCoatingColorControllerTest : IClassFixture<CustomWebAppFactory
         return new BladeCoatingDto
         {
             Id = id,
-            Type = new Dictionary<string, string> { { "en", "Test Coating" } },
-            Color = new Dictionary<string, string> { { "en", "Test Color" } },
+            Types = new Dictionary<string, string> { { "en", "Test Coating" } },
+            Colors = new Dictionary<string, string> { { "en", "Test Color" } },
             ColorCode = "#123456",
             EngravingColorCode = "#654321",
             ColorMapId = new Guid("e1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c"),
@@ -110,7 +110,7 @@ public class BladeCoatingColorControllerTest : IClassFixture<CustomWebAppFactory
         await this._client.PostAsync("/api/blade-coating-colors", initialContent);
         
         var updatedDto = this.CreateValidDto(idToUpdate);
-        updatedDto.Type["en"] = "Updated Coating";
+        updatedDto.Types["en"] = "Updated Coating";
         updatedDto.Price = 999.99;
         var updatedJson = JsonSerializer.Serialize(updatedDto, this._jsonOptions);
         var updatedContent = new StringContent(updatedJson, Encoding.UTF8, "application/json");

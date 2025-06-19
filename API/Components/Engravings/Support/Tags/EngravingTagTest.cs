@@ -50,7 +50,7 @@ public class EngravingTagTest : IClassFixture<CustomWebAppFactory>
         Guid id = new Guid("542566af-96a4-4bdb-89ae-44f10576bd8b");
         EngravingTagDto newEngravingTag = new EngravingTagDto();
         newEngravingTag.Id = id;
-        newEngravingTag.Name = new Dictionary<string, string>
+        newEngravingTag.Names = new Dictionary<string, string>
         {
             { "en", "Test" },
             { "ua", "Тест" },
@@ -76,7 +76,7 @@ public class EngravingTagTest : IClassFixture<CustomWebAppFactory>
         Guid id = new Guid("40050eb8-9c1e-48a4-8070-4edefd1c08f3");
         EngravingTagDto newEngravingTag = new EngravingTagDto();
         newEngravingTag.Id = id;
-        newEngravingTag.Name = new Dictionary<string, string>
+        newEngravingTag.Names = new Dictionary<string, string>
         {
             { "en", "Test English" },
             { "ua", "Тест укр" },
@@ -102,7 +102,7 @@ public class EngravingTagTest : IClassFixture<CustomWebAppFactory>
         Guid id = new Guid("542566af-96a4-4bdb-89ae-44f10576bd81");
         EngravingTagDto newEngravingTag = new EngravingTagDto();
         newEngravingTag.Id = id;
-        newEngravingTag.Name = new Dictionary<string, string>
+        newEngravingTag.Names = new Dictionary<string, string>
         {
             { "en", "Test" },
             { "ua", "Тест" },

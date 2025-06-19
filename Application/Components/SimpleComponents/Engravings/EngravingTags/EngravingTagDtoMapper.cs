@@ -9,7 +9,7 @@ public class EngravingTagDtoMapper : IComponentDtoMapper<EngravingTag, Engraving
     public async Task<EngravingTag> Map(EngravingTagDto dto)
     {
         Guid id = dto.Id ?? Guid.NewGuid();
-        Translations names = new Translations(dto.Name);
+        Translations names = new Translations(dto.Names);
 
         return new EngravingTag(id, names);
     }

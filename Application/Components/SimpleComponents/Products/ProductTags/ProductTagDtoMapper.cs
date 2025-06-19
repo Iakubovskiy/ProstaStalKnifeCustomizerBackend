@@ -9,7 +9,7 @@ public class ProductTagDtoMapper : IComponentDtoMapper<ProductTag, ProductTagDto
     public async Task<ProductTag> Map(ProductTagDto dto)
     {
         Guid id = dto.Id ?? Guid.NewGuid();
-        Translations names = new Translations(dto.Name);
+        Translations names = new Translations(dto.Names);
 
         return new ProductTag(id, names);
     }

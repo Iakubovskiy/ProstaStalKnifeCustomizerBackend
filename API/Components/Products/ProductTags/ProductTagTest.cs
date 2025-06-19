@@ -50,7 +50,7 @@ public class ProductTagTest: IClassFixture<CustomWebAppFactory>
         Guid id = new Guid("8540f288-af93-497f-b9bb-5f28e788c05f");
         ProductTagDto newProductTag = new ProductTagDto();
         newProductTag.Id = id;
-        newProductTag.Name = new Dictionary<string, string>
+        newProductTag.Names = new Dictionary<string, string>
         {
             { "en", "Test product tag" },
             { "ua", "Тест тег продукту" },
@@ -75,7 +75,7 @@ public class ProductTagTest: IClassFixture<CustomWebAppFactory>
         Guid id = new Guid("b2c3d4e5-f6a7-8901-2345-67890abcdef1");
         ProductTagDto newProductTagData = new ProductTagDto();
         newProductTagData.Id = id;
-        newProductTagData.Name = new Dictionary<string, string>
+        newProductTagData.Names = new Dictionary<string, string>
         {
             { "en", "Test product tag update" },
             { "ua", "Тест тег продукту оновлення" },
@@ -102,7 +102,7 @@ public class ProductTagTest: IClassFixture<CustomWebAppFactory>
         Guid id = new Guid("542566af-96a4-4bdb-89ae-21f10576bd81");
         ProductTagDto newEngravingTag = new ProductTagDto();
         newEngravingTag.Id = id;
-        newEngravingTag.Name = new Dictionary<string, string>
+        newEngravingTag.Names = new Dictionary<string, string>
         {
             { "en", "Test delete" },
             { "ua", "Тест видалення" },

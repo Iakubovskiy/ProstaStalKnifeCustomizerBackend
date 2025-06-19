@@ -5,8 +5,8 @@ namespace Application.Components.ComponentsWithType.SheathColors;
 public class SheathColorDto
 {
     public Guid? Id { get; set; }
-    public Dictionary<string, string> Color { get; set; }
-    public Dictionary<string, string> Material { get; set; }
+    public Dictionary<string, string> Colors { get; set; }
+    public Dictionary<string, string> Materials { get; set; }
     public string? ColorCode { get; set; }
     public string EngravingColorCode { get; set; }
     public List<SheathColorPriceByTypeDto> Prices { get; set; }

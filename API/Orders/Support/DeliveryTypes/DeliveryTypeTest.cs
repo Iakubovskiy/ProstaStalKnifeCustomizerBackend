@@ -75,7 +75,7 @@ public class DeliveryTypeTest : IClassFixture<CustomWebAppFactory>
                 { "en", "Test Delivery" },
                 { "ua", "Тестова Доставка" }
             },
-            Comment = new Dictionary<string, string>
+            Comments = new Dictionary<string, string>
             {
                 { "en", "Test Comment" },
                 { "ua", "Тестовий Коментар" }
@@ -113,7 +113,7 @@ public class DeliveryTypeTest : IClassFixture<CustomWebAppFactory>
                 { "en", "Updated Courier" },
                 { "ua", "Оновлений Кур'єр" }
             },
-            Comment = new Dictionary<string, string>
+            Comments = new Dictionary<string, string>
             {
                 { "en", "Updated Comment" },
                 { "ua", "Оновлений Коментар" }

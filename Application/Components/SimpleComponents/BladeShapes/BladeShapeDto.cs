@@ -6,7 +6,7 @@ public class BladeShapeDto
 {
     public Guid? Id { get; set; }
     public Guid TypeId { get; set; }
-    public Dictionary<string, string> Name { get; set; }
+    public Dictionary<string, string> Names { get; set; }
     public double Price { get; set; }
     public double TotalLength { get; set; }
     public double BladeLength { get; set; }

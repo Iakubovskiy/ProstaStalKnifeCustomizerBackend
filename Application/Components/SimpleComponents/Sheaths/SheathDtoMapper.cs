@@ -28,7 +28,7 @@ public class SheathDtoMapper : IComponentDtoMapper<Sheath, SheathDto>
     {
         Guid id = dto.Id ?? Guid.NewGuid();
         BladeShapeType type = await this._typeRepository.GetById(dto.TypeId);
-        Translations name = new Translations(dto.Name);
+        Translations name = new Translations(dto.Names);
 
         FileEntity model = null;
         if (dto.SheathModelId is not null)

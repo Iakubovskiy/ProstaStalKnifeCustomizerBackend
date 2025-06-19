@@ -11,9 +11,9 @@ public class DeliveryTypeDtoMapper : IDeliveryTypeDtoMapper
         Translations names = new Translations(dto.Names);
         Translations? comment = null;
         
-        if(dto.Comment != null)
+        if(dto.Comments != null)
         {
-            comment = new Translations(dto.Comment);
+            comment = new Translations(dto.Comments);
         }
 
         return new DeliveryType(

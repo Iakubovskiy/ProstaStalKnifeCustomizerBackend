@@ -32,8 +32,8 @@ public class EngravingDtoMapper : IComponentDtoMapper<Engraving, EngravingDto>
     public async Task<Engraving> Map(EngravingDto dto)
     {
         Guid id = dto.Id ?? Guid.NewGuid();
-        Translations names = new Translations(dto.Name);
-        Translations descriptions = new Translations(dto.Description);
+        Translations names = new Translations(dto.Names);
+        Translations descriptions = new Translations(dto.Descriptions);
         List<EngravingTag> tags = new List<EngravingTag>();
         EngravingPosition engravingPosition = new EngravingPosition(
             dto.LocationX,

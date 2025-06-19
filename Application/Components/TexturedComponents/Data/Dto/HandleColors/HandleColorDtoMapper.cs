@@ -26,8 +26,8 @@ public class HandleColorDtoMapper : ITexturedComponentDtoMapper<Handle, HandleCo
     public async Task<Handle> Map(HandleColorDto dto, Texture? texture)
     {
         Guid id = dto.Id ?? Guid.NewGuid();
-        Translations material = new Translations(dto.Material);
-        Translations color = new Translations(dto.Color);
+        Translations material = new Translations(dto.Materials);
+        Translations color = new Translations(dto.Colors);
         FileEntity? colorMap = null;
         FileEntity? handleModel = null;
         Texture? textureEntity = null;

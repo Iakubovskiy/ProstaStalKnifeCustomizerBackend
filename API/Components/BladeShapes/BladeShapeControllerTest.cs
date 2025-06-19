@@ -28,7 +28,7 @@ public class BladeShapeControllerTest : IClassFixture<CustomWebAppFactory>
         {
             Id = id,
             TypeId = new Guid("1a2b3c4d-5e6f-4789-a012-3456789abcde"),
-            Name = new Dictionary<string, string> { { "en", "Test Blade Shape" } },
+            Names = new Dictionary<string, string> { { "en", "Test Blade Shape" } },
             Price = 1000.0,
             TotalLength = 200,
             BladeLength = 100,
@@ -113,7 +113,7 @@ public class BladeShapeControllerTest : IClassFixture<CustomWebAppFactory>
         await this._client.PostAsync("/api/blade-shapes", initialContent);
         
         var updatedDto = this.CreateValidDto(idToUpdate);
-        updatedDto.Name["en"] = "Updated Blade Shape";
+        updatedDto.Names["en"] = "Updated Blade Shape";
         updatedDto.Price = 1999.99;
         var updatedJson = JsonSerializer.Serialize(updatedDto, this._jsonOptions);
         var updatedContent = new StringContent(updatedJson, Encoding.UTF8, "application/json");

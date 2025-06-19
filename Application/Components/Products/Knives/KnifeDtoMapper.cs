@@ -116,11 +116,11 @@ public class KnifeDtoMapper : IProductDtoMapper<Knife, KnifeDto>
 
         var allAttachments = existingAttachments.Concat(newAttachments).ToList();
 
-        var name = new Translations(dto.Name);
-        var title = new Translations(dto.Title);
-        var description = new Translations(dto.Description);
-        var metaTitle = new Translations(dto.MetaTitle);
-        var metaDescription = new Translations(dto.MetaDescription);
+        var name = new Translations(dto.Names);
+        var title = new Translations(dto.Titles);
+        var description = new Translations(dto.Descriptions);
+        var metaTitle = new Translations(dto.MetaTitles);
+        var metaDescription = new Translations(dto.MetaDescriptions);
         
         return new Knife(
             id,

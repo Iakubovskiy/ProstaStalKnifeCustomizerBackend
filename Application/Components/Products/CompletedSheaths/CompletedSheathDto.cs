@@ -8,11 +8,11 @@ public class CompletedSheathDto: IProductDto
     public Guid? Id { get; set; }
     public bool IsActive { get; set; }
     public Guid ImageFileId { get; set; }
-    public Dictionary<string, string> Name { get; set; }
-    public Dictionary<string, string> Title { get; set; }
-    public Dictionary<string, string> Description { get; set; }
-    public Dictionary<string, string> MetaTitle { get; set; }
-    public Dictionary<string, string> MetaDescription { get; set; }
+    public Dictionary<string, string> Names { get; set; }
+    public Dictionary<string, string> Titles { get; set; }
+    public Dictionary<string, string> Descriptions { get; set; }
+    public Dictionary<string, string> MetaTitles { get; set; }
+    public Dictionary<string, string> MetaDescriptions { get; set; }
     public List<Guid> TagsIds { get; set; }
     
     public Guid SheathId { get; set; }

@@ -3,8 +3,8 @@ namespace Application.Components.SimpleComponents.Engravings;
 public class EngravingDto
 {
     public Guid? Id { get; set; }
-    public Dictionary<string, string> Name { get; set; }
-    public Dictionary<string, string> Description { get; set; }
+    public Dictionary<string, string> Names { get; set; }
+    public Dictionary<string, string> Descriptions { get; set; }
     public Guid? PictureId { get; set; }
     public int Side { get; set; }
     public string? Text { get; set; }

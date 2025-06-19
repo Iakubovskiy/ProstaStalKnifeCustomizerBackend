@@ -31,16 +31,16 @@ public class AttachmentControllerTest : IClassFixture<CustomWebAppFactory>
             Id = id,
             IsActive = true,
             ImageFileId = new Guid("e1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c"),
-            Name = new Dictionary<string, string> { { "en", "Test Attachment" } },
-            Title = new Dictionary<string, string> { { "en", "Test Title" } },
-            Description = new Dictionary<string, string> { { "en", "Test Description" } },
-            MetaTitle = new Dictionary<string, string> { { "en", "Meta Title" } },
-            MetaDescription = new Dictionary<string, string> { { "en", "Meta Description" } },
+            Names = new Dictionary<string, string> { { "en", "Test Attachment" } },
+            Titles = new Dictionary<string, string> { { "en", "Test Title" } },
+            Descriptions = new Dictionary<string, string> { { "en", "Test Description" } },
+            MetaTitles = new Dictionary<string, string> { { "en", "Meta Title" } },
+            MetaDescriptions = new Dictionary<string, string> { { "en", "Meta Description" } },
             TagsIds = new List<Guid> { new Guid("a1b2c3d4-e5f6-7890-1234-567890abcdef") },
             TypeId = new Guid("1a1b1c1d-1e1f-4a2b-8c3d-4e5f6a7b8c9d"),
-            Color = new Dictionary<string, string> { { "en", "Black" } },
+            Colors = new Dictionary<string, string> { { "en", "Black" } },
             Price = 100.0,
-            Material = new Dictionary<string, string> { { "en", "Test Material" } },
+            Materials = new Dictionary<string, string> { { "en", "Test Material" } },
             ModelFileId = new Guid("f2b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d")
         };
     }
@@ -115,7 +115,7 @@ public class AttachmentControllerTest : IClassFixture<CustomWebAppFactory>
         await this._client.PostAsync("/api/attachments", initialContent);
         
         var updatedDto = this.CreateValidDto(idToUpdate);
-        updatedDto.Name["en"] = "Updated Name";
+        updatedDto.Names["en"] = "Updated Name";
         updatedDto.Price = 999.99;
         var updatedJson = JsonSerializer.Serialize(updatedDto, this._jsonOptions);
         var updatedContent = new StringContent(updatedJson, Encoding.UTF8, "application/json");

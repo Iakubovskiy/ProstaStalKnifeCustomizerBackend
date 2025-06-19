@@ -10,7 +10,7 @@ public class PaymentMethodDtoMapper : IPaymentMethodDtoMapper
     {
         Guid id = dto.Id ?? Guid.NewGuid();
         Translations names = new Translations(dto.Names);
-        Translations? description = new Translations(dto.Description);
+        Translations? description = new Translations(dto.Descriptions);
 
         return new PaymentMethod(
             id,

@@ -70,7 +70,7 @@ public class PaymentMethodTest : IClassFixture<CustomWebAppFactory>
         {
             Id = newMethodId,
             Names = new Dictionary<string, string> { { "en", "Test Method" } },
-            Description = new Dictionary<string, string> { { "en", "Test Description" } },
+            Descriptions = new Dictionary<string, string> { { "en", "Test Description" } },
             IsActive = true
         };
         
@@ -95,7 +95,7 @@ public class PaymentMethodTest : IClassFixture<CustomWebAppFactory>
         {
             Id = idToUpdate,
             Names = new Dictionary<string, string> { { "en", "Initial Method" } },
-            Description = new Dictionary<string, string> { { "en", "Initial Desc" } },
+            Descriptions = new Dictionary<string, string> { { "en", "Initial Desc" } },
             IsActive = true
         };
         var jsonInitial = JsonSerializer.Serialize(initialDto, this._jsonOptions);
@@ -105,7 +105,7 @@ public class PaymentMethodTest : IClassFixture<CustomWebAppFactory>
         var updatedMethodDto = new PaymentMethodDto
         {
             Names = new Dictionary<string, string> { { "en", "Updated Method" } },
-            Description = new Dictionary<string, string> { { "en", "Updated Desc" } },
+            Descriptions = new Dictionary<string, string> { { "en", "Updated Desc" } },
             IsActive = false
         };
         var jsonUpdated = JsonSerializer.Serialize(updatedMethodDto, this._jsonOptions);
@@ -132,7 +132,7 @@ public class PaymentMethodTest : IClassFixture<CustomWebAppFactory>
         {
             Id = idToDelete,
             Names = new Dictionary<string, string> { { "en", "To Be Deleted" } },
-            Description = new Dictionary<string, string> { { "en", "To Be Deleted Desc" } },
+            Descriptions = new Dictionary<string, string> { { "en", "To Be Deleted Desc" } },
             IsActive = true
         };
         var json = JsonSerializer.Serialize(newMethodDto, this._jsonOptions);
@@ -155,7 +155,7 @@ public class PaymentMethodTest : IClassFixture<CustomWebAppFactory>
         {
             Id = id,
             Names = new Dictionary<string, string> { { "en", "Activable Method" } },
-            Description = new Dictionary<string, string> { { "en", "Desc" } },
+            Descriptions = new Dictionary<string, string> { { "en", "Desc" } },
             IsActive = true
         };
         var json = JsonSerializer.Serialize(initialDto, this._jsonOptions);

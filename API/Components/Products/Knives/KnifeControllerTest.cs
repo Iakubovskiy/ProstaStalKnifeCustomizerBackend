@@ -32,11 +32,11 @@ public class KnifeControllerTest : IClassFixture<CustomWebAppFactory>
             Id = id,
             IsActive = true,
             ImageFileId = new Guid("e1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c"),
-            Name = new Dictionary<string, string> { { "en", "Test Knife" } },
-            Title = new Dictionary<string, string> { { "en", "Test Title" } },
-            Description = new Dictionary<string, string> { { "en", "Test Description" } },
-            MetaTitle = new Dictionary<string, string> { { "en", "Meta Title" } },
-            MetaDescription = new Dictionary<string, string> { { "en", "Meta Description" } },
+            Names = new Dictionary<string, string> { { "en", "Test Knife" } },
+            Titles = new Dictionary<string, string> { { "en", "Test Title" } },
+            Descriptions = new Dictionary<string, string> { { "en", "Test Description" } },
+            MetaTitles = new Dictionary<string, string> { { "en", "Meta Title" } },
+            MetaDescriptions = new Dictionary<string, string> { { "en", "Meta Description" } },
             TagsIds = new List<Guid> { new Guid("a7b8c9d0-e1f2-3456-789a-bcdef1234567") },
             ShapeId = new Guid("1f768e1c-7201-4a3d-9d48-a9de3f2b6e7a"),
             BladeCoatingColorId = new Guid("ecf8f3c7-1b3d-4e9a-8c4f-6a2b8d9c1e0a"),
@@ -121,7 +121,7 @@ public class KnifeControllerTest : IClassFixture<CustomWebAppFactory>
         await this._client.PostAsync("/api/knives", initialContent);
         
         var updatedDto = this.CreateValidDto(idToUpdate);
-        updatedDto.Name["en"] = "Updated Knife";
+        updatedDto.Names["en"] = "Updated Knife";
         var updatedJson = JsonSerializer.Serialize(updatedDto, this._jsonOptions);
         var updatedContent = new StringContent(updatedJson, Encoding.UTF8, "application/json");
 

@@ -30,8 +30,8 @@ public class EngravingControllerTest : IClassFixture<CustomWebAppFactory>
         return new EngravingDto
         {
             Id = id,
-            Name = new Dictionary<string, string> { { "en", "Test Engraving" } },
-            Description = new Dictionary<string, string> { { "en", "Test Description" } },
+            Names = new Dictionary<string, string> { { "en", "Test Engraving" } },
+            Descriptions = new Dictionary<string, string> { { "en", "Test Description" } },
             PictureId = new Guid("e1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c"),
             Side = 1,
             Text = "Test Text",
@@ -112,7 +112,7 @@ public class EngravingControllerTest : IClassFixture<CustomWebAppFactory>
         await this._client.PostAsync("/api/engravings", initialContent);
         
         var updatedDto = this.CreateValidDto(idToUpdate);
-        updatedDto.Name["en"] = "Updated Engraving";
+        updatedDto.Names["en"] = "Updated Engraving";
         var updatedJson = JsonSerializer.Serialize(updatedDto, this._jsonOptions);
         var updatedContent = new StringContent(updatedJson, Encoding.UTF8, "application/json");
 

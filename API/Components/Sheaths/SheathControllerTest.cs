@@ -31,7 +31,7 @@ public class SheathControllerTest : IClassFixture<CustomWebAppFactory>
         {
             Id = id,
             TypeId = new Guid("1a2b3c4d-5e6f-4789-a012-3456789abcde"), // Drop Point
-            Name = new Dictionary<string, string> { { "en", "Test Sheath" } },
+            Names = new Dictionary<string, string> { { "en", "Test Sheath" } },
             Price = 500.0,
             SheathModelId = new Guid("e1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c"),
             IsActive = true
@@ -108,7 +108,7 @@ public class SheathControllerTest : IClassFixture<CustomWebAppFactory>
         await this._client.PostAsync("/api/sheaths", initialContent);
         
         var updatedDto = this.CreateValidDto(idToUpdate);
-        updatedDto.Name["en"] = "Updated Sheath";
+        updatedDto.Names["en"] = "Updated Sheath";
         updatedDto.Price = 999.0;
         var updatedJson = JsonSerializer.Serialize(updatedDto, this._jsonOptions);
         var updatedContent = new StringContent(updatedJson, Encoding.UTF8, "application/json");

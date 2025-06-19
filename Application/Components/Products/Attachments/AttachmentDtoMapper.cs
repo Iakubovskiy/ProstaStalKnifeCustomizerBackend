@@ -49,13 +49,13 @@ public class AttachmentDtoMapper : IProductDtoMapper<Attachment, AttachmentDto>
         }
         
 
-        var name = new Translations(dto.Name);
-        var title = new Translations(dto.Title);
-        var description = new Translations(dto.Description);
-        var metaTitle = new Translations(dto.MetaTitle);
-        var metaDescription = new Translations(dto.MetaDescription);
-        var color = new Translations(dto.Color);
-        var material = new Translations(dto.Material);
+        var name = new Translations(dto.Names);
+        var title = new Translations(dto.Titles);
+        var description = new Translations(dto.Descriptions);
+        var metaTitle = new Translations(dto.MetaTitles);
+        var metaDescription = new Translations(dto.MetaDescriptions);
+        var color = new Translations(dto.Colors);
+        var material = new Translations(dto.Materials);
 
         return new Attachment(
             id,
