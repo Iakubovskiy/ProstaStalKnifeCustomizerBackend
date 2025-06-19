@@ -4,6 +4,7 @@ using API.Components.BladeShapes.Presenters;
 using API.Components.Handles.Presenters;
 using API.Components.Products.AllProducts.Presenters;
 using API.Components.Products.Attachments.Presenters;
+using API.Components.Products.Attachments.Types.Presenter;
 using API.Components.Products.CompletedSheaths.Presenters;
 using API.Components.Products.Knives.Presenter;
 using API.Components.Sheaths.Colors.Presenters;
@@ -425,6 +426,7 @@ builder.Services.AddScoped<OrderItemPresenter>();
 builder.Services.AddScoped<OrderPresenter>();
 builder.Services.AddScoped<PaymentMethodPresenter>();
 builder.Services.AddScoped<HandlePresenter>();
+builder.Services.AddScoped<AttachmentTypePresenter>();
 
 #endregion
 

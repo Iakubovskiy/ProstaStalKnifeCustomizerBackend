@@ -55,17 +55,15 @@ public class OrderItemPresenter
 
     public async Task<List<OrderItemPresenter>> PresentList(List<OrderItem> orderItems, string locale, string currency)
     {
-        var result = orderItems.Select(async item =>
-            {
-                OrderItemPresenter presenter = new OrderItemPresenter(
-                    this._knifePresenter,
-                    this._completedSheathPresenter,
-                    this._attachmentPresenter
-                );
-                return await presenter.Present(item, locale, currency);
-            }
-        );
+        List<OrderItemPresenter> orderItemsPresenters = new List<OrderItemPresenter>();
+        foreach (OrderItem orderItem in orderItems)
+        {
+            OrderItemPresenter orderItemPresenter =
+                new OrderItemPresenter(this._knifePresenter,this._completedSheathPresenter, this._attachmentPresenter );
+            await orderItemPresenter.Present(orderItem, locale, currency);
+            orderItemsPresenters.Add(orderItemPresenter);
+        }
         
-        return (await Task.WhenAll(result)).ToList();
+        return orderItemsPresenters;
     }
 }

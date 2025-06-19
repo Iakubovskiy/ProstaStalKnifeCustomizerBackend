@@ -18,7 +18,8 @@ public class AttachmentRepository : ComponentRepository<Attachment>
         return await this.Set
             .Include(product => product.Tags)
             .Include(attachment => attachment.Model)
-            .Include(product => product.Image)
+            .Include(attachment => attachment.Image)
+            .Include(attachment => attachment.Type)
             .ToListAsync();
     }
     

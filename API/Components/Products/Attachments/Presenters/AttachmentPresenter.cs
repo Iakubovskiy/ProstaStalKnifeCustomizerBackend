@@ -79,13 +79,14 @@ public class AttachmentPresenter : AbstractProductPresenter
     public async Task<List<AttachmentPresenter>> PresentList(List<Attachment> attachments, string locale,
         string currency)
     {
-        var tasks = attachments.Select(
-            async attachment =>
-            {
-                var presenter = new AttachmentPresenter(this._getComponentPriceService);
-                return await presenter.Present(attachment, locale, currency);
-            }
-        );
-        return (await Task.WhenAll(tasks)).ToList();
+        List<AttachmentPresenter> attachmentPresenters = new List<AttachmentPresenter>();
+        foreach (var attachment in attachments)
+        {
+            AttachmentPresenter attachmentPresenter = new AttachmentPresenter(this._getComponentPriceService);
+            await attachmentPresenter.Present(attachment, locale, currency);
+            attachmentPresenters.Add(attachmentPresenter);
+            
+        }
+        return attachmentPresenters;
     }
 }

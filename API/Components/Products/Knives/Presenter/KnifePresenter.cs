@@ -103,13 +103,15 @@ public class KnifePresenter : AbstractProductPresenter
     
     public async Task<List<KnifePresenter>> PresentList(List<Knife> knives, string locale, string currency)
     {
-        var tasks = knives.Select(async knife =>
+        List<KnifePresenter> knifePresenters = new List<KnifePresenter>();
+        foreach (var knife in knives)
         {
-            var presenter = new KnifePresenter(_getComponentPriceService);
-            return await presenter.Present(knife, locale, currency);
-        });
+            KnifePresenter presenter = new KnifePresenter(this._getComponentPriceService);
+            await presenter.Present(knife, locale, currency);
+            knifePresenters.Add(presenter);
+        }
 
-        return (await Task.WhenAll(tasks)).ToList();
+        return knifePresenters;
     }
 
 }

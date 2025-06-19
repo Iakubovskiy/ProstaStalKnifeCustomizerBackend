@@ -98,18 +98,15 @@ public class CompletedSheathPresenter : AbstractProductPresenter
 
     public async Task<List<CompletedSheathPresenter>> PresentList(List<CompletedSheath> sheaths, string locale, string currency)
     {
-        var result = sheaths.Select(async sheath =>
+        List<CompletedSheathPresenter> result = new List<CompletedSheathPresenter>();
+        foreach (var sheath in sheaths)
         {
-            CompletedSheathPresenter presenter = new CompletedSheathPresenter(
-                this._getComponentPrice, 
-                this._sheathPresenter, 
-                this._sheathColorPresenter,
-                this._attachmentPresenter
-            );
-            return await presenter.Present(sheath, locale, currency);
-            
-        });
+            CompletedSheathPresenter sheathPresenter = new CompletedSheathPresenter(this._getComponentPrice,
+                this._sheathPresenter, this._sheathColorPresenter, this._attachmentPresenter);
+            await sheathPresenter.Present(sheath, locale, currency);
+            result.Add(sheathPresenter);
+        }
 
-        return (await Task.WhenAll(result)).ToList();
+        return result;
     }
 }
