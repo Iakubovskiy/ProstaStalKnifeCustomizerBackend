@@ -17,6 +17,7 @@ public class DeliveryTypePresenter
     public Dictionary<string, string> Names { get; set; }
     public double Price { get; set; }
     public string? Comment { get; set; }
+    public Dictionary<string, string>? Comments { get; set; }
     public bool IsActive { get; set; }
 
     public async Task<DeliveryTypePresenter> Present(DeliveryType deliveryType, string locale, string currency)
@@ -34,6 +35,7 @@ public class DeliveryTypePresenter
     {
         await this.Present(deliveryType, locale, currency);
         this.Names = deliveryType.Name.TranslationDictionary;
+        this.Comments = deliveryType.Comment?.TranslationDictionary;
         return this;
     }
 
