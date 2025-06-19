@@ -47,8 +47,7 @@ public class AttachmentPresenter : AbstractProductPresenter
         this.Description = attachment.Description.GetTranslation(locale);
         this.MetaTitle = attachment.MetaTitle.GetTranslation(locale);
         this.MetaDescription = attachment.MetaDescription.GetTranslation(locale);
-        AttachmentTypePresenter attachmentTypePresenter = new AttachmentTypePresenter();
-        this.Type = await attachmentTypePresenter.Present(attachment.Type, locale);
+        this.Type = await AttachmentTypePresenter.Present(attachment.Type, locale);
         this.Material = attachment.Material.GetTranslation(locale);
         this.Price = await this._getComponentPriceService.GetPrice(attachment, currency);
         this.Model = attachment.Model;
