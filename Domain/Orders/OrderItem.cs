@@ -1,6 +1,7 @@
+using System.Text.Json.Serialization;
 using Domain.Component.Product;
 
-namespace Domain.Order;
+namespace Domain.Orders;
 
 public class OrderItem
 {
@@ -12,7 +13,8 @@ public class OrderItem
     public OrderItem(
         Product product, 
         Order order, 
-        int quantity)
+        int quantity
+    )
     {
         if (quantity <= 0)
         {
@@ -23,7 +25,9 @@ public class OrderItem
         this.Quantity = quantity;
     }
     
+    public Guid Id { get; private set; } = Guid.NewGuid();
     public Product Product { get; set; }
+    [JsonIgnore] 
     public Order Order { get; set; }
     public int Quantity { get; set; }
 

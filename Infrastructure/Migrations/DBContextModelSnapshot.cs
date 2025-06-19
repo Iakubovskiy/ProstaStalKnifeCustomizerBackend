@@ -318,6 +318,35 @@ namespace WorkshopBackend.Migrations
                     b.ToTable("ProductTag");
                 });
 
+            modelBuilder.Entity("Domain.Component.Product.Reviews.Review", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasMaxLength(700)
+                        .HasColumnType("character varying(700)");
+
+                    b.Property<Guid?>("ProductId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Reviews");
+                });
+
             modelBuilder.Entity("Domain.Component.Sheaths.Color.SheathColor", b =>
                 {
                     b.Property<Guid>("Id")
@@ -457,7 +486,7 @@ namespace WorkshopBackend.Migrations
                     b.ToTable("FileEntity");
                 });
 
-            modelBuilder.Entity("Domain.Order.Order", b =>
+            modelBuilder.Entity("Domain.Orders.Order", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -482,17 +511,26 @@ namespace WorkshopBackend.Migrations
                     b.Property<double>("Total")
                         .HasColumnType("double precision");
 
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
 
                     b.HasIndex("DeliveryTypeId");
 
                     b.HasIndex("PaymentMethodId");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("Domain.Order.OrderItem", b =>
+            modelBuilder.Entity("Domain.Orders.OrderItem", b =>
                 {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uuid");
 
@@ -502,14 +540,16 @@ namespace WorkshopBackend.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
 
-                    b.HasKey("OrderId", "ProductId");
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
 
                     b.HasIndex("ProductId");
 
                     b.ToTable("OrderItems");
                 });
 
-            modelBuilder.Entity("Domain.Order.Support.DeliveryType", b =>
+            modelBuilder.Entity("Domain.Orders.Support.DeliveryType", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -526,7 +566,7 @@ namespace WorkshopBackend.Migrations
                     b.ToTable("DeliveryTypes");
                 });
 
-            modelBuilder.Entity("Domain.Order.Support.PaymentMethod", b =>
+            modelBuilder.Entity("Domain.Orders.Support.PaymentMethod", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -1434,6 +1474,21 @@ namespace WorkshopBackend.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Domain.Component.Product.Reviews.Review", b =>
+                {
+                    b.HasOne("Domain.Component.Product.Product", null)
+                        .WithMany("Reviews")
+                        .HasForeignKey("ProductId");
+
+                    b.HasOne("Domain.Users.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Domain.Component.Sheaths.Color.SheathColor", b =>
                 {
                     b.HasOne("Domain.Files.FileEntity", "ColorMap")
@@ -1564,21 +1619,25 @@ namespace WorkshopBackend.Migrations
                     b.Navigation("RoughnessMap");
                 });
 
-            modelBuilder.Entity("Domain.Order.Order", b =>
+            modelBuilder.Entity("Domain.Orders.Order", b =>
                 {
-                    b.HasOne("Domain.Order.Support.DeliveryType", "DeliveryType")
+                    b.HasOne("Domain.Orders.Support.DeliveryType", "DeliveryType")
                         .WithMany()
                         .HasForeignKey("DeliveryTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Order.Support.PaymentMethod", "PaymentMethod")
+                    b.HasOne("Domain.Orders.Support.PaymentMethod", "PaymentMethod")
                         .WithMany()
                         .HasForeignKey("PaymentMethodId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("Domain.Order.Support.ClientData", "ClientData", b1 =>
+                    b.HasOne("Domain.Users.User", null)
+                        .WithMany("Orders")
+                        .HasForeignKey("UserId");
+
+                    b.OwnsOne("Domain.Orders.Support.ClientData", "ClientData", b1 =>
                         {
                             b1.Property<Guid>("OrderId")
                                 .HasColumnType("uuid");
@@ -1633,10 +1692,10 @@ namespace WorkshopBackend.Migrations
                     b.Navigation("PaymentMethod");
                 });
 
-            modelBuilder.Entity("Domain.Order.OrderItem", b =>
+            modelBuilder.Entity("Domain.Orders.OrderItem", b =>
                 {
-                    b.HasOne("Domain.Order.Order", "Order")
-                        .WithMany()
+                    b.HasOne("Domain.Orders.Order", "Order")
+                        .WithMany("OrderItems")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1652,7 +1711,7 @@ namespace WorkshopBackend.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("Domain.Order.Support.DeliveryType", b =>
+            modelBuilder.Entity("Domain.Orders.Support.DeliveryType", b =>
                 {
                     b.OwnsOne("Domain.Translation.Translations", "Comment", b1 =>
                         {
@@ -1694,7 +1753,7 @@ namespace WorkshopBackend.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Domain.Order.Support.PaymentMethod", b =>
+            modelBuilder.Entity("Domain.Orders.Support.PaymentMethod", b =>
                 {
                     b.OwnsOne("Domain.Translation.Translations", "Description", b1 =>
                         {
@@ -1739,7 +1798,7 @@ namespace WorkshopBackend.Migrations
 
             modelBuilder.Entity("Domain.Users.User", b =>
                 {
-                    b.OwnsOne("Domain.Order.Support.ClientData", "UserData", b1 =>
+                    b.OwnsOne("Domain.Orders.Support.ClientData", "UserData", b1 =>
                         {
                             b1.Property<Guid>("UserId")
                                 .HasColumnType("uuid");
@@ -1987,12 +2046,24 @@ namespace WorkshopBackend.Migrations
 
             modelBuilder.Entity("Domain.Component.Product.Product", b =>
                 {
+                    b.Navigation("Reviews");
+
                     b.Navigation("Tags");
                 });
 
             modelBuilder.Entity("Domain.Component.Sheaths.Color.SheathColor", b =>
                 {
                     b.Navigation("Prices");
+                });
+
+            modelBuilder.Entity("Domain.Orders.Order", b =>
+                {
+                    b.Navigation("OrderItems");
+                });
+
+            modelBuilder.Entity("Domain.Users.User", b =>
+                {
+                    b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618
         }

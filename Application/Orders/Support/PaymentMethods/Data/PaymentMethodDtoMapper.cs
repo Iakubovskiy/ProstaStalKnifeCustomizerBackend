@@ -1,5 +1,5 @@
 using Domain.Translation;
-using Domain.Order.Support;
+using Domain.Orders.Support;
 using Newtonsoft.Json;
 
 namespace Application.Orders.Support.PaymentMethods.Data;

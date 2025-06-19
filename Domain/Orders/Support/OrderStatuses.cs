@@ -1,4 +1,4 @@
-namespace Domain.Order.Support;
+namespace Domain.Orders.Support;
 
 public enum OrderStatuses
 {

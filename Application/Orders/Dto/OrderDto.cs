@@ -1,4 +1,5 @@
-using Domain.Order.Support;
+using Domain.Orders;
+using Domain.Orders.Support;
 
 namespace Application.Orders.Dto;
 
@@ -6,7 +7,7 @@ public class OrderDto
 {
     public OrderDto(
         Guid? id, 
-        List<Guid> productIds, 
+        List<OrderItemDto> orderItems, 
         double total, 
         Guid deliveryTypeId, 
         ClientData clientData, 
@@ -16,7 +17,7 @@ public class OrderDto
     )
     {
         this.Id = id;
-        this.ProductIds = productIds;
+        this.OrderItems = orderItems;
         this.Total = total;
         this.DeliveryTypeId = deliveryTypeId;
         this.ClientData = clientData;
@@ -26,7 +27,7 @@ public class OrderDto
     }
 
     public Guid? Id { get; private set; }
-    public List<Guid> ProductIds { get; private set; }
+    public List<OrderItemDto> OrderItems { get; private set; }
     public double Total  { get; private set; }
     public Guid DeliveryTypeId { get; private set; }
     public ClientData ClientData { get; private set; }

@@ -1,8 +1,9 @@
 using System.Net;
 using System.Text;
 using Application.Orders.Dto;
-using Domain.Order;
-using Domain.Order.Support;
+using Domain.Orders;
+using Domain.Orders.Support;
+using Domain.Orders;
 using FluentAssertions;
 using Xunit;
 
@@ -59,7 +60,7 @@ public class OrderControllerTests : IClassFixture<CustomWebAppFactory>
     {
         var newOrderDto = new OrderDto(
             id: null,
-            productIds: new List<Guid> { new("748c035d-49cd-4b46-aa7e-e5228d92538b") },
+            orderItems: new List<OrderItemDto> { new OrderItemDto(Guid.Parse("bffee4ad-d3cf-4e9f-8876-6bbc120100a4"), 1) },
             total: 150.50,
             deliveryTypeId: new Guid("b6d15e84-3d69-4b74-b270-cb5e9fd0d2d3"),
             clientData: new ClientData("Тест Клієнт", "+380123456789", "Україна", "Тест Місто", "test@test.com", "вул. Тестова, 1", "12345"),
@@ -74,9 +75,9 @@ public class OrderControllerTests : IClassFixture<CustomWebAppFactory>
     
         request.Content = JsonContent.Create(newOrderDto);
 
-        var response = await _client.SendAsync(request);
+        var response = await this._client.SendAsync(request);
 
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        response.StatusCode.Should().Be(HttpStatusCode.Created);
         var createResponse = await response.Content.ReadFromJsonAsync<CreateOrderResponse>();
         createResponse.NewOrder.Should().NotBeNull();
         createResponse.NewOrder.Id.Should().NotBeEmpty();
@@ -139,4 +140,77 @@ public class OrderControllerTests : IClassFixture<CustomWebAppFactory>
         var getResponse = await this._client.GetAsync($"/api/orders/{OrderToDeleteId}");
         getResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
+    
+    [Fact]
+    public async Task UpdateOrderItemQuantity_ShouldUpdateCorrectly()
+    {
+        var newOrderDto = new OrderDto(
+            id: null,
+            orderItems: new List<OrderItemDto> 
+            { 
+                new OrderItemDto(Guid.Parse("bffee4ad-d3cf-4e9f-8876-6bbc120100a4"), 1) 
+            },
+            total: 150.50,
+            deliveryTypeId: Guid.Parse("b6d15e84-3d69-4b74-b270-cb5e9fd0d2d3"),
+            clientData: new ClientData("Тест", "+380000000000", "UA", "Київ", "test@prostasta.com", "вул. Тестова", "00000"),
+            comment: "Тест",
+            status: "New",
+            paymentMethodId: Guid.Parse("a1e7b8c9-d0f1-4a2b-8c3d-4e5f6a7b8c9d")
+        );
+
+        var request = new HttpRequestMessage(HttpMethod.Post, "/api/orders");
+        request.Headers.Add("locale", "ua");
+        request.Content = JsonContent.Create(newOrderDto);
+
+        var createResponse = await this._client.SendAsync(request);
+        var createdOrder = (await createResponse.Content.ReadFromJsonAsync<CreateOrderResponse>())?.NewOrder;
+        var orderId = createdOrder!.Id;
+        var productId = new Guid("bffee4ad-d3cf-4e9f-8876-6bbc120100a4");
+
+        var newQuantity = 3;
+        var patchContent = JsonContent.Create(newQuantity); 
+        var patchResponse = await this._client.PatchAsync($"/api/orders/{orderId}/items/{productId}/quantity", patchContent);
+
+        patchResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
+        
+        await _client.DeleteAsync($"/api/orders/{orderId}");
+    }
+
+    [Fact]
+    public async Task RemoveOrderItem_ShouldRemoveSuccessfully()
+    {
+        var newOrderDto = new OrderDto(
+            id: null,
+            orderItems: new List<OrderItemDto>
+            {
+                new OrderItemDto(Guid.Parse("bffee4ad-d3cf-4e9f-8876-6bbc120100a4"), 1)
+            },
+            total: 150.50,
+            deliveryTypeId: Guid.Parse("b6d15e84-3d69-4b74-b270-cb5e9fd0d2d3"),
+            clientData: new ClientData("Тест", "+380000000000", "UA", "Київ", "test@prostasta.com", "вул. Тестова", "00000"),
+            comment: "Тест",
+            status: "New",
+            paymentMethodId: Guid.Parse("a1e7b8c9-d0f1-4a2b-8c3d-4e5f6a7b8c9d")
+        );
+
+        var request = new HttpRequestMessage(HttpMethod.Post, "/api/orders");
+        request.Headers.Add("locale", "ua");
+        request.Content = JsonContent.Create(newOrderDto);
+
+        var createResponse = await _client.SendAsync(request);
+        var createdOrder = (await createResponse.Content.ReadFromJsonAsync<CreateOrderResponse>())?.NewOrder;
+        var orderId = createdOrder!.Id;
+        var productId = new Guid("bffee4ad-d3cf-4e9f-8876-6bbc120100a4");
+
+        var deleteItemResponse = await _client.DeleteAsync($"/api/orders/{orderId}/items/{productId}");
+
+        deleteItemResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
+
+        var getResponse = await _client.GetAsync($"/api/orders/{orderId}");
+        var updatedOrder = await getResponse.Content.ReadFromJsonAsync<Order>();
+        updatedOrder!.OrderItems.Should().NotContain(i => i.Product.Id == productId);
+
+        await _client.DeleteAsync($"/api/orders/{orderId}");
+    }
+
 }

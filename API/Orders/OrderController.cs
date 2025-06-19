@@ -1,13 +1,14 @@
 ﻿using System.Data.Entity.Core;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
 using Application.Orders.Dto;
 using Application.Orders.UseCases.ChangeClientData;
 using Application.Orders.UseCases.Create;
+using Application.Orders.UseCases.RemoveOrderItem;
+using Application.Orders.UseCases.UpdateOrderItemQuantity;
 using Application.Orders.UseCases.UpdateStatus;
 using Domain.Component.Product;
-using Domain.Order;
-using Domain.Order.Support;
+using Domain.Orders.Support;
 using Infrastructure.Orders;
 
 namespace API.Orders;
@@ -20,18 +21,24 @@ public class OrderController : ControllerBase
     private readonly ICreateOrderService _createOrderService;
     private readonly IUpdateOrderStatusService _updateOrderStatusService;
     private readonly IChangeClientDataService _changeClientDataService;
+    private readonly IRemoveOrderItem _removeOrderItem;
+    private readonly IUpdateOrderItemQuantityService _updateOrderItemQuantityService;
 
     public OrderController(
         IOrderRepository orderRepository, 
         ICreateOrderService createOrderService, 
         IUpdateOrderStatusService updateOrderStatusService, 
-        IChangeClientDataService changeClientDataService
+        IChangeClientDataService changeClientDataService,
+        IRemoveOrderItem removeOrderItem,
+        IUpdateOrderItemQuantityService updateOrderItemQuantityService
     )
     {
         this._orderRepository = orderRepository;
         this._createOrderService = createOrderService;
         this._updateOrderStatusService = updateOrderStatusService;
         this._changeClientDataService = changeClientDataService;
+        this._removeOrderItem = removeOrderItem;
+        this._updateOrderItemQuantityService = updateOrderItemQuantityService;
     }
 
     [HttpGet]
@@ -62,7 +69,14 @@ public class OrderController : ControllerBase
     {
         try
         {
-            return Ok(new { newOrder = await this._createOrderService.Create(orderDto, locale) });
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            Guid? userIdGuid = null;
+            if (!string.IsNullOrEmpty(userId))
+            {
+                userIdGuid = new Guid(userId);
+            }
+            return Created(nameof(this.GetOrdersById),
+                new { newOrder = await this._createOrderService.Create(orderDto, locale, userIdGuid) });
         }
         catch (Exception e)
         {
@@ -121,5 +135,19 @@ public class OrderController : ControllerBase
         {
             return StatusCode(400, e.Message);
         }
+    }
+    
+    [HttpPatch("{orderId}/items/{productId}/quantity")]
+    public async Task<IActionResult> UpdateQuantity(Guid orderId, Guid productId, [FromBody] int quantity)
+    {
+        await _updateOrderItemQuantityService.UpdateQuantity(orderId, productId, quantity);
+        return NoContent();
+    }
+
+    [HttpDelete("{orderId}/items/{productId}")]
+    public async Task<IActionResult> RemoveItem(Guid orderId, Guid productId)
+    {
+        await _removeOrderItem.RemoveOrderItem(orderId, productId);
+        return NoContent();
     }
 }

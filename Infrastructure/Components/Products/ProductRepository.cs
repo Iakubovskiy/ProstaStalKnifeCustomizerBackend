@@ -1,14 +1,16 @@
+using System.Data.Entity.Core;
 using Domain.Component.Product;
 using Domain.Component.Product.Attachments;
 using Domain.Component.Product.CompletedSheath;
 using Domain.Component.Product.Knife;
+using Domain.Component.Product.Reviews;
 using Infrastructure.Components.Products.Filters;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Components.Products;
 
-public class ProductRepository : ComponentRepository<Product>, IProductRepository, IGetProductPaginatedList
+public class ProductRepository : ComponentRepository<Product>, IProductRepository, IGetProductPaginatedList, IAddReviewToProductRepository
 {
     public ProductRepository(DBContext context) : base(context)
     {
@@ -211,4 +213,20 @@ public class ProductRepository : ComponentRepository<Product>, IProductRepositor
         };
     }
 
+    public async Task AddReview(Guid productId, Review review)
+    {
+        Product existingProduct = await this.GetById(productId);
+        existingProduct.AddReview(review);
+        await this.Context.SaveChangesAsync();  
+    }
+
+    public override async Task<Product> GetById(Guid id)
+    {
+        return await this.Set
+                   .Include(p => p.Image)
+                   .Include(p => p.Reviews)
+                   .Include(p => (p as Knife).Blade)
+                   .FirstOrDefaultAsync(p => p.Id == id) 
+               ?? throw new ObjectNotFoundException("Product not found");
+    }
 }

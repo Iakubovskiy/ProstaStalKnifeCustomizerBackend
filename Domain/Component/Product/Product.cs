@@ -1,3 +1,4 @@
+using Domain.Component.Product.Reviews;
 using Domain.Files;
 using Domain.Translation;
 
@@ -19,7 +20,8 @@ public abstract class Product : IEntity, IComponent, IUpdatable<Product>
         Translations description, 
         Translations metaTitle, 
         Translations metaDescription,
-        List<ProductTag> tags
+        List<ProductTag> tags,
+        List<Review>? reviews = null
     )
     {
         this.Id = id;
@@ -31,6 +33,7 @@ public abstract class Product : IEntity, IComponent, IUpdatable<Product>
         this.MetaTitle = metaTitle;
         this.MetaDescription = metaDescription;
         this.Tags = tags;
+        this.Reviews = reviews;
     }
     
     public Guid Id { get; private set;  }
@@ -42,6 +45,8 @@ public abstract class Product : IEntity, IComponent, IUpdatable<Product>
     public Translations MetaTitle { get; private set; }
     public Translations MetaDescription { get; private set; }
     public List<ProductTag> Tags { get; set; }
+    
+    public List<Review>? Reviews { get; set; }
 
     public abstract double GetPrice(double exchangerRate);
 
@@ -55,6 +60,15 @@ public abstract class Product : IEntity, IComponent, IUpdatable<Product>
         this.MetaTitle = product.MetaTitle;
         this.MetaDescription = product.MetaDescription;
         this.Tags = product.Tags;
+    }
+
+    public void AddReview(Review review)
+    {
+        if (this.Reviews == null)
+        {
+            this.Reviews = new List<Review>();
+        }
+        this.Reviews.Add(review);
     }
 
     public void Activate()

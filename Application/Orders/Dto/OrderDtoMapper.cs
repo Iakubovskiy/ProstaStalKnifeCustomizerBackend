@@ -1,6 +1,7 @@
 using Domain.Component.Product;
-using Domain.Order;
-using Domain.Order.Support;
+using Domain.Orders;
+using Domain.Orders.Support;
+using Domain.Orders;
 using Infrastructure.Components.Products;
 using Infrastructure.Orders;
 using Infrastructure.Orders.Support.DeliveryTypes;
@@ -34,18 +35,24 @@ public class OrderDtoMapper : IOrderDtoMapper
         int newOrderNumber = lastOrderNumber + 1;
         DeliveryType deliveryType = await this._deliveryTypeRepository.GetById(dto.DeliveryTypeId);
         PaymentMethod paymentMethod = await this._paymentMethodRepository.GetById(dto.PaymentMethodId);
-        List<Product> products = await this._productRepository.GetProductsByIds(dto.ProductIds);
-
-        return new Order(
+        Order order = new Order(
             id,
             newOrderNumber,
             dto.Total,
-            products,
             deliveryType,
             dto.ClientData,
             dto.Comment,
             dto.Status,
             paymentMethod
         );
+
+        foreach (var orderItem in dto.OrderItems)
+        {
+            Product product = await this._productRepository.GetById(orderItem.ProductId);
+            order.AddOrderItem(product, orderItem.Quantity);
+        }
+        
+
+        return order;
     }
 }

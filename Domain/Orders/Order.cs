@@ -1,7 +1,7 @@
 using Domain.Component.Product;
-using Domain.Order.Support;
+using Domain.Orders.Support;
 
-namespace Domain.Order;
+namespace Domain.Orders;
 
 public class Order : IEntity, IUpdatable<Order>
 {
@@ -15,7 +15,6 @@ public class Order : IEntity, IUpdatable<Order>
         Guid id, 
         int number, 
         double total, 
-        List<Product> products, 
         DeliveryType deliveryType,
         ClientData clientData,
         string? comment, 
@@ -29,7 +28,6 @@ public class Order : IEntity, IUpdatable<Order>
         this.Id = id;
         this.Number = number;
         this.Total = total;
-        this.Products = products;     
         this.DeliveryType = deliveryType;
         this.ClientData = clientData;
         this.Comment = comment;
@@ -40,7 +38,7 @@ public class Order : IEntity, IUpdatable<Order>
     public Guid Id { get; private set; }
     public int Number { get; private set; }
     public double Total { get; private set; }
-    public List<Product> Products { get; private set; }
+    public List<OrderItem> OrderItems { get; private set; } = new List<OrderItem>();
     public DeliveryType DeliveryType { get; private set; }
     public ClientData ClientData { get; private set; }
     public string? Comment { get; private set; }
@@ -50,7 +48,7 @@ public class Order : IEntity, IUpdatable<Order>
     public void Update(Order order)
     {
         this.Total = order.Total;
-        this.Products = order.Products;
+        this.OrderItems = order.OrderItems;
         this.DeliveryType = order.DeliveryType;
         this.ClientData = order.ClientData;
         this.Comment = order.Comment;
@@ -70,5 +68,38 @@ public class Order : IEntity, IUpdatable<Order>
             throw new ArgumentException("Status is not valid");
         }
         this.Status = status;
+    }
+
+    public void AddOrderItem(Product product, int quantity)
+    {
+        OrderItem orderItem = new OrderItem(product, this, quantity);
+        this.OrderItems.Add(orderItem);
+    }
+    
+    public void UpdateOrderItemQuantity(Product product, int quantity)
+    {
+        var orderItem = this.OrderItems.FirstOrDefault(oi => oi.Product.Id == product.Id);
+        
+        if (orderItem == null)
+            throw new InvalidOperationException("Product not found in order");
+        
+        if (quantity <= 0)
+        {
+            this.OrderItems.Remove(orderItem);
+        }
+        else
+        {
+            orderItem.UpdateQuantity(quantity);
+        }
+    }
+
+    public void RemoveOrderItem(Product product)
+    {
+        var orderItem = this.OrderItems.FirstOrDefault(oi => oi.Product.Id == product.Id);
+        
+        if (orderItem != null)
+        {
+            this.OrderItems.Remove(orderItem);
+        }
     }
 }

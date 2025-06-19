@@ -1,4 +1,4 @@
-using Domain.Order.Support;
+using Domain.Orders.Support;
 
 namespace Application.Orders.Support.PaymentMethods.Data;
 

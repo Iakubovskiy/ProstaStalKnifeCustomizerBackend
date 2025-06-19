@@ -1,4 +1,4 @@
-﻿using Domain.Order.Support;
+﻿using Domain.Orders.Support;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Orders.Support.Statues;

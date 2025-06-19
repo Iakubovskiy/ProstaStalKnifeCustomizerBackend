@@ -1,5 +1,5 @@
 using Application.Orders.Support.DeliveryTypes.Data;
-using Domain.Order.Support;
+using Domain.Orders.Support;
 using Infrastructure.Orders.Support.DeliveryTypes;
 
 namespace Application.Orders.Support.DeliveryTypes;

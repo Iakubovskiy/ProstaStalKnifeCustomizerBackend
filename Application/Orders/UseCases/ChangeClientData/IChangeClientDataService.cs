@@ -1,5 +1,6 @@
-using Domain.Order;
-using Domain.Order.Support;
+using Domain.Orders;
+using Domain.Orders.Support;
+using Domain.Orders;
 
 namespace Application.Orders.UseCases.ChangeClientData;
 

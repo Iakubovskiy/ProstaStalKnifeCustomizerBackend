@@ -1,4 +1,5 @@
 using Domain.Order;
+using Domain.Orders;
 using Infrastructure.Orders;
 
 namespace Application.Orders.UseCases.UpdateStatus;

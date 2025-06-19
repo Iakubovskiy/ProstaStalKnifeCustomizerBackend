@@ -3,7 +3,7 @@ using System.Text.Json;
 using Application.Users.UseCases.Authentication;
 using Application.Users.UseCases.Registration;
 using Application.Users.UseCases.Update;
-using Domain.Order.Support;
+using Domain.Orders.Support;
 using Domain.Users;
 using FluentAssertions;
 using Xunit;

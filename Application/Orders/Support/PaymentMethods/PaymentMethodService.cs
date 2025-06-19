@@ -1,5 +1,5 @@
 using Application.Orders.Support.PaymentMethods.Data;
-using Domain.Order.Support;
+using Domain.Orders.Support;
 using Infrastructure.Orders.Support.PaymentMethods;
 
 namespace Application.Orders.Support.PaymentMethods;

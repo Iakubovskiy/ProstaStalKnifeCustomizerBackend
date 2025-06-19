@@ -1,6 +1,5 @@
 using Domain.Translation;
-using Domain.Order.Support;
-using Newtonsoft.Json;
+using Domain.Orders.Support;
 
 namespace Application.Orders.Support.DeliveryTypes.Data;
 

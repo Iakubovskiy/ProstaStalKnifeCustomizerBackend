@@ -1,6 +1,6 @@
 using Domain.Translation;
 
-namespace Domain.Order.Support;
+namespace Domain.Orders.Support;
 
 public class DeliveryType : IEntity, IUpdatable<DeliveryType>
 {

@@ -20,6 +20,7 @@ public class ProductPresenter
     public string Name { get; set; }
     public string ImageUrl { get; set; }
     public double Price { get; set; }
+    public List<ReviewPresenter> Reviews { get; set; } = new List<ReviewPresenter>();
     
     public BladeCharacteristics? Characteristics { get; set; }
 
@@ -32,6 +33,12 @@ public class ProductPresenter
         if (product is Knife knife)
         {
             this.Characteristics = knife.Blade.BladeCharacteristics;
+        }
+
+        if (product.Reviews != null)
+        {
+            ReviewPresenter presenter = new ReviewPresenter();
+            this.Reviews = presenter.PresentList(product.Reviews);
         }
         return this;
     }

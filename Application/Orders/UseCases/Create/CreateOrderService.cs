@@ -1,6 +1,7 @@
 using Application.Orders.Dto;
-using Domain.Order;
+using Domain.Orders;
 using Domain.Users;
+using Infrastructure;
 using Infrastructure.Orders;
 using Infrastructure.Users;
 
@@ -12,28 +13,31 @@ public class CreateOrderService : ICreateOrderService
     private readonly IOrderRepository _orderRepository;
     private readonly ICustomEmailSender _emailSender;
     private readonly IAdminRepository _adminRepository;
+    private readonly IRepository<User> _userRepository;
 
     public CreateOrderService(
         IOrderDtoMapper orderDtoMapper,
         IOrderRepository orderRepository,
         ICustomEmailSender emailSender,
-        IAdminRepository adminRepository
+        IAdminRepository adminRepository,
+        IRepository<User> userRepository
     )
     {
         this._orderDtoMapper = orderDtoMapper;
         this._orderRepository = orderRepository;
         this._emailSender = emailSender;
         this._adminRepository = adminRepository;
+        this._userRepository = userRepository;
     }
 
-    public async Task<Order> Create(OrderDto orderDto, string locale)
+    public async Task<Order> Create(OrderDto orderDto, string locale, Guid? userId = null)
     {
         Order order = await this._orderDtoMapper.Map(orderDto);
         List<Task> emailTasks = new List<Task>();
         Order createdOrder = await this._orderRepository.Create(order);
         
         EmailDTO customerEmail = new EmailDTO();
-        customerEmail.EmailTo = "diman.150106@gmail.com";
+        customerEmail.EmailTo = order.ClientData.Email;
         string emailSubject;
         string emailBody;
         if (locale == "en")
@@ -81,7 +85,7 @@ public class CreateOrderService : ICreateOrderService
                 continue;
             }
             EmailDTO adminEmail = new EmailDTO();
-            adminEmail.EmailTo = "diman.150106@gmail.com";
+            adminEmail.EmailTo = admin.Email;
             adminEmail.EmailSubject = adminEmailSubject;
             adminEmail.EmailBody = adminEmailBody;
         
@@ -90,6 +94,13 @@ public class CreateOrderService : ICreateOrderService
         }
         
         await Task.WhenAll(emailTasks);
+        
+        if (userId != null )
+        {
+            User user = await this._userRepository.GetById(userId.Value);
+            user.AddOrder(createdOrder);
+            await this._userRepository.Update(user.Id, user);
+        }
         
         return createdOrder;
     }

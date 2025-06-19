@@ -17,6 +17,7 @@ using Application.Components.Products.Attachments;
 using Application.Components.Products.Attachments.Type;
 using Application.Components.Products.CompletedSheaths;
 using Application.Components.Products.Knives;
+using Application.Components.Products.Reviews;
 using Application.Components.Products.UseCases.Activate;
 using Application.Components.Products.UseCases.Create;
 using Application.Components.Products.UseCases.Deactivate;
@@ -57,7 +58,7 @@ using Domain.Component.Product.Knife;
 using Domain.Component.Sheaths;
 using Domain.Component.Textures;
 using Domain.Files;
-using Domain.Order.Support;
+using Domain.Orders.Support;
 using Domain.Users;
 using Infrastructure;
 using Infrastructure.Components;
@@ -82,7 +83,10 @@ using Application.Orders;
 using Application.Orders.Dto;
 using Application.Orders.UseCases.ChangeClientData;
 using Application.Orders.UseCases.Create;
+using Application.Orders.UseCases.RemoveOrderItem;
+using Application.Orders.UseCases.UpdateOrderItemQuantity;
 using Application.Orders.UseCases.UpdateStatus;
+using Domain.Component.Product.Reviews;
 using Domain.Component.Sheaths.Color;
 using Infrastructure.Components.Products.CompletedSheaths;
 using Infrastructure.Components.Products.Filters.Characteristics;
@@ -255,13 +259,17 @@ builder.Services.AddScoped<ICurrencyRepository, CurrencyRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IDeliveryTypeRepository, DeliveryTypeRepository>();
 builder.Services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository>();
-builder.Services.AddScoped<IRepository<User>, BaseRepository<User>>();
+builder.Services.AddScoped<IRepository<User>, UserRepository>();
 builder.Services.AddScoped<IFilterStylesRepository, FilterStylesRepository>();
 builder.Services.AddScoped<IGetBladeShapeCharacteristicsFilterRepository, GetBladeShapeCharacteristicsFilterRepository>();
 builder.Services.AddScoped<IColorsFilterRepository, ColorsFilterRepository>();
 builder.Services.AddScoped<IPriceFilterRepository, PriceFilterRepository>();
 builder.Services.AddScoped<IGetProductPaginatedList, ProductRepository>();
 builder.Services.AddScoped<IAdminRepository, AdminRepository>();
+builder.Services.AddScoped<IAddReviewToProductRepository, ProductRepository>();
+builder.Services.AddScoped<IRepository<Review>, BaseRepository<Review>>();
+builder.Services.AddScoped<IReviewService, ReviewService>();
+builder.Services.AddScoped<IGetUserWithOrder, UserRepository>();
 #endregion
 
 #region Mappers
@@ -384,6 +392,8 @@ builder.Services.AddScoped<IGetComponentPrice, GetComponentPriceService>();
 builder.Services.AddScoped<ICreateOrderService, CreateOrderService>();
 builder.Services.AddScoped<IUpdateOrderStatusService, UpdateOrderStatusService>();
 builder.Services.AddScoped<IChangeClientDataService, ChangeClientDataService>();
+builder.Services.AddScoped<IUpdateOrderItemQuantityService, UpdateOrderItemQuantityService>();
+builder.Services.AddScoped<IRemoveOrderItem, RemoveOrderItemService>();
 #endregion
 
 #region Presenters

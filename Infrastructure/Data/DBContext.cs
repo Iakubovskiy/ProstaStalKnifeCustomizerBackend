@@ -7,12 +7,13 @@ using Domain.Component.Handles;
 using Domain.Component.Product.Attachments;
 using Domain.Component.Product.CompletedSheath;
 using Domain.Component.Product.Knife;
+using Domain.Component.Product.Reviews;
 using Domain.Component.Sheaths;
 using Domain.Component.Sheaths.Color;
 using Domain.Component.Textures;
 using Domain.Currencies;
-using Domain.Order;
-using Domain.Order.Support;
+using Domain.Orders;
+using Domain.Orders.Support;
 using Domain.Users;
 using Infrastructure.Data.Component.BladeCoatingColors;
 using Infrastructure.Data.Component.BladeShapes;
@@ -61,6 +62,7 @@ namespace Infrastructure.Data
         public DbSet<PaymentMethod> PaymentMethods { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<Review> Reviews { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

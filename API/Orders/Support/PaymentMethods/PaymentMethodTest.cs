@@ -2,7 +2,7 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using Application.Orders.Support.PaymentMethods.Data;
-using Domain.Order.Support;
+using Domain.Orders.Support;
 using FluentAssertions;
 using Xunit;
 

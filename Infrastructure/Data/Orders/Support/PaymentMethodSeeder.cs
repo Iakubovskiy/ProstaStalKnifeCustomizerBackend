@@ -1,4 +1,4 @@
-using Domain.Order.Support;
+using Domain.Orders.Support;
 using Domain.Translation;
 
 namespace Infrastructure.Data.Orders.Support;
