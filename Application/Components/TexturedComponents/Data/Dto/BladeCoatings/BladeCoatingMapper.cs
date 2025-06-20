@@ -34,7 +34,8 @@ public class BladeCoatingMapper : ITexturedComponentDtoMapper<BladeCoatingColor,
                 dto.ColorCode,
                 dto.EngravingColorCode,
                 texture,
-                colorMap
+                colorMap,
+                dto.IsActive
         );
     }
 }

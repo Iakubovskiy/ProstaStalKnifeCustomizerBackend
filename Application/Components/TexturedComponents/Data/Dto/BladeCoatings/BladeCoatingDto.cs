@@ -8,6 +8,7 @@ public class BladeCoatingDto : ITexturedComponentDto<BladeCoatingColor>
     public Dictionary<string, string> Types { get; set; }
     public Dictionary<string, string> Colors { get; set; }
     public string? ColorCode { get; set; }
+    public bool IsActive { get; set; }
     public string EngravingColorCode { get; set; }
     public Guid? ColorMapId { get; set; }
     public double Price { get; set; }
