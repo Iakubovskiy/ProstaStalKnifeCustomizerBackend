@@ -11,6 +11,8 @@ public class BladeCoatingColorPresenter
     public double Price { get; set; }
     public string Color { get; set; }
     public Dictionary<string, string> Colors { get; set; }
+    public string Type { get; set; }
+    public Dictionary<string, string> Types { get; set; }
     public string? ColorCode { get; set; }
     public string EngravingColorCode { get; set; }
     public bool IsActive { get; set; }
@@ -32,7 +34,8 @@ public class BladeCoatingColorPresenter
             EngravingColorCode = color.EngravingColorCode,
             IsActive = color.IsActive,
             Texture = color.Texture,
-            ColorMap = color.ColorMap
+            ColorMap = color.ColorMap,
+            Type = color.Type.GetTranslation(locale),
         };
     }
 
@@ -44,6 +47,7 @@ public class BladeCoatingColorPresenter
     {
         BladeCoatingColorPresenter presenter = await Present(color, locale, currency, getComponentPrice);
         presenter.Colors = color.Color.TranslationDictionary;
+        presenter.Types = color.Type.TranslationDictionary;
         return presenter;
     }
 
