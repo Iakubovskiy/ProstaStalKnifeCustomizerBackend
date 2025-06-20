@@ -1,8 +1,12 @@
+using API.Components.Products.Knives.Presenter;
 using Microsoft.AspNetCore.Mvc;
 using API.Presenters;
+using Application.Components.Prices;
+using Application.Currencies;
 using Domain.Component.BladeCoatingColors;
 using Domain.Component.BladeShapes;
 using Domain.Component.Handles;
+using Domain.Component.Product.Knife;
 using Domain.Component.Sheaths;
 using Domain.Component.Sheaths.Color;
 using Infrastructure.Components;
@@ -14,78 +18,33 @@ namespace API.Controllers;
 [ApiController]
 public class InitialController:ControllerBase
 {
-    private readonly IComponentRepository<BladeShape> _bladeShapeRepository;
-    private readonly IComponentRepository<BladeCoatingColor> _bladeCoatingColorRepository;
-    private readonly IComponentRepository<Sheath> _sheathRepository;
-    private readonly ISheathColorRepository _sheathColorRepository;
-    private readonly IComponentRepository<Handle> _handleColorRepository;
+    private readonly IComponentRepository<Knife> _knifeRepository;
+    private readonly IGetComponentPrice _getComponentPrice;
+    private readonly IPriceService _priceService;
 
-    public InitialController(IComponentRepository<BladeShape> bladeShapeRepository, IComponentRepository<BladeCoatingColor> bladeCoatingColorRepository, IComponentRepository<Sheath> sheathRepository, ISheathColorRepository sheathColorRepository, IComponentRepository<Handle> handleColorRepository)
+    public InitialController(
+        IComponentRepository<Knife> knifeRepository,
+        IGetComponentPrice getComponentPrice,
+        IPriceService priceService
+    )
     {
-        this._bladeShapeRepository = bladeShapeRepository;
-        this._bladeCoatingColorRepository = bladeCoatingColorRepository;
-        this._sheathRepository = sheathRepository;
-        this._sheathColorRepository = sheathColorRepository;
-        this._handleColorRepository = handleColorRepository;
+        this._knifeRepository = knifeRepository;
+        this._getComponentPrice = getComponentPrice;
+        this._priceService = priceService;
     }
 
     [HttpGet]
-    public async Task<IActionResult> InitialDataForFrontend()
+    public async Task<IActionResult> InitialDataForFrontend(
+        [FromHeader(Name = "Locale")] string locale,
+        [FromHeader(Name = "Currency")] string currency
+    )
     {
-        BladeShape? shape;
-        BladeCoatingColor? coatingColor;
-        Sheath? sheath;
-        SheathColor? sheathColor;
-        Handle? handleColor;
-        try
+        var knives = await this._knifeRepository.GetAllActive();
+        if (knives.Count < 1)
         {
-            shape = (await this._bladeShapeRepository.GetAllActive())[0];
+            return BadRequest("There are no knifes.");
         }
-        catch (IndexOutOfRangeException)
-        {
-            shape = null;
-        }
-        try
-        {
-            coatingColor = (await this._bladeCoatingColorRepository.GetAllActive())[0];
-        }
-        catch (IndexOutOfRangeException)
-        {
-            coatingColor = null;
-        }
-        try
-        {
-            handleColor = (await this._handleColorRepository.GetAllActive())[0];
-        }
-        catch (IndexOutOfRangeException)
-        {
-            handleColor = null;
-        }
-        try
-        {
-            sheath = (await this._sheathRepository.GetAllActive())[0];
-        }
-        catch (IndexOutOfRangeException)
-        {
-            sheath = null;
-        }
-        try
-        {
-            sheathColor = (await this._sheathColorRepository.GetAllActive())[0];
-        }
-        catch (IndexOutOfRangeException)
-        {
-            sheathColor = null;
-        }
-
-        InitialDataPresenter initialData = new InitialDataPresenter(
-            shape,
-            coatingColor,
-            handleColor,
-            sheath,
-            sheathColor
-        );
-        
-        return Ok(initialData);
+        return Ok(KnifePresenter
+            .Present(knives[0], locale, currency, this._getComponentPrice, this._priceService));
     }
 }
