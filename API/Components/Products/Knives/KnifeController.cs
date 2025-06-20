@@ -6,6 +6,7 @@ using Application.Components.Products.UseCases.Activate;
 using Application.Components.Products.UseCases.Create;
 using Application.Components.Products.UseCases.Deactivate;
 using Application.Components.Products.UseCases.Update;
+using Application.Currencies;
 using Domain.Component.Product.Knife;
 using Infrastructure.Components;
 
@@ -21,6 +22,7 @@ public class KnifeController : ControllerBase
     private readonly IActivateProduct<Knife> _activateProductService;
     private readonly IDeactivateProduct<Knife> _deactivateProductService;
     private readonly IGetComponentPrice _getComponentPrice;
+    private readonly IPriceService _priceService;
 
     public KnifeController(
         ICreateProductService<Knife, KnifeDto> createProductService,
@@ -28,7 +30,8 @@ public class KnifeController : ControllerBase
         IComponentRepository<Knife> knifeRepository,
         IActivateProduct<Knife> activateProductService,
         IDeactivateProduct<Knife> deactivateProductService,
-        IGetComponentPrice getComponentPrice
+        IGetComponentPrice getComponentPrice,
+        IPriceService priceService
     )
     {
         this._createKnifeService = createProductService;
@@ -37,6 +40,7 @@ public class KnifeController : ControllerBase
         this._activateProductService = activateProductService;
         this._deactivateProductService = deactivateProductService;
         this._getComponentPrice = getComponentPrice;
+        this._priceService = priceService;
     }
 
     [HttpGet]
@@ -46,7 +50,8 @@ public class KnifeController : ControllerBase
     )
     {
         return Ok(await KnifePresenter
-            .PresentList(await this._knifeRepository.GetAll(), locale, currency, this._getComponentPrice));
+            .PresentList(await this._knifeRepository
+                .GetAll(), locale, currency, this._getComponentPrice, this._priceService));
     }
 
     [HttpGet("active")]
@@ -56,7 +61,8 @@ public class KnifeController : ControllerBase
     )
     {
         return Ok(await KnifePresenter
-            .PresentList(await this._knifeRepository.GetAllActive(), locale, currency, this._getComponentPrice));
+            .PresentList(await this._knifeRepository
+                .GetAllActive(), locale, currency, this._getComponentPrice, this._priceService));
     }
 
     [HttpGet("{id:guid}")]
@@ -70,7 +76,7 @@ public class KnifeController : ControllerBase
         {
             Knife knife = await this._knifeRepository.GetById(id); 
             return Ok(await KnifePresenter
-                .PresentWithTranslations(knife, locale, currency, this._getComponentPrice));
+                .PresentWithTranslations(knife, locale, currency, this._getComponentPrice, this._priceService));
         }
         catch (Exception)
         {

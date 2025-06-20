@@ -1,4 +1,6 @@
+using Application.Currencies;
 using Domain.Component.BladeShapes;
+using Domain.Component.BladeShapes.BladeShapeTypes;
 using Domain.Files;
 
 namespace API.Components.Products.Knives.Presenter.ComponentsForCanvas;
@@ -7,10 +9,17 @@ public class BladeShapePresenterForCanvas
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
+    public double Price { get; set; }
     public FileEntity BladeShapeModel { get; set; }
     public FileEntity? SheathModel { get; set; }
+    public BladeShapeType ShapeType { get; set; }
 
-    public static BladeShapePresenterForCanvas Present(BladeShape bladeShape, string locale)
+    public static async Task<BladeShapePresenterForCanvas> Present(
+        BladeShape bladeShape, 
+        string locale,
+        string currency,
+        IPriceService priceService
+    )
     {
         BladeShapePresenterForCanvas bladeShapePresenterForCanvas  = new BladeShapePresenterForCanvas();
         bladeShapePresenterForCanvas.Id = bladeShape.Id;
@@ -20,6 +29,8 @@ public class BladeShapePresenterForCanvas
         {
             bladeShapePresenterForCanvas.SheathModel = bladeShape.Sheath.Model;
         }
+        bladeShapePresenterForCanvas.Price = await priceService.GetPrice(bladeShape.Price, currency);
+        bladeShapePresenterForCanvas.ShapeType = bladeShape.Type;
         
         return bladeShapePresenterForCanvas;
     }

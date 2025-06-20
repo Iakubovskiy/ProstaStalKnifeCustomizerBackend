@@ -1,4 +1,5 @@
 using API.Components.Products.Knives.Presenter.ComponentsForCanvas;
+using Application.Currencies;
 using Domain.Component.Engravings;
 using Domain.Component.Product.Attachments;
 using Domain.Component.Product.Knife;
@@ -7,6 +8,8 @@ namespace API.Components.Products.Knives.Presenter;
 
 public class KnifeForCanvasPresenter
 {
+    public Guid Id { get; set; }
+    public bool IsActive { get; set; }
     public List<AttachmentPresenterForCanvas>? Attachments { get; set; }
     public BladeCoatingColorPresenterForCanvas BladeCoatingColor { get; set; }
     public BladeShapePresenterForCanvas BladeShape { get; set; }
@@ -14,22 +17,33 @@ public class KnifeForCanvasPresenter
     public HandleColorPresenterForCanvas? HandleColor { get; set; }
     public SheathColorPresenterForCanvas? SheathColor { get; set; }
 
-    public static Task<KnifeForCanvasPresenter> Present(Knife knife, string locale)
+    public static async Task<KnifeForCanvasPresenter> Present(
+        Knife knife, 
+        string locale, 
+        string currency, 
+        IPriceService priceService
+    )
     {
         var presenter = new KnifeForCanvasPresenter
         {
-            BladeCoatingColor = BladeCoatingColorPresenterForCanvas.Present(knife.Color),
-            BladeShape = BladeShapePresenterForCanvas.Present(knife.Blade, locale)
+            Id = knife.Id,
+            IsActive = knife.IsActive,
+            BladeCoatingColor = await BladeCoatingColorPresenterForCanvas
+                .Present(knife.Color, locale, currency, priceService),
+            BladeShape = await BladeShapePresenterForCanvas
+                .Present(knife.Blade, locale, currency, priceService),
         };
 
         if (knife.Handle != null)
         {
-            presenter.HandleColor = HandleColorPresenterForCanvas.Present(knife.Handle);
+            presenter.HandleColor = await HandleColorPresenterForCanvas
+                .Present(knife.Handle, locale, currency, priceService);
         }
         
         if (knife.SheathColor != null)
         {
-            presenter.SheathColor = SheathColorPresenterForCanvas.Present(knife.SheathColor);
+            presenter.SheathColor = await SheathColorPresenterForCanvas
+                .Present(knife.SheathColor, locale, currency, priceService);
         }
 
         if (knife.Attachments != null)
@@ -37,7 +51,8 @@ public class KnifeForCanvasPresenter
             presenter.Attachments = new List<AttachmentPresenterForCanvas>();
             foreach (Attachment attachment in knife.Attachments)
             {
-                presenter.Attachments.Add(AttachmentPresenterForCanvas.Present(attachment));
+                presenter.Attachments.Add(await AttachmentPresenterForCanvas
+                    .Present(attachment, locale, currency, priceService));
             }
         }
         
@@ -50,6 +65,6 @@ public class KnifeForCanvasPresenter
             }
         }
         
-        return Task.FromResult(presenter);
+        return presenter;
     }
 }

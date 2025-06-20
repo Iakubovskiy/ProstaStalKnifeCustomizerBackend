@@ -23,7 +23,8 @@ public class OrderItemPresenter
         string locale, 
         string currency,
         IGetComponentPrice getComponentPriceService,
-        IPriceService priceService)
+        IPriceService priceService
+    )
     {
         var presenter = new OrderItemPresenter
         {
@@ -34,15 +35,18 @@ public class OrderItemPresenter
 
         if (orderItem.Product is Knife knife)
         {
-            presenter.Product = await KnifePresenter.Present(knife, locale, currency, getComponentPriceService);
+            presenter.Product = await KnifePresenter
+                .Present(knife, locale, currency, getComponentPriceService, priceService);
         }
         else if (orderItem.Product is CompletedSheath completedSheath)
         {
-            presenter.Product = await CompletedSheathPresenter.Present(completedSheath, locale, currency, getComponentPriceService, priceService);
+            presenter.Product = await CompletedSheathPresenter
+                .Present(completedSheath, locale, currency, getComponentPriceService, priceService);
         }
         else if (orderItem.Product is Attachment attachment)
         {
-            presenter.Product = await AttachmentPresenter.Present(attachment, locale, currency, getComponentPriceService);
+            presenter.Product = await AttachmentPresenter
+                .Present(attachment, locale, currency, getComponentPriceService);
         }
         
         return presenter;

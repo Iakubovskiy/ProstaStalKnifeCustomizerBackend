@@ -1,5 +1,6 @@
 using API.Components.Products.AllProducts.Presenters;
 using Application.Components.Prices;
+using Application.Currencies;
 using Domain.Component.Product.Knife;
 using Domain.Files;
 using Domain.Translation;
@@ -41,7 +42,9 @@ public class KnifePresenter : AbstractProductPresenter
         Knife knife, 
         string locale, 
         string currency, 
-        IGetComponentPrice getComponentPriceService)
+        IGetComponentPrice getComponentPriceService,
+        IPriceService priceService
+    )
     {
         var presenter = new KnifePresenter
         {
@@ -61,7 +64,8 @@ public class KnifePresenter : AbstractProductPresenter
             BladeCoatingColor = knife.Color.Color.GetTranslation(locale),
             MetaTitle = knife.MetaTitle.GetTranslation(locale),
             MetaDescription = knife.MetaDescription.GetTranslation(locale),
-            KnifeForCanvas = await KnifeForCanvasPresenter.Present(knife, locale),
+            KnifeForCanvas = await KnifeForCanvasPresenter
+                .Present(knife, locale, locale, priceService),
             IsActive = knife.IsActive,
         };
         
@@ -93,9 +97,11 @@ public class KnifePresenter : AbstractProductPresenter
         Knife knife, 
         string locale, 
         string currency, 
-        IGetComponentPrice getComponentPriceService)
+        IGetComponentPrice getComponentPriceService,
+        IPriceService priceService
+    )
     {
-        KnifePresenter presenter = await Present(knife, locale, currency, getComponentPriceService);
+        KnifePresenter presenter = await Present(knife, locale, currency, getComponentPriceService, priceService);
         presenter.Names = knife.Name.TranslationDictionary;
         presenter.Titles = knife.Title.TranslationDictionary;
         presenter.Descriptions = knife.Description.TranslationDictionary;
@@ -108,12 +114,14 @@ public class KnifePresenter : AbstractProductPresenter
         List<Knife> knives, 
         string locale, 
         string currency, 
-        IGetComponentPrice getComponentPriceService)
+        IGetComponentPrice getComponentPriceService,
+        IPriceService priceService
+    )
     {
         var knifePresenters = new List<KnifePresenter>();
         foreach (var knife in knives)
         {
-            KnifePresenter presenter = await Present(knife, locale, currency, getComponentPriceService);
+            KnifePresenter presenter = await Present(knife, locale, currency, getComponentPriceService, priceService);
             knifePresenters.Add(presenter);
         }
 
