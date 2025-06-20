@@ -30,7 +30,7 @@ public class BladeShapePresenter
         {
             Id = bladeShape.Id,
             ShapeType = bladeShape.Type,
-            Price = await getComponentPriceService.GetPrice(bladeShape, locale),
+            Price = await getComponentPriceService.GetPrice(bladeShape, currency),
             Name = bladeShape.Name.GetTranslation(locale),
             BladeShapeModel = bladeShape.BladeShapeModel,
             BladeShapeImage = bladeShape.BladeShapeModel,
