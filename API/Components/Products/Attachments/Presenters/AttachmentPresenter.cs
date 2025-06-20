@@ -29,6 +29,7 @@ public class AttachmentPresenter : AbstractProductPresenter
     public Dictionary<string, string> Materials { get; set; }
     public double Price { get; set; }
     public FileEntity Model { get; set; }
+    public List<Guid> TagIds { get; set; }
     public List<ReviewPresenter>? Reviews {get; set;}
     public double? AverageRating { get; set; } = null;
 
@@ -53,6 +54,7 @@ public class AttachmentPresenter : AbstractProductPresenter
             Price = await getComponentPriceService.GetPrice(attachment, currency),
             Model = attachment.Model,
             Color = attachment.Color.GetTranslation(locale),
+            TagIds = attachment.Tags.Select(t => t.Id).ToList(),
         };
         
         if (attachment.Reviews != null && attachment.Reviews.Any())
