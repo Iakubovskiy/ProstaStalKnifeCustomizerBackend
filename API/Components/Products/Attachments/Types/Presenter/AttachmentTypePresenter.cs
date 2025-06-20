@@ -6,8 +6,9 @@ public class AttachmentTypePresenter
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
+    public Dictionary<string, string> Names { get; set; }
 
-    public static Task<AttachmentTypePresenter> Present(AttachmentType attachmentType, string locale)
+    public static async Task<AttachmentTypePresenter> Present(AttachmentType attachmentType, string locale)
     {
         if (attachmentType == null)
             throw new ArgumentNullException(nameof(attachmentType));
@@ -18,7 +19,14 @@ public class AttachmentTypePresenter
             Name = attachmentType.Name.GetTranslation(locale)
         };
         
-        return Task.FromResult(presenter);
+        return presenter;
+    }
+
+    public static async Task<AttachmentTypePresenter> PresentWithTranslations(AttachmentType attachmentType, string locale)
+    {
+        AttachmentTypePresenter presenter = await Present(attachmentType, locale);
+        presenter.Names = attachmentType.Name.TranslationDictionary;
+        return presenter;
     }
 
     public static async Task<List<AttachmentTypePresenter>> PresentList(List<AttachmentType> attachmentTypes, string locale)

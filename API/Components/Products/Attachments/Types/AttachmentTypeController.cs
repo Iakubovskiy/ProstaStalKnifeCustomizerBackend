@@ -1,4 +1,5 @@
 using System.Data.Entity.Core;
+using API.Components.Products.Attachments.Types.Presenter;
 using Application.Components.Products.Attachments.Type;
 using Application.Components.SimpleComponents.UseCases.Create;
 using Application.Components.SimpleComponents.UseCases.Update;
@@ -26,17 +27,23 @@ public class AttachmentTypeController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAttachmentTypes()
+    public async Task<IActionResult> GetAttachmentTypes(
+        [FromHeader(Name = "Locale")] string locale
+    )
     {
-        return Ok(await this._attachmentTypeRepository.GetAll());
+        return Ok(await AttachmentTypePresenter.PresentList(await this._attachmentTypeRepository.GetAll(), locale));
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetAttachmentTypeById(Guid id)
+    public async Task<IActionResult> GetAttachmentTypeById(
+        Guid id,
+        [FromHeader(Name = "Locale")] string locale
+    )
     {
         try
         {
-            return Ok(await this._attachmentTypeRepository.GetById(id));
+            return Ok(await AttachmentTypePresenter
+                .PresentWithTranslations(await this._attachmentTypeRepository.GetById(id), locale));
         }
         catch (ObjectNotFoundException e)
         {
