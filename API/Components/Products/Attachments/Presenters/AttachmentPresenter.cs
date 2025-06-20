@@ -12,6 +12,8 @@ public class AttachmentPresenter : AbstractProductPresenter
     public Guid Id { get; set; }
     public bool IsActive { get; set; }
     public FileEntity Image { get; set; }
+    public string Color { get; set; }
+    public Dictionary<string,string> Colors { get; set; }
     public string Name { get; set; }
     public Dictionary<string, string> Names { get; set; }
     public string Title { get; set; }
@@ -49,7 +51,8 @@ public class AttachmentPresenter : AbstractProductPresenter
             Type = await AttachmentTypePresenter.Present(attachment.Type, locale),
             Material = attachment.Material.GetTranslation(locale),
             Price = await getComponentPriceService.GetPrice(attachment, currency),
-            Model = attachment.Model
+            Model = attachment.Model,
+            Color = attachment.Color.GetTranslation(locale),
         };
         
         if (attachment.Reviews != null && attachment.Reviews.Any())
@@ -74,6 +77,7 @@ public class AttachmentPresenter : AbstractProductPresenter
         presenter.MetaTitles = attachment.MetaTitle.TranslationDictionary;
         presenter.MetaDescriptions = attachment.MetaDescription.TranslationDictionary;
         presenter.Materials = attachment.Material.TranslationDictionary;
+        presenter.Colors = attachment.Color.TranslationDictionary;
         
         return presenter;
     }
