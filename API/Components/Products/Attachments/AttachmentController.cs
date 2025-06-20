@@ -1,4 +1,5 @@
-﻿using API.Components.Products.Attachments.Presenters;
+﻿using System.Data.Entity.Core;
+using API.Components.Products.Attachments.Presenters;
 using Application.Components.Prices;
 using Application.Components.Products.Attachments;
 using Application.Components.Products.UseCases.Activate;
@@ -71,7 +72,7 @@ public class AttachmentController : ControllerBase
             return Ok(await AttachmentPresenter
                 .PresentWithTranslations(await this._attachmentRepository.GetById(id), locale, currency, this._getComponentPrice));
         }
-        catch (Exception)
+        catch (ObjectNotFoundException)
         {
             return NotFound("Can't find attachment");
         }
