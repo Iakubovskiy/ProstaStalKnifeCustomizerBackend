@@ -16,7 +16,7 @@ public class AttachmentTypePresenter
         string name = "NO SUCH LOCALE";
         try
         {
-            attachmentType.Name.GetTranslation(locale);
+            name = attachmentType.Name.GetTranslation(locale);
         }
         catch (Exception)
         {
