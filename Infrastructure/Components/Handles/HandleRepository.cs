@@ -28,6 +28,7 @@ public class HandleRepository : ComponentRepository<Handle>
             .Where(handle => handle.IsActive)
             .Include(handle => handle.Texture)
             .Include(handle => handle.ColorMap)
+            .Include(handle => handle.BladeShapeType)
             .ToListAsync();
     }
     
@@ -35,6 +36,7 @@ public class HandleRepository : ComponentRepository<Handle>
     {
         return await this.Set
                    .Include(handle => handle.Texture)
+                   .Include(handle => handle.BladeShapeType)
                    .Include(handle => handle.ColorMap)
                    .FirstOrDefaultAsync(handle => handle.Id == id) 
                ?? throw new ObjectNotFoundException("Entity not found");

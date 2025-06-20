@@ -1,4 +1,5 @@
-﻿using API.Components.Handles.Presenters;
+﻿using System.Data.Entity.Core;
+using API.Components.Handles.Presenters;
 using Application.Components.Activate;
 using Application.Components.Deactivate;
 using Application.Components.Prices;
@@ -71,7 +72,7 @@ public class HandleController : ControllerBase
             return Ok(await HandlePresenter
                 .PresentWithTranslations(await this._handleRepository.GetById(id), locale, currency, this._getComponentPrice));
         }
-        catch (Exception)
+        catch (ObjectNotFoundException)
         {
             return NotFound("Can't find handel color");
         }
