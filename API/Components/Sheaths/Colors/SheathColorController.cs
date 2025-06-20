@@ -80,23 +80,31 @@ public class SheathColorController : ControllerBase
 
     [HttpPost]
     public async Task<IActionResult> CreateSheathColor(
-        [FromBody] SheathColorDto newColor
+        [FromBody] SheathColorDto newColor,
+        [FromHeader(Name = "Locale")] string locale,
+        [FromHeader(Name = "Currency")] string currency
     )
     {
-        return Created(nameof(this.GetSheathColorsById), await this._sheathColorCreateService.Create(
-            newColor
+        return Created(nameof(this.GetSheathColorsById), await SheathColorPresenter
+            .PresentWithTranslations(await this._sheathColorCreateService.Create(newColor),
+                locale, currency, this._priceService
         ));
     }
 
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdateSheathColor(
+        [FromHeader(Name = "Locale")] string locale,
+        [FromHeader(Name = "Currency")] string currency,
         Guid id, 
         [FromBody] SheathColorDto updatedColor
     )
     {
         try
         {
-            return Ok(await this._sheathColorUpdateService.Update(id, updatedColor));
+            return Ok(await SheathColorPresenter.Present(
+                await this._sheathColorUpdateService.Update(id, updatedColor),
+                locale, currency, this._priceService
+            ));
         }
         catch (Exception)
         {
