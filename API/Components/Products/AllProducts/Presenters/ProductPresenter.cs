@@ -17,6 +17,7 @@ public class ProductPresenter
     public double Price { get; set; }
     public List<ReviewPresenter> Reviews { get; set; } = new List<ReviewPresenter>();
     public BladeCharacteristics? Characteristics { get; set; }
+    public bool IsActive { get; set; }
 
     public static async Task<ProductPresenter> Present(
         Product product, 
@@ -29,7 +30,8 @@ public class ProductPresenter
             Id = product.Id,
             Name = product.Name.GetTranslation(locale),
             Image = product.Image,
-            Price = await getComponentPriceService.GetPrice(product, currency)
+            Price = await getComponentPriceService.GetPrice(product, currency),
+            IsActive = product.IsActive,
         };
 
         if (product is Knife knife)

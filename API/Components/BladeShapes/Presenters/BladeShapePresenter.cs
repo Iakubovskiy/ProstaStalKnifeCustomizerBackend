@@ -12,6 +12,7 @@ public class BladeShapePresenter
 {
     public Guid Id { get; set; }
     public BladeShapeType ShapeType { get; set; }
+    public bool IsActive { get; set; }
     public string Name { get; set; }
     public Dictionary<string, string> Names { get; set; }
     public double Price { get; set; }
@@ -34,7 +35,8 @@ public class BladeShapePresenter
             Name = bladeShape.Name.GetTranslation(locale),
             BladeShapeModel = bladeShape.BladeShapeModel,
             BladeShapeImage = bladeShape.BladeShapeModel,
-            BladeCharacteristicsModel = bladeShape.BladeCharacteristics
+            BladeCharacteristicsModel = bladeShape.BladeCharacteristics,
+            IsActive = bladeShape.IsActive,
         };
 
         if(bladeShape.Sheath != null)
