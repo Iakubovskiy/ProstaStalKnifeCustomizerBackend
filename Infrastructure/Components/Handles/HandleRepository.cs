@@ -16,26 +16,27 @@ public class HandleRepository : ComponentRepository<Handle>
     public override async Task<List<Handle>> GetAll()
     {
         return await this.Set
-            .Include(coatingColor => coatingColor.Texture)
-            .Include(coatingColor => coatingColor.ColorMap)
+            .Include(handle => handle.Texture)
+            .Include(handle => handle.BladeShapeType)
+            .Include(handle => handle.ColorMap)
             .ToListAsync();
     }
     
     public override async Task<List<Handle>> GetAllActive()
     {
         return await this.Set
-            .Where(coatingColor => coatingColor.IsActive)
-            .Include(coatingColor => coatingColor.Texture)
-            .Include(coatingColor => coatingColor.ColorMap)
+            .Where(handle => handle.IsActive)
+            .Include(handle => handle.Texture)
+            .Include(handle => handle.ColorMap)
             .ToListAsync();
     }
     
     public override async Task<Handle> GetById(Guid id)
     {
         return await this.Set
-                   .Include(coatingColor => coatingColor.Texture)
-                   .Include(coatingColor => coatingColor.ColorMap)
-                   .FirstOrDefaultAsync(coatingColor => coatingColor.Id == id) 
+                   .Include(handle => handle.Texture)
+                   .Include(handle => handle.ColorMap)
+                   .FirstOrDefaultAsync(handle => handle.Id == id) 
                ?? throw new ObjectNotFoundException("Entity not found");
     }
 }

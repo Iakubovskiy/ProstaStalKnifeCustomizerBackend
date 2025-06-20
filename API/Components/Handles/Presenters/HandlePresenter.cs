@@ -8,6 +8,7 @@ namespace API.Components.Handles.Presenters;
 public class HandlePresenter
 {
     public Guid Id { get; set; }
+    public Guid BladeShapeTypeId { get; set; }
     public string Color { get; set; }
     public Dictionary<string, string> Colors { get; set; }
     public string ColorCode { get; set; }
@@ -33,7 +34,8 @@ public class HandlePresenter
             Texture = handle.Texture,
             ColorMap = handle.ColorMap,
             IsActive = handle.IsActive,
-            Price = await getComponentPrice.GetPrice(handle, currency)
+            Price = await getComponentPrice.GetPrice(handle, currency),
+            BladeShapeTypeId = handle.BladeShapeType.Id,
         };
     }
 
