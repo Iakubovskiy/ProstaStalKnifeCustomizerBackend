@@ -317,6 +317,7 @@ builder.Services.AddScoped<IComponentDtoMapper<ProductTag, ProductTagDto>, Produ
 builder.Services.AddScoped<ISimpleUpdateService<ProductTag, ProductTagDto>, SimpleUpdateService<ProductTag, ProductTagDto>>();
 
 builder.Services.AddScoped<ISimpleCreateService<AttachmentType, AttachmentTypeDto>, SimpleCreateService<AttachmentType, AttachmentTypeDto>>();
+builder.Services.AddScoped<ISimpleUpdateService<AttachmentType, AttachmentTypeDto>, SimpleUpdateService<AttachmentType, AttachmentTypeDto>>();
 builder.Services.AddScoped<IComponentDtoMapper<AttachmentType, AttachmentTypeDto>, AttachmentTypeDtoMapper>();
 
 builder.Services.AddScoped<ISimpleCreateService<Texture, TextureDto>, SimpleCreateService<Texture, TextureDto>>();

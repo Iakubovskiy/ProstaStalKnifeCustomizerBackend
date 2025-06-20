@@ -13,10 +13,19 @@ public class AttachmentTypePresenter
         if (attachmentType == null)
             throw new ArgumentNullException(nameof(attachmentType));
         
+        string name = "NO SUCH LOCALE";
+        try
+        {
+            attachmentType.Name.GetTranslation(locale);
+        }
+        catch (Exception)
+        {
+            
+        }
         var presenter = new AttachmentTypePresenter
         {
             Id = attachmentType.Id,
-            Name = attachmentType.Name.GetTranslation(locale)
+            Name = name
         };
         
         return presenter;

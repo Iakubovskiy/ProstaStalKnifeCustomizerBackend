@@ -16,14 +16,17 @@ public class AttachmentTypeController : ControllerBase
 {
     private readonly IRepository<AttachmentType> _attachmentTypeRepository;
     private readonly ISimpleCreateService<AttachmentType, AttachmentTypeDto> _simpleCreateAttachmentTypeService;
+    private readonly ISimpleUpdateService<AttachmentType, AttachmentTypeDto> _simpleUpdateAttachmentTypeService;
 
     public AttachmentTypeController(
         IRepository<AttachmentType> attachmentTypeRepository,
-        ISimpleCreateService<AttachmentType, AttachmentTypeDto> simpleCreateAttachmentTypeService
+        ISimpleCreateService<AttachmentType, AttachmentTypeDto> simpleCreateAttachmentTypeService,
+        ISimpleUpdateService<AttachmentType, AttachmentTypeDto> simpleUpdateAttachmentTypeService
     )
     {
         this._attachmentTypeRepository = attachmentTypeRepository;
         this._simpleCreateAttachmentTypeService = simpleCreateAttachmentTypeService;
+        this._simpleUpdateAttachmentTypeService = simpleUpdateAttachmentTypeService;
     }
 
     [HttpGet]
@@ -31,7 +34,14 @@ public class AttachmentTypeController : ControllerBase
         [FromHeader(Name = "Locale")] string locale
     )
     {
-        return Ok(await AttachmentTypePresenter.PresentList(await this._attachmentTypeRepository.GetAll(), locale));
+        try
+        {
+            return Ok(await AttachmentTypePresenter.PresentList(await this._attachmentTypeRepository.GetAll(), locale));
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 
     [HttpGet("{id:guid}")]
@@ -55,6 +65,19 @@ public class AttachmentTypeController : ControllerBase
     public async Task<IActionResult> CreateAttachmentType([FromBody]  AttachmentTypeDto attachmentType)
     {
         return Created(nameof(GetAttachmentTypeById), await this._simpleCreateAttachmentTypeService.Create(attachmentType));
+    }
+    
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> UpdateAttachment(Guid id, [FromBody] AttachmentTypeDto updateAttachmentType)
+    {
+        try
+        {
+            return Ok(await this._simpleUpdateAttachmentTypeService.Update(id, updateAttachmentType));
+        }
+        catch (Exception)
+        {
+            return NotFound("Can't find attachment");
+        }
     }
 
     [HttpDelete("{id:guid}")]
