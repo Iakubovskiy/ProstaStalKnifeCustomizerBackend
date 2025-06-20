@@ -38,7 +38,7 @@ public class AwsService:IFileService
 
     public async Task<string> SaveFile(IFormFile file, string key)
     {
-        string fileName = key;
+        string fileName = Uri.EscapeDataString(key);
         using var stream = file.OpenReadStream();
 
         TransferUtilityUploadRequest uploadRequest = new TransferUtilityUploadRequest
