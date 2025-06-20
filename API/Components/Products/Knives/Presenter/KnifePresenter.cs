@@ -20,6 +20,7 @@ public class KnifePresenter : AbstractProductPresenter
     public string Description {get; set;}
     public Dictionary<string, string> Descriptions {get; set;}
     public double Price {get; set;}
+    public bool IsActive {get; set;}
     public FileEntity ImageUrl {get; set;}
     public double TotalLength { get; set; }
     public double BladeLength { get; set; }
@@ -60,7 +61,8 @@ public class KnifePresenter : AbstractProductPresenter
             BladeCoatingColor = knife.Color.Color.GetTranslation(locale),
             MetaTitle = knife.MetaTitle.GetTranslation(locale),
             MetaDescription = knife.MetaDescription.GetTranslation(locale),
-            KnifeForCanvas = await KnifeForCanvasPresenter.Present(knife, locale)
+            KnifeForCanvas = await KnifeForCanvasPresenter.Present(knife, locale),
+            IsActive = knife.IsActive,
         };
         
         if (knife.Handle != null)
