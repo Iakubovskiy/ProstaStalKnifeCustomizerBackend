@@ -36,7 +36,7 @@ public class KnifePresenter : AbstractProductPresenter
     public List<string>? EngravingNames {get; set;}
     public List<ReviewPresenter>? Reviews {get; set;}
     public double? AverageRating { get; set; } = null;
-    public KnifeForCanvasPresenter KnifeForCanvas  {get; set;}
+    public KnifeForCanvasPresenter? KnifeForCanvas  {get; set;}
 
     public static async Task<KnifePresenter> Present(
         Knife knife, 
@@ -64,8 +64,6 @@ public class KnifePresenter : AbstractProductPresenter
             BladeCoatingColor = knife.Color.Color.GetTranslation(locale),
             MetaTitle = knife.MetaTitle.GetTranslation(locale),
             MetaDescription = knife.MetaDescription.GetTranslation(locale),
-            KnifeForCanvas = await KnifeForCanvasPresenter
-                .Present(knife, locale, locale, priceService),
             IsActive = knife.IsActive,
         };
         
@@ -126,5 +124,20 @@ public class KnifePresenter : AbstractProductPresenter
         }
 
         return knifePresenters;
+    }
+
+    public static async Task<KnifePresenter> PresentForCanvas(
+        Knife knife,
+        string locale,
+        string currency,
+        IGetComponentPrice getComponentPriceService,
+        IPriceService priceService
+    )
+    {
+        KnifePresenter knifePresenter = await PresentWithTranslations(knife, locale, currency, getComponentPriceService, priceService);
+        knifePresenter.KnifeForCanvas = await KnifeForCanvasPresenter
+            .Present(knife, locale, currency, priceService);
+
+        return knifePresenter;
     }
 }

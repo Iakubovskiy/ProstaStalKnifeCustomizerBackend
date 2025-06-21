@@ -1,4 +1,5 @@
 ﻿using System.Data.Entity.Core;
+using System.Net;
 using System.Security.Claims;
 using API.Orders.Presenters;
 using Application.Components.Prices;
@@ -12,6 +13,8 @@ using Application.Orders.UseCases.UpdateOrderItemQuantity;
 using Application.Orders.UseCases.UpdateStatus;
 using Domain.Orders.Support;
 using Infrastructure.Orders;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace API.Orders;
 
@@ -86,7 +89,17 @@ public class OrderController : ControllerBase
     {
         try
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var authResult = await HttpContext.AuthenticateAsync(JwtBearerDefaults.AuthenticationScheme);
+            if (authResult.Succeeded)
+            {
+                HttpContext.User = authResult.Principal;
+            }
+            string? userId = null;
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                userId= User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            }
+
             Guid? userIdGuid = null;
             if (!string.IsNullOrEmpty(userId))
             {

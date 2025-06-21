@@ -1,3 +1,4 @@
+using Domain.Orders;
 using Domain.Orders.Support;
 using Domain.Users;
 using Microsoft.AspNetCore.Identity;
@@ -10,6 +11,7 @@ public class UserPresenter
     public string Email { get; set; }
     public string Role { get; set; }
     public ClientData? UserData { get; set; }
+    public List<Order>? Orders { get; set; }
 
     public static async Task<UserPresenter> Present(
         User user,
@@ -37,5 +39,12 @@ public class UserPresenter
             userPresenters.Add(userPresenter);
         }
         return userPresenters;
+    }
+
+    public static async Task<UserPresenter> PresentWithOrders(User user, UserManager<User> userManager)
+    {
+        UserPresenter userPresenter = await Present(user, userManager);
+        userPresenter.Orders = user.Orders;
+        return userPresenter;
     }
 }

@@ -76,7 +76,7 @@ public class KnifeController : ControllerBase
         {
             Knife knife = await this._knifeRepository.GetById(id); 
             return Ok(await KnifePresenter
-                .PresentWithTranslations(knife, locale, currency, this._getComponentPrice, this._priceService));
+                .PresentForCanvas(knife, locale, currency, this._getComponentPrice, this._priceService));
         }
         catch (Exception)
         {

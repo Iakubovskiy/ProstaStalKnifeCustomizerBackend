@@ -2,6 +2,7 @@ using System.Data.Entity.Core;
 using API.Users.UseCases.Get.Presenter;
 using Domain.Users;
 using Infrastructure;
+using Infrastructure.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -15,15 +16,18 @@ namespace API.Users.UseCases.Get;
 public class GetUserByIdController : ControllerBase
 {
     private readonly IRepository<User> _userRepository;
+    private readonly IGetUserWithOrder _getUserWithOrder; 
     private readonly UserManager<User> _userManager;
 
     public GetUserByIdController(
         IRepository<User> userRepository,
-        UserManager<User> userManager
+        UserManager<User> userManager,
+        IGetUserWithOrder getUserWithOrder
     )
     {
         this._userRepository = userRepository;
         this._userManager = userManager;
+        this._getUserWithOrder = getUserWithOrder;
     }
 
     [HttpGet("{id:guid}")]
@@ -33,8 +37,8 @@ public class GetUserByIdController : ControllerBase
     {
         try
         {
-            var user = await _userRepository.GetById(id);
-            return Ok(await UserPresenter.Present(user, this._userManager));
+            var user = await _getUserWithOrder.GetUserWithOrder(id);
+            return Ok(await UserPresenter.PresentWithOrders(user, this._userManager));
         }
         catch (ObjectNotFoundException)
         {

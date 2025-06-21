@@ -45,6 +45,6 @@ public class InitialController:ControllerBase
             return BadRequest("There are no knifes.");
         }
         return Ok(KnifePresenter
-            .Present(knives[0], locale, currency, this._getComponentPrice, this._priceService));
+            .PresentForCanvas(knives[0], locale, currency, this._getComponentPrice, this._priceService));
     }
 }
