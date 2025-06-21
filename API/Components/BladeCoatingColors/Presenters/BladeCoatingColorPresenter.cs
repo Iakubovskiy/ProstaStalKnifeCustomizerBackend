@@ -29,7 +29,7 @@ public class BladeCoatingColorPresenter
         {
             Id = color.Id,
             Price = await getComponentPrice.GetPrice(color, currency),
-            Color = color.Color.TranslationDictionary[locale],
+            Color = color.Color.GetTranslation(locale),
             ColorCode = color.ColorCode,
             EngravingColorCode = color.EngravingColorCode,
             IsActive = color.IsActive,

@@ -18,7 +18,15 @@ public class Translations : ITranslatable
     public Dictionary<string, string> TranslationDictionary { get; private set;  }
     public string GetTranslation(string language)
     {
-        return this.TranslationDictionary[language];
+        string translation = "";
+        try
+        {
+            translation = this.TranslationDictionary[language];
+        }
+        catch (Exception)
+        {
+        }
+        return  translation;
     }
     
 }
