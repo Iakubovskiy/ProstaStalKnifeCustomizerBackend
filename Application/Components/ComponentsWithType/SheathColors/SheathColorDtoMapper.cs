@@ -45,11 +45,19 @@ public class SheathColorDtoMapper : IComponentWithTypeDtoMapper<SheathColor, She
             colorMap = await _fileRepository.GetById(dto.ColorMapId.Value);
         }
 
-        var dummySheathColor = (SheathColor)typeof(SheathColor)
-            .GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic, null, Type.EmptyTypes, null)!
-            .Invoke(null);
-
         var prices = new List<SheathColorPriceByType>();
+
+        var dummySheathColor = new SheathColor(
+            id,
+            colors,
+            dto.IsActive,
+            dto.ColorCode,
+            prices,
+            materials,
+            dto.EngravingColorCode,
+            texture,
+            colorMap
+        );
 
         foreach (var priceDto in dto.Prices)
         {

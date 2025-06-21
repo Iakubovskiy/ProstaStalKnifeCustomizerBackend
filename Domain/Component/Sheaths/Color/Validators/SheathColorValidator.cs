@@ -12,8 +12,5 @@ public static class SheathColorValidator
     {
         if (string.IsNullOrWhiteSpace(engravingColorCode))
             throw new ArgumentException("EngravingColorCode can't be empty", nameof(engravingColorCode));
-
-        if (prices.Count == 0)
-            throw new ArgumentException("Prices should have at least one element", nameof(prices));
     }
 }

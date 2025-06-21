@@ -101,12 +101,13 @@ public class SheathColorController : ControllerBase
     {
         try
         {
+            updatedColor.Id = id;
             return Ok(await SheathColorPresenter.Present(
                 await this._sheathColorUpdateService.Update(id, updatedColor),
                 locale, currency, this._priceService
             ));
         }
-        catch (Exception)
+        catch (ObjectNotFoundException)
         {
             return NotFound("Can't find sheath color");
         }
