@@ -11,7 +11,7 @@ namespace Domain.Users
         public User(
             Guid id,
             string email,
-            ClientData? userData
+            ClientData? userData = null
         )
         {
             this.Id = id;

@@ -16,7 +16,7 @@ public class RegistrationService : IRegistrationService
     {
         if (string.IsNullOrEmpty(registerDto.Password) || registerDto.Password != registerDto.PasswordConfirmation)
         {
-            throw new Exception("Password is empty or it doesn't match confirmation password");
+            throw new ArgumentException("Password is empty or it doesn't match confirmation password");
         }
 
         Guid userId = registerDto.Id ?? Guid.NewGuid();
@@ -26,21 +26,19 @@ public class RegistrationService : IRegistrationService
         {
             newUser = new User(
                 userId,
-                registerDto.Email,
-                registerDto.ClientData
+                registerDto.Email
             );
         }
         else if (registerDto.Role.ToLower() == "admin")
         {
             newUser = new Admin(
                 userId,
-                registerDto.Email,
-                registerDto.ClientData
+                registerDto.Email
             );
         }
         else
         {
-            throw new Exception("Invalid role");
+            throw new ArgumentException("Invalid role");
         }
 
         try

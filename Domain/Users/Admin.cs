@@ -8,7 +8,7 @@ namespace Domain.Users
         public Admin(
             Guid userId, 
             string email, 
-            ClientData? clientData
+            ClientData? clientData = null
         ) : base(userId, email, clientData)
         {
         }

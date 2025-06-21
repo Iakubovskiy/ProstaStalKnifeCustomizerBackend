@@ -29,6 +29,10 @@ public class RegistrationController : ControllerBase
             var user = await _registrationService.Register(registrationDto);
             return Ok(new { message = "User registered successfully", userId = user.Id });
         }
+        catch (ArgumentException e)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, new { message = e.Message });
+        }
         catch (Exception e)
         {
             return BadRequest(new { message = e.Message });
@@ -44,6 +48,10 @@ public class RegistrationController : ControllerBase
         {
             var user = await _registrationService.Register(registrationDto);
             return Ok(new { message = "User registered successfully by admin", userId = user.Id });
+        }
+        catch (ArgumentException e)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, new { message = e.Message });
         }
         catch (Exception e)
         {
