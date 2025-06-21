@@ -11,7 +11,7 @@ public class SheathPresenter
     public string Name { get; set; }
     public Dictionary<string, string> Names { get; set; }
     public FileEntity? Model { get; set; }
-    public BladeShapeType ShapeType { get; set; }
+    public BladeShapeType Type { get; set; }
     public double Price { get; set; }
     public bool IsActive { get; set; }
 
@@ -27,7 +27,8 @@ public class SheathPresenter
             Name = sheath.Name.GetTranslation(locale),
             Model = sheath.Model,
             Price = await getComponentPrice.GetPrice(sheath, currency),
-            IsActive = sheath.IsActive
+            IsActive = sheath.IsActive,
+            Type = sheath.Type,
         };
     }
     
