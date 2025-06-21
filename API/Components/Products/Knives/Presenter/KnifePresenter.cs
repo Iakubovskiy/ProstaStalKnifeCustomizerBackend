@@ -22,7 +22,7 @@ public class KnifePresenter : AbstractProductPresenter
     public Dictionary<string, string> Descriptions {get; set;}
     public double Price {get; set;}
     public bool IsActive {get; set;}
-    public FileEntity ImageUrl {get; set;}
+    public FileEntity Image {get; set;}
     public double TotalLength { get; set; }
     public double BladeLength { get; set; }
     public double BladeWidth { get; set; }
@@ -53,7 +53,7 @@ public class KnifePresenter : AbstractProductPresenter
             Name = knife.Name.GetTranslation(locale),
             Description = knife.Description.GetTranslation(locale),
             Price = await getComponentPriceService.GetPrice(knife, currency),
-            ImageUrl = knife.Image,
+            Image = knife.Image,
             TotalLength = knife.Blade.BladeCharacteristics.TotalLength,
             BladeLength = knife.Blade.BladeCharacteristics.BladeLength,
             BladeWidth = knife.Blade.BladeCharacteristics.BladeWidth,

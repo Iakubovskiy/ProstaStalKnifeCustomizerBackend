@@ -46,6 +46,7 @@ public class KnifeRepository : ComponentRepository<Knife>
             .Include(product => product.Engravings)
             .Include(product => product.Attachments)
             .Include(product => product.Image)
+            .Include(product => product.Reviews)
             .ToListAsync();
     }
 

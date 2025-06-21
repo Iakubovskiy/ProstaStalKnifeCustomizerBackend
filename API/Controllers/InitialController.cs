@@ -44,7 +44,7 @@ public class InitialController:ControllerBase
         {
             return BadRequest("There are no knifes.");
         }
-        return Ok(KnifePresenter
+        return Ok(await KnifePresenter
             .PresentForCanvas(knives[0], locale, currency, this._getComponentPrice, this._priceService));
     }
 }
