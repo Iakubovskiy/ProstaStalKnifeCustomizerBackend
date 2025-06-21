@@ -67,6 +67,8 @@ public class CompletedSheathRepository : ComponentRepository<CompletedSheath>
                    .ThenInclude(e => e.Picture)
                    .Include(product => product.Attachments)
                    .ThenInclude(a => a.Type)
+                   .Include(sheath => sheath.Reviews)
+                   .ThenInclude(review => review.User)
                    .FirstOrDefaultAsync(product => product.Id == id)
                ?? throw new ObjectNotFoundException("Entity not found");
     }

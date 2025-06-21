@@ -75,13 +75,17 @@ public class KnifeController : ControllerBase
     {
         try
         {
-            Knife knife = await this._knifeRepository.GetById(id); 
+            Knife knife = await this._knifeRepository.GetById(id);
             return Ok(await KnifePresenter
                 .PresentForCanvas(knife, locale, currency, this._getComponentPrice, this._priceService));
         }
-        catch (Exception)
+        catch (ObjectNotFoundException)
         {
             return NotFound("Can't find knife");
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
         }
     }
 

@@ -57,6 +57,7 @@ public class KnifeRepository : ComponentRepository<Knife>
             .Include(product => product.Attachments)
             .Include(product => product.Image)
             .Include(product => product.Reviews)
+            .ThenInclude(review => review.User)
             .ToListAsync();
     }
 
@@ -81,6 +82,7 @@ public class KnifeRepository : ComponentRepository<Knife>
                    .Include(product => product.Image)
                    .Include(product => product.Attachments)
                    .Include(product => product.Reviews)
+                   .ThenInclude(review => review.User)
                    .FirstOrDefaultAsync(product => product.Id == id)
                ?? throw new ObjectNotFoundException("Entity not found");
     }

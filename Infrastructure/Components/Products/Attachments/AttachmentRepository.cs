@@ -39,6 +39,7 @@ public class AttachmentRepository : ComponentRepository<Attachment>
         return await this.Set
                    .Include(product => product.Tags)
                    .Include(product => product.Reviews)
+                   .ThenInclude(review => review.User)
                    .Include(product => product.Model)
                    .Include(product => product.Image)
                    .Include(product => product.Type)
