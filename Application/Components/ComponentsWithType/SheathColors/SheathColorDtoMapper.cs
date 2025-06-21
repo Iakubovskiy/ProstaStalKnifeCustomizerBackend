@@ -46,30 +46,6 @@ public class SheathColorDtoMapper : IComponentWithTypeDtoMapper<SheathColor, She
         }
 
         var prices = new List<SheathColorPriceByType>();
-
-        var dummySheathColor = new SheathColor(
-            id,
-            colors,
-            dto.IsActive,
-            dto.ColorCode,
-            prices,
-            materials,
-            dto.EngravingColorCode,
-            texture,
-            colorMap
-        );
-
-        foreach (var priceDto in dto.Prices)
-        {
-            var type = await _typeRepository.GetById(priceDto.TypeId);
-            if (type == null)
-            {
-                throw new ArgumentException($"BladeShapeType with id {priceDto.TypeId} not found");
-            }
-
-            prices.Add(new SheathColorPriceByType(type, dummySheathColor, priceDto.Price));
-        }
-
         var sheathColor = new SheathColor(
             id,
             colors,
@@ -81,16 +57,17 @@ public class SheathColorDtoMapper : IComponentWithTypeDtoMapper<SheathColor, She
             texture,
             colorMap
         );
+        
 
-        foreach (var price in sheathColor.Prices)
+        foreach (var priceDto in dto.Prices)
         {
-            typeof(SheathColorPriceByType)
-                .GetProperty(nameof(SheathColorPriceByType.SheathColor))!
-                .SetValue(price, sheathColor);
+            var type = await _typeRepository.GetById(priceDto.TypeId);
+            if (type == null)
+            {
+                throw new ArgumentException($"BladeShapeType with id {priceDto.TypeId} not found");
+            }
 
-            typeof(SheathColorPriceByType)
-                .GetProperty(nameof(SheathColorPriceByType.SheathColorId))!
-                .SetValue(price, sheathColor.Id);
+            prices.Add(new SheathColorPriceByType(type, sheathColor, priceDto.Price));
         }
 
         return sheathColor;
