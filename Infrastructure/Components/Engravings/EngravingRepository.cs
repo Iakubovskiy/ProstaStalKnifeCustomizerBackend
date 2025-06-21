@@ -34,6 +34,6 @@ public class EngravingRepository : ComponentRepository<Engraving>
             .Include(engraving => engraving.Tags)
             .Include(engraving => engraving.Picture)
             .FirstOrDefaultAsync(engraving => engraving.Id == id) 
-               ?? throw new ObjectNotFoundException();
+               ?? throw new ObjectNotFoundException($"Entity not found {nameof(Engraving)}");
     }
 }

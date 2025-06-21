@@ -36,6 +36,6 @@ public class BladeCoatingColorRepository : ComponentRepository<BladeCoatingColor
             .Include(coatingColor => coatingColor.Texture)
             .Include(coatingColor => coatingColor.ColorMap)
             .FirstOrDefaultAsync(coatingColor => coatingColor.Id == id) 
-               ?? throw new ObjectNotFoundException("Entity not found");
+               ?? throw new ObjectNotFoundException($"Entity not found {nameof(BladeCoatingColor)}");
     }
 }

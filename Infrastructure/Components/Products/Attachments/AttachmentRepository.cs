@@ -44,6 +44,6 @@ public class AttachmentRepository : ComponentRepository<Attachment>
                    .Include(product => product.Image)
                    .Include(product => product.Type)
                    .FirstOrDefaultAsync(product => product.Id == id)
-               ?? throw new ObjectNotFoundException("Entity not found");
+               ?? throw new ObjectNotFoundException($"Entity not found {nameof(Attachment)}");
     }
 }

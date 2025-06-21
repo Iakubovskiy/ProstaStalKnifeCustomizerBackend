@@ -15,6 +15,6 @@ public class CurrencyRepository : BaseRepository<Currency>, ICurrencyRepository
     public async Task<Currency> GetByName(string name)
     {
         return await this.Set.FirstOrDefaultAsync(currency => currency.Name == name) 
-               ?? throw new ObjectNotFoundException("Entity not found");
+               ?? throw new ObjectNotFoundException($"Entity not found {nameof(Currency)}");
     }
 }

@@ -37,6 +37,6 @@ public class BladeShapeRepository : ComponentRepository<BladeShape>
                 .Include(shape => shape.Type)
                 .Include(shape => shape.BladeShapeModel)
                 .FirstOrDefaultAsync(shape =>  shape.Id == id) 
-                ?? throw new ObjectNotFoundException("Entity not found");
+                ?? throw new ObjectNotFoundException($"Entity not found {nameof(BladeShape)}");
     }
 }

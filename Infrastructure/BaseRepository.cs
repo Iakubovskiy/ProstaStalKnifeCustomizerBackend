@@ -29,7 +29,7 @@ where TEntity : class, IEntity, IUpdatable<TEntity>
     
     public virtual async Task<TEntity> GetById (Guid id)
     {
-        return await Set.FindAsync(id) ?? throw new ObjectNotFoundException("Entity not found");
+        return await Set.FindAsync(id) ?? throw new ObjectNotFoundException($"Entity not found {nameof(TEntity)}");
     }
 
     public virtual async Task<TEntity> Create(TEntity entity)

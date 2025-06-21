@@ -39,6 +39,6 @@ public class HandleRepository : ComponentRepository<Handle>
                    .Include(handle => handle.BladeShapeType)
                    .Include(handle => handle.ColorMap)
                    .FirstOrDefaultAsync(handle => handle.Id == id) 
-               ?? throw new ObjectNotFoundException("Entity not found");
+               ?? throw new ObjectNotFoundException($"Entity not found {nameof(Handle)}");
     }
 }

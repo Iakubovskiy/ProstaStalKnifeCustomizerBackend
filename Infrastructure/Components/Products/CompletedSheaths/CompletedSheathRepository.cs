@@ -70,6 +70,6 @@ public class CompletedSheathRepository : ComponentRepository<CompletedSheath>
                    .Include(sheath => sheath.Reviews)
                    .ThenInclude(review => review.User)
                    .FirstOrDefaultAsync(product => product.Id == id)
-               ?? throw new ObjectNotFoundException("Entity not found");
+               ?? throw new ObjectNotFoundException($"Entity not found {nameof(CompletedSheath)}");
     }
 }
