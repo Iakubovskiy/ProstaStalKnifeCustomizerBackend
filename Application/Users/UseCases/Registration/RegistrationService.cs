@@ -6,10 +6,15 @@ namespace Application.Users.UseCases.Registration;
 public class RegistrationService : IRegistrationService
 {
     private readonly UserManager<User> _userManager;
+    private readonly RoleManager<IdentityRole<Guid>> _roleManager;
 
-    public RegistrationService(UserManager<User> userManager)
+    public RegistrationService(
+        UserManager<User> userManager,
+        RoleManager<IdentityRole<Guid>> roleManager
+    )
     {
-        _userManager = userManager;
+        this._userManager = userManager;
+        this._roleManager = roleManager;
     }
 
     public async Task<User> Register(RegisterDto registerDto)
@@ -43,7 +48,11 @@ public class RegistrationService : IRegistrationService
 
         try
         {
-            await _userManager.CreateAsync(newUser, registerDto.Password);
+            await this._userManager.CreateAsync(newUser, registerDto.Password);
+            if (registerDto.Role.ToLower() == "user")
+                await this._userManager.AddToRoleAsync(newUser, "User");
+            else if (registerDto.Role.ToLower() == "admin")
+                await this._userManager.AddToRoleAsync(newUser, "Admin");
         }
         catch (Exception e)
         {
