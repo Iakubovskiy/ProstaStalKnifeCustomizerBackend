@@ -1,4 +1,5 @@
-﻿using Application.Users.UseCases.Authentication;
+﻿using System.Data.Entity.Core;
+using Application.Users.UseCases.Authentication;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -33,7 +34,7 @@ public class AuthController : ControllerBase
             string token = await _authService.Login(model);
             return Ok(new { Token = token });
         }
-        catch (Exception e)
+        catch (ObjectNotFoundException)
         {
             return Unauthorized();
         }

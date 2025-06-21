@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Data.Entity.Core;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -69,7 +70,7 @@ namespace Application.Users.UseCases.Authentication
                 user = await _userManager.FindByNameAsync(model.Username);
                 if (user == null)
                 {
-                   throw new Exception("User not found");
+                   throw new ObjectNotFoundException("User not found");
                 }
             }
             else
@@ -83,7 +84,7 @@ namespace Application.Users.UseCases.Authentication
                         user = await _userManager.FindByNameAsync(emailUser.UserName);
                         if (user == null)
                         {
-                            throw new Exception("User not found");
+                            throw new ObjectDisposedException("User not found");
                         }
                     }
                 }
