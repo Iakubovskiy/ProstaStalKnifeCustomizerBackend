@@ -1,8 +1,10 @@
 using System.Security.Claims;
+using API.Users.UseCases.Get.Presenter;
 using Domain.Users;
 using Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -13,10 +15,15 @@ namespace API.Users.UseCases.Get;
 public class GetCurrentUserController : ControllerBase
 {
     private readonly IRepository<User> _userRepository;
+    private readonly UserManager<User> _userManager;
 
-    public GetCurrentUserController(IRepository<User> userRepository)
+    public GetCurrentUserController(
+        IRepository<User> userRepository,
+        UserManager<User> userManager
+    )
     {
         this._userRepository = userRepository;
+        this._userManager = userManager;
     }
     
     [HttpGet("me")]
@@ -34,7 +41,7 @@ public class GetCurrentUserController : ControllerBase
             if (user == null)
                 return NotFound(new { message = "User not found" });
 
-            return Ok(user);
+            return Ok(await UserPresenter.Present(user, this._userManager));
         }
         catch (Exception e)
         {
