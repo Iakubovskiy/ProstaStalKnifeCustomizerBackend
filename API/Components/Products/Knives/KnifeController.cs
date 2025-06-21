@@ -1,4 +1,5 @@
-﻿using API.Components.Products.Knives.Presenter;
+﻿using System.Data.Entity.Core;
+using API.Components.Products.Knives.Presenter;
 using Application.Components.Prices;
 using Microsoft.AspNetCore.Mvc;
 using Application.Components.Products.Knives;
@@ -85,9 +86,27 @@ public class KnifeController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateKnife([FromBody] KnifeDto knife)
+    public async Task<IActionResult> CreateKnife(
+        [FromBody] KnifeDto knife,
+        [FromHeader(Name = "Locale")] string locale,
+        [FromHeader(Name = "Currency")] string currency
+    )
     {
-        return Ok(await this._createKnifeService.Create(knife));
+        try
+        {
+            return Ok(await KnifePresenter
+                .Present(
+                    await this._createKnifeService.Create(knife), 
+                    locale, 
+                    currency, 
+                    this._getComponentPrice, 
+                    this._priceService
+                ));
+        }
+        catch (ObjectNotFoundException e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 
     [HttpPut("{id:guid}")]
