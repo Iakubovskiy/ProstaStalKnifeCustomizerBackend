@@ -26,10 +26,5 @@ public class EngravingVlaidator
         {
             throw new ArgumentException("Invalid picture url.", nameof(picture.FileUrl));
         }
-
-        if (text != null && string.IsNullOrWhiteSpace(text))
-        {
-            throw new ArgumentException("Text can't be empty.", nameof(text));
-        }
     }
 }
