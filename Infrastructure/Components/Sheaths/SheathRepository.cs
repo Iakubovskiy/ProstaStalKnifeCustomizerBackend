@@ -32,6 +32,7 @@ public class SheathRepository: ComponentRepository<Sheath>
     {
         return await this.Set
                 .Include(sheath => sheath.Type)
+                .Include(sheath => sheath.Model)
                 .FirstOrDefaultAsync(sheath => sheath.Id == id)
                 ?? throw new ObjectNotFoundException("Entity not found");
     }
