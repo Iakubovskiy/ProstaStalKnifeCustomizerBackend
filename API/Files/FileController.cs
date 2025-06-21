@@ -24,7 +24,7 @@ public class FileController : ControllerBase
     public async Task<IActionResult> CreateFile(IFormFile file)
     {
         Guid id = Guid.NewGuid();
-        string fileUrl = await this._fileService.SaveFile(file, file.FileName);
+        string fileUrl = await this._fileService.SaveFile(file, id.ToString() + file.FileName);
         FileEntity newFile = new FileEntity(id,fileUrl);
         return Created("/", await this._fileRepository.Create(newFile));
     }
