@@ -17,14 +17,17 @@ public class ColorsFilterRepository : IColorsFilterRepository
         List<string> colors = new List<string>();
 
         List<string> bladeCoatingColors = await this._context.BladeCoatingColors
+            .AsNoTracking()
             .Select(coating => coating.Color.GetTranslation(locale)).Distinct().ToListAsync();
         colors.AddRange(bladeCoatingColors);
         
         List<string> handleColors = await this._context.Handles
+            .AsNoTracking()
             .Select(handle => handle.Color.GetTranslation(locale)).Distinct().ToListAsync();
         colors.AddRange(handleColors);
         
         List<string> sheathColors = await this._context.SheathColors
+            .AsNoTracking()   
             .Select(sheathColor => sheathColor.Color.GetTranslation(locale)).Distinct().ToListAsync();
         colors.AddRange(sheathColors);
         

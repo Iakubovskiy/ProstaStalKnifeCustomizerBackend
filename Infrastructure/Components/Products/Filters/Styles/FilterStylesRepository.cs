@@ -16,6 +16,7 @@ public class FilterStylesRepository : IFilterStylesRepository
     {
         List<string> tags = 
             await this._context.EngravingTags
+            .AsNoTracking()
             .Select(tag => tag.Name.GetTranslation(locale))
             .Distinct()
             .ToListAsync();
