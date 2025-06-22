@@ -38,6 +38,10 @@ public class AuthController : ControllerBase
         {
             return Unauthorized();
         }
+        catch (Exception ex)
+        {
+            return StatusCode(401, ex);
+        }
     }
 
     [HttpPost ("logout")]
