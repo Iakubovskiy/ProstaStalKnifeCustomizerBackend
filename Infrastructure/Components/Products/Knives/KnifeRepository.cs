@@ -79,6 +79,7 @@ public class KnifeRepository : ComponentRepository<Knife>
                    .ThenInclude(sc => sc.Prices)
                    .ThenInclude(prices => prices.Type)
                    .Include(product => product.Engravings)
+                   .ThenInclude(engravings => engravings.Picture)
                    .Include(product => product.Image)
                    .Include(product => product.Attachments)
                    .Include(product => product.Reviews)
