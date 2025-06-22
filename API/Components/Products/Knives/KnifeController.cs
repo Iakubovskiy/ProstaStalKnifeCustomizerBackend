@@ -100,14 +100,18 @@ public class KnifeController : ControllerBase
         {
             return Ok(await KnifePresenter
                 .Present(
-                    await this._createKnifeService.Create(knife), 
-                    locale, 
-                    currency, 
-                    this._getComponentPrice, 
+                    await this._createKnifeService.Create(knife),
+                    locale,
+                    currency,
+                    this._getComponentPrice,
                     this._priceService
                 ));
         }
         catch (ObjectNotFoundException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch (ArgumentException e)
         {
             return BadRequest(e.Message);
         }
