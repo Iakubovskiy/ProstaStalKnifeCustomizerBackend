@@ -31,7 +31,6 @@ public class KnifeDtoMapper : IProductDtoMapper<Knife, KnifeDto>
     private readonly IRepository<ProductTag> _tagRepository;
     private readonly IRepository<FileEntity> _fileRepository;
     private readonly IComponentDtoMapper<Engraving, EngravingDto> _engravingDtoMapper;
-    private readonly IProductDtoMapper<Attachment, AttachmentDto> _attachmentDtoMapper;
 
     public KnifeDtoMapper(
         IComponentRepository<BladeShape> bladeShapeRepository,
@@ -43,8 +42,7 @@ public class KnifeDtoMapper : IProductDtoMapper<Knife, KnifeDto>
         IComponentRepository<Attachment> attachmentRepository,
         IRepository<ProductTag> tagRepository,
         IRepository<FileEntity> fileRepository,
-        IComponentDtoMapper<Engraving, EngravingDto> engravingDtoMapper,
-        IProductDtoMapper<Attachment, AttachmentDto> attachmentDtoMapper
+        IComponentDtoMapper<Engraving, EngravingDto> engravingDtoMapper
     )
     {
         _bladeShapeRepository = bladeShapeRepository;
@@ -57,7 +55,6 @@ public class KnifeDtoMapper : IProductDtoMapper<Knife, KnifeDto>
         _tagRepository = tagRepository;
         _fileRepository = fileRepository;
         _engravingDtoMapper = engravingDtoMapper;
-        _attachmentDtoMapper = attachmentDtoMapper;
     }
 
     public async Task<Knife> Map(KnifeDto dto)
@@ -100,22 +97,13 @@ public class KnifeDtoMapper : IProductDtoMapper<Knife, KnifeDto>
             newEngravings.Add(engraving);
         }
         var allEngravings = existingEngravings.Concat(newEngravings).ToList();
-        var existingAttachments = new List<Attachment>();
+        var allAttachments = new List<Attachment>();
         foreach (var attachmentId in dto.ExistingAttachmentIds)
         {
             var attachment = await _attachmentRepository. GetById(attachmentId);
-            existingAttachments.Add(attachment);
+            allAttachments.Add(attachment);
         }
-
-        var newAttachments = new List<Attachment>();
-        foreach (var attachmentDto in dto.NewAttachments)
-        {
-            var attachment = await _attachmentDtoMapper.Map(attachmentDto);
-            newAttachments.Add(attachment);
-        }
-
-        var allAttachments = existingAttachments.Concat(newAttachments).ToList();
-
+        
         var name = new Translations(dto.Names);
         var title = new Translations(dto.Titles);
         var description = new Translations(dto.Descriptions);

@@ -24,5 +24,4 @@ public class KnifeDto : IProductDto
     public List<EngravingDto> NewEngravings { get; set; }
     
     public List<Guid> ExistingAttachmentIds { get; set; }
-    public List<AttachmentDto> NewAttachments { get; set; }
 }

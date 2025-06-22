@@ -46,7 +46,6 @@ public class KnifeControllerTest : IClassFixture<CustomWebAppFactory>
             ExistingEngravingIds = new List<Guid> { new Guid("e1a1b2c3-d4e5-4f6a-8b9c-0d1e2f3a4b5c") },
             NewEngravings = new List<EngravingDto>(),
             ExistingAttachmentIds = new List<Guid> { new Guid("11111111-aaaa-4aaa-aaaa-aaaaaaaaaaaa") },
-            NewAttachments = new List<AttachmentDto>()
         };
     }
 
