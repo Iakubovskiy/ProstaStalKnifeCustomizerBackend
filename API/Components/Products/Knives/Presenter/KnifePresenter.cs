@@ -1,4 +1,5 @@
 using API.Components.Products.AllProducts.Presenters;
+using API.Components.Products.ProductTags.Presenters;
 using Application.Components.Prices;
 using Application.Currencies;
 using Domain.Component.Product.Knife;
@@ -36,6 +37,8 @@ public class KnifePresenter : AbstractProductPresenter
     public List<string>? EngravingNames {get; set;}
     public List<ReviewPresenter>? Reviews {get; set;}
     public double? AverageRating { get; set; } = null;
+    
+    public List<ProductTagPresenter>? ProductTags {get; set;}
     public KnifeForCanvasPresenter? KnifeForCanvas  {get; set;}
 
     public static async Task<KnifePresenter> Present(
@@ -65,6 +68,7 @@ public class KnifePresenter : AbstractProductPresenter
             MetaTitle = knife.MetaTitle.GetTranslation(locale),
             MetaDescription = knife.MetaDescription.GetTranslation(locale),
             IsActive = knife.IsActive,
+            ProductTags = await ProductTagPresenter.PresentList(knife.Tags, locale)
         };
         
         if (knife.Handle != null)

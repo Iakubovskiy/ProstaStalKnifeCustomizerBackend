@@ -1,5 +1,6 @@
 using API.Components.Products.AllProducts.Presenters;
 using API.Components.Products.Attachments.Types.Presenter;
+using API.Components.Products.ProductTags.Presenters;
 using Application.Components.Prices;
 using Domain.Component.Product.Attachments;
 using Domain.Component.Product.Reviews;
@@ -29,7 +30,7 @@ public class AttachmentPresenter : AbstractProductPresenter
     public Dictionary<string, string> Materials { get; set; }
     public double Price { get; set; }
     public FileEntity Model { get; set; }
-    public List<Guid> TagsIds { get; set; }
+    public List<ProductTagPresenter> ProductTags { get; set; }
     public List<ReviewPresenter>? Reviews {get; set;}
     public double? AverageRating { get; set; } = null;
 
@@ -54,7 +55,7 @@ public class AttachmentPresenter : AbstractProductPresenter
             Price = await getComponentPriceService.GetPrice(attachment, currency),
             Model = attachment.Model,
             Color = attachment.Color.GetTranslation(locale),
-            TagsIds = attachment.Tags.Select(t => t.Id).ToList(),
+            ProductTags = await ProductTagPresenter.PresentList(attachment.Tags, locale),
         };
         
         if (attachment.Reviews != null && attachment.Reviews.Any())

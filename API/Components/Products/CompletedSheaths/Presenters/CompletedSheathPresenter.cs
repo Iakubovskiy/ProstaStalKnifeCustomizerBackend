@@ -1,6 +1,7 @@
 using API.Components.Engravings.Presenters;
 using API.Components.Products.AllProducts.Presenters;
 using API.Components.Products.Attachments.Presenters;
+using API.Components.Products.ProductTags.Presenters;
 using API.Components.Sheaths.Colors.Presenters;
 using API.Components.Sheaths.Presenter;
 using Application.Components.Prices;
@@ -31,6 +32,7 @@ public class CompletedSheathPresenter : AbstractProductPresenter
     public List<AttachmentPresenter>? Attachments { get; set; }
     public double TotalPrice { get; set; }
     public List<ReviewPresenter>? Reviews {get; set;}
+    public List<ProductTagPresenter> ProductTags { get; set; }
     public double? AverageRating { get; set; } = null;
 
     public static async Task<CompletedSheathPresenter> Present(
@@ -52,7 +54,8 @@ public class CompletedSheathPresenter : AbstractProductPresenter
             MetaDescription = sheath.MetaDescription.GetTranslation(locale),
             TotalPrice = await getComponentPrice.GetPrice(sheath, currency),
             Sheath = await SheathPresenter.Present(sheath.Sheath, locale, currency, getComponentPrice),
-            SheathColor = await SheathColorPresenter.Present(sheath.SheathColor, locale, currency, priceService)
+            SheathColor = await SheathColorPresenter.Present(sheath.SheathColor, locale, currency, priceService),
+            ProductTags = await ProductTagPresenter.PresentList(sheath.Tags, locale)
         };
         
         if(sheath.Engravings != null)
