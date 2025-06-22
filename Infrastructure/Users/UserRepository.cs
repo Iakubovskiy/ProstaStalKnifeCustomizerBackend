@@ -16,6 +16,7 @@ public class UserRepository : BaseRepository<User>, IGetUserWithOrder
         return await this.Set
             .Include(u => u.Orders)
             .ThenInclude(o => o.OrderItems)
+            .ThenInclude(oi => oi.Product)
             .FirstOrDefaultAsync(u => u.Id == id) ?? throw new ObjectNotFoundException("User not found");
     }
 }
