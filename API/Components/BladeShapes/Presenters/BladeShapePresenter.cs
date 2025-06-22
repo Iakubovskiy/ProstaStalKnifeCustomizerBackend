@@ -1,4 +1,5 @@
 using System.Reflection.PortableExecutable;
+using API.Components.Sheaths.Presenter;
 using Application.Components.Prices;
 using Domain.Component.BladeShapes;
 using Domain.Component.BladeShapes.BladeCharacteristic;
@@ -20,6 +21,7 @@ public class BladeShapePresenter
     public FileEntity BladeShapeImage { get; set; }
     public FileEntity? SheathModelUrl { get; set; }
     public BladeCharacteristics BladeCharacteristicsModel { get; set; }
+    public SheathPresenter? Sheath { get; set; } 
 
     public static async Task<BladeShapePresenter> Present(
         BladeShape bladeShape, 
@@ -42,6 +44,7 @@ public class BladeShapePresenter
         if(bladeShape.Sheath != null)
         {
             presenter.SheathModelUrl = bladeShape.Sheath.Model;
+            presenter.Sheath = await SheathPresenter.Present(bladeShape.Sheath, locale, currency, getComponentPriceService);
         }
         
         return presenter;

@@ -23,6 +23,8 @@ public class OrderRepository : BaseRepository<Order>, IOrderRepository
         return await Set
             .Include(o => o.OrderItems)
             .ThenInclude(oi => oi.Product)
+            .Include(o => o.DeliveryType)
+            .Include(o => o.PaymentMethod)
             .ToListAsync();
     }
 
@@ -31,6 +33,8 @@ public class OrderRepository : BaseRepository<Order>, IOrderRepository
         return await Set
             .Include(o => o.OrderItems)
             .ThenInclude(oi => oi.Product)
+            .Include(o => o.DeliveryType)
+            .Include(o => o.PaymentMethod)
             .FirstOrDefaultAsync(o => o.Id == id) ?? throw new ObjectNotFoundException("Order not found");
     }
 }

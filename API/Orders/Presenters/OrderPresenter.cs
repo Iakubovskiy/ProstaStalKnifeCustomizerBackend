@@ -2,7 +2,11 @@ using API.Orders.Support.DeliveryTypes.Presenters;
 using API.Orders.Support.PaymentMethods.Presenters;
 using Application.Components.Prices;
 using Application.Currencies;
+using Domain.Component.Product.Attachments;
+using Domain.Component.Product.CompletedSheath;
+using Domain.Component.Product.Knife;
 using Domain.Orders;
+using Infrastructure.Components;
 
 namespace API.Orders.Presenters;
 
@@ -29,7 +33,11 @@ public class OrderPresenter
         string locale, 
         string currency,
         IPriceService priceService,
-        IGetComponentPrice getComponentPriceService)
+        IGetComponentPrice getComponentPriceService,
+        IComponentRepository<Attachment> attachmentRepository,
+        IComponentRepository<Knife> knifeRepository,
+        IComponentRepository<CompletedSheath> completedSheathRepository
+    )
     {
         return new OrderPresenter
         {
@@ -47,7 +55,17 @@ public class OrderPresenter
             Comment = order.Comment,
             Status = order.Status,
             PaymentMethod = await PaymentMethodPresenter.Present(order.PaymentMethod, locale),
-            OrderItems = await OrderItemPresenter.PresentList(order.OrderItems, locale, currency, getComponentPriceService, priceService)
+            OrderItems = await OrderItemPresenter
+                .PresentList(
+                    order.OrderItems, 
+                    locale, 
+                    currency, 
+                    getComponentPriceService, 
+                    priceService, 
+                    attachmentRepository,
+                    knifeRepository,
+                    completedSheathRepository
+                ),
         };
     }
 
@@ -56,12 +74,25 @@ public class OrderPresenter
         string locale, 
         string currency,
         IPriceService priceService,
-        IGetComponentPrice getComponentPriceService)
+        IGetComponentPrice getComponentPriceService,
+        IComponentRepository<Attachment> attachmentRepository,
+        IComponentRepository<Knife> knifeRepository,
+        IComponentRepository<CompletedSheath> completedSheathRepository
+    )
     {
         var orderPresenters = new List<OrderPresenter>();
         foreach (var order in orders)
         {
-            OrderPresenter orderPresenter = await Present(order, locale, currency, priceService, getComponentPriceService);
+            OrderPresenter orderPresenter = await Present(
+                order, 
+                locale, 
+                currency, 
+                priceService, 
+                getComponentPriceService,
+                attachmentRepository,
+                knifeRepository,
+                completedSheathRepository
+            );
             orderPresenters.Add(orderPresenter);
         }
         

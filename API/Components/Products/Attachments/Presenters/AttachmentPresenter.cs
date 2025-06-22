@@ -55,8 +55,11 @@ public class AttachmentPresenter : AbstractProductPresenter
             Price = await getComponentPriceService.GetPrice(attachment, currency),
             Model = attachment.Model,
             Color = attachment.Color.GetTranslation(locale),
-            ProductTags = await ProductTagPresenter.PresentList(attachment.Tags, locale),
         };
+        if (attachment.Tags != null && attachment.Tags.Count > 0)
+        {
+            presenter.ProductTags = await ProductTagPresenter.PresentList(attachment.Tags, locale);
+        }
         
         if (attachment.Reviews != null && attachment.Reviews.Any())
         {

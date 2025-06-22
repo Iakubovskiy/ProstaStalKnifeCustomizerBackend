@@ -11,7 +11,11 @@ using Application.Orders.UseCases.Create;
 using Application.Orders.UseCases.RemoveOrderItem;
 using Application.Orders.UseCases.UpdateOrderItemQuantity;
 using Application.Orders.UseCases.UpdateStatus;
+using Domain.Component.Product.Attachments;
+using Domain.Component.Product.CompletedSheath;
+using Domain.Component.Product.Knife;
 using Domain.Orders.Support;
+using Infrastructure.Components;
 using Infrastructure.Orders;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -30,6 +34,9 @@ public class OrderController : ControllerBase
     private readonly IUpdateOrderItemQuantityService _updateOrderItemQuantityService;
     private readonly IPriceService _priceService;
     private readonly IGetComponentPrice _getComponentPrice;
+    private readonly IComponentRepository<Attachment> _attachmentRepository;
+        private readonly IComponentRepository<Knife> _knifeRepository;
+    private readonly IComponentRepository<CompletedSheath> _completedSheathRepository;
 
     public OrderController(
         IOrderRepository orderRepository, 
@@ -39,7 +46,10 @@ public class OrderController : ControllerBase
         IRemoveOrderItem removeOrderItem,
         IUpdateOrderItemQuantityService updateOrderItemQuantityService,
         IPriceService priceService,
-        IGetComponentPrice getComponentPrice
+        IGetComponentPrice getComponentPrice,
+        IComponentRepository<Attachment> attachmentRepository,
+        IComponentRepository<Knife> knifeRepository,
+        IComponentRepository<CompletedSheath> completedSheathRepository
     )
     {
         this._orderRepository = orderRepository;
@@ -50,6 +60,9 @@ public class OrderController : ControllerBase
         this._updateOrderItemQuantityService = updateOrderItemQuantityService;
         this._priceService = priceService;
         this._getComponentPrice = getComponentPrice;
+        this._attachmentRepository = attachmentRepository;
+        this._knifeRepository = knifeRepository;
+        this._completedSheathRepository = completedSheathRepository;
     }
 
     [HttpGet]
@@ -59,7 +72,17 @@ public class OrderController : ControllerBase
     )
     {
         return Ok(await OrderPresenter
-            .PresentList(await this._orderRepository.GetAll(), locale, currency, this._priceService, this._getComponentPrice));
+            .PresentList(
+                await this._orderRepository.GetAll(), 
+                locale, 
+                currency, 
+                this._priceService, 
+                this._getComponentPrice,
+                this._attachmentRepository,
+                this._knifeRepository,
+                this._completedSheathRepository
+            )
+        );
     }
 
     [HttpGet("{id:guid}")]
@@ -72,7 +95,16 @@ public class OrderController : ControllerBase
         try
         {
             return Ok(await OrderPresenter
-                .Present(await this._orderRepository.GetById(id), locale, currency, this._priceService, this._getComponentPrice));
+                .Present(
+                    await this._orderRepository.GetById(id), 
+                    locale, 
+                    currency, 
+                    this._priceService, 
+                    this._getComponentPrice,
+                    this._attachmentRepository,
+                    this._knifeRepository,
+                    this._completedSheathRepository
+                ));
         }
         catch (ObjectNotFoundException)
         {
