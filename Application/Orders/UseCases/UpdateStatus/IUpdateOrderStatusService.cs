@@ -1,5 +1,3 @@
-using Application.Orders.Dto;
-using Domain.Order;
 using Domain.Orders;
 
 namespace Application.Orders.UseCases.UpdateStatus;

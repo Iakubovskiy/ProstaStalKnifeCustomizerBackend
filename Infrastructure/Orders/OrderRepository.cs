@@ -1,5 +1,4 @@
 using System.Data.Entity.Core;
-using Domain.Order;
 using Domain.Orders;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;

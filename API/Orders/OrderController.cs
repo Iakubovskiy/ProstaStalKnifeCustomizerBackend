@@ -2,6 +2,7 @@
 using System.Net;
 using System.Security.Claims;
 using API.Orders.Presenters;
+using API.Orders.Support;
 using Application.Components.Prices;
 using Application.Currencies;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +16,7 @@ using Domain.Component.Product.Attachments;
 using Domain.Component.Product.CompletedSheath;
 using Domain.Component.Product.Knife;
 using Domain.Orders.Support;
+using Domain.Orders.Support.Validators;
 using Infrastructure.Components;
 using Infrastructure.Orders;
 using Microsoft.AspNetCore.Authentication;
@@ -169,16 +171,29 @@ public class OrderController : ControllerBase
     [HttpPatch("update/delivery-data/{id:guid}")]
     public async Task<IActionResult> UpdateOrderDeliveryData(
         Guid id, 
-        [FromBody] ClientData clientData
+        [FromBody] ClientDataDto dto
     )
     {
         try
         {
+            ClientData clientData = new ClientData(
+                dto.ClientFullName,
+                dto.ClientPhoneNumber,
+                dto.CountryForDelivery,
+                dto.City,
+                dto.Email,
+                dto.Address,
+                dto.ZipCode
+            );
             return Ok(await this._changeClientDataService.ChangeClientData(id, clientData));
         }
-        catch (Exception)
+        catch (ObjectNotFoundException)
         {
             return NotFound("Can't find order");
+        }
+        catch (ArgumentException e)
+        {
+            return StatusCode(400, e.Message);
         }
     }
     

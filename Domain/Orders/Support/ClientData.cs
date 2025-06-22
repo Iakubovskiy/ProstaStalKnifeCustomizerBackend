@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using Domain.Order.Support.Validators;
+using Domain.Orders.Support.Validators;
 using Microsoft.EntityFrameworkCore;
 
 namespace Domain.Orders.Support;

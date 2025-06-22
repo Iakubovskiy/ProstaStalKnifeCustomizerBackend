@@ -1,4 +1,3 @@
-using Domain.Order;
 using Domain.Orders;
 
 namespace Infrastructure.Orders;

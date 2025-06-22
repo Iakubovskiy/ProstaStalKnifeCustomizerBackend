@@ -1,4 +1,4 @@
-namespace Domain.Order.Support.Validators;
+namespace Domain.Orders.Support.Validators;
 
 public static class ClientDetailsValidator
 {
