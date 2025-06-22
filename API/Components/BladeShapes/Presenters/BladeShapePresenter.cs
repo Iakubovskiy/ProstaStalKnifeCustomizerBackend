@@ -18,7 +18,7 @@ public class BladeShapePresenter
     public double Price { get; set; }
     public FileEntity BladeShapeModel { get; set; }
     public FileEntity BladeShapeImage { get; set; }
-    public Sheath? SheathModelUrl { get; set; }
+    public FileEntity? SheathModelUrl { get; set; }
     public BladeCharacteristics BladeCharacteristicsModel { get; set; }
 
     public static async Task<BladeShapePresenter> Present(
@@ -41,7 +41,7 @@ public class BladeShapePresenter
 
         if(bladeShape.Sheath != null)
         {
-            presenter.SheathModelUrl = bladeShape.Sheath;
+            presenter.SheathModelUrl = bladeShape.Sheath.Model;
         }
         
         return presenter;
