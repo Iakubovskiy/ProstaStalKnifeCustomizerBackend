@@ -11,6 +11,8 @@ public class AttachmentPresenterForCanvas
     public double Price { get; set; }
     public FileEntity Iamge { get; set; }
     public FileEntity Model { get; set; }
+    public string Color { get; set; }
+    public string Material { get; set; }
 
     public static async Task<AttachmentPresenterForCanvas> Present(
         Attachment attachment,
@@ -25,7 +27,9 @@ public class AttachmentPresenterForCanvas
             Model = attachment.Model,
             Name = attachment.Name.GetTranslation(locale),
             Price = await priceService.GetPrice(attachment.Price, currency),
-            Iamge = attachment.Image
+            Iamge = attachment.Image,
+            Color = attachment.Color.GetTranslation(locale),
+            Material = attachment.Material.GetTranslation(locale),
         };
     }
 }
