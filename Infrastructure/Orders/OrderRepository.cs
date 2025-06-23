@@ -13,7 +13,7 @@ public class OrderRepository : BaseRepository<Order>, IOrderRepository
 
     public async Task<int> GetLastOrderNumber()
     {
-        Order? order = await Context.Orders.AsNoTracking().OrderBy(o => o.Id).FirstOrDefaultAsync();
+        Order? order = await Context.Orders.AsNoTracking().OrderByDescending(o => o.Number).FirstOrDefaultAsync();
         return order?.Number ?? 0;
     }
 
