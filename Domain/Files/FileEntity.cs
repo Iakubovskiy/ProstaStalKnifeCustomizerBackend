@@ -14,11 +14,7 @@ public class FileEntity : IEntity, IUpdatable<FileEntity>
         {
             throw new ArgumentException("File url cannot be empty");
         }
-
-        if (!Uri.IsWellFormedUriString(fileUrl, UriKind.Absolute))
-        {
-            throw new ArgumentException("File url must be a valid absolute URI");
-        }
+        
         this.Id = id;
         this.FileUrl = fileUrl;
     }
