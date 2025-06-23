@@ -1,4 +1,4 @@
-using Application.Components.Products.Attachments;
+using Application.Components.Prices.Engravings;
 using Application.Components.SimpleComponents.Engravings;
 using Application.Components.SimpleComponents.UseCases;
 using Domain.Component.BladeCoatingColors;
@@ -31,6 +31,7 @@ public class KnifeDtoMapper : IProductDtoMapper<Knife, KnifeDto>
     private readonly IRepository<ProductTag> _tagRepository;
     private readonly IRepository<FileEntity> _fileRepository;
     private readonly IComponentDtoMapper<Engraving, EngravingDto> _engravingDtoMapper;
+    private readonly IGetEngravingPrice _getEngravingPrice;
 
     public KnifeDtoMapper(
         IComponentRepository<BladeShape> bladeShapeRepository,
@@ -42,19 +43,21 @@ public class KnifeDtoMapper : IProductDtoMapper<Knife, KnifeDto>
         IComponentRepository<Attachment> attachmentRepository,
         IRepository<ProductTag> tagRepository,
         IRepository<FileEntity> fileRepository,
-        IComponentDtoMapper<Engraving, EngravingDto> engravingDtoMapper
+        IComponentDtoMapper<Engraving, EngravingDto> engravingDtoMapper,
+        IGetEngravingPrice getEngravingPrice
     )
     {
-        _bladeShapeRepository = bladeShapeRepository;
-        _bladeCoatingColorRepository = bladeCoatingColorRepository;
-        _handleRepository = handleRepository;
-        _sheathRepository = sheathRepository;
-        _sheathColorRepository = sheathColorRepository;
-        _engravingRepository = engravingRepository;
-        _attachmentRepository = attachmentRepository;
-        _tagRepository = tagRepository;
-        _fileRepository = fileRepository;
-        _engravingDtoMapper = engravingDtoMapper;
+        this._bladeShapeRepository = bladeShapeRepository;
+        this._bladeCoatingColorRepository = bladeCoatingColorRepository;
+        this._handleRepository = handleRepository;
+        this._sheathRepository = sheathRepository;
+        this._sheathColorRepository = sheathColorRepository;
+        this._engravingRepository = engravingRepository;
+        this._attachmentRepository = attachmentRepository;
+        this._tagRepository = tagRepository;
+        this._fileRepository = fileRepository;
+        this._engravingDtoMapper = engravingDtoMapper;
+        this._getEngravingPrice = getEngravingPrice;
     }
 
     public async Task<Knife> Map(KnifeDto dto)
@@ -110,7 +113,7 @@ public class KnifeDtoMapper : IProductDtoMapper<Knife, KnifeDto>
         var metaTitle = new Translations(dto.MetaTitles);
         var metaDescription = new Translations(dto.MetaDescriptions);
         
-        return new Knife(
+        Knife knife = new Knife(
             id,
             dto.IsActive,
             imageFile,
@@ -128,5 +131,10 @@ public class KnifeDtoMapper : IProductDtoMapper<Knife, KnifeDto>
             allEngravings,
             allAttachments
         );
+
+        double engravingPrice = (await this._getEngravingPrice.GetPrice("uah")).Price;
+        knife.CalculateTotalPriceInUah(engravingPrice);
+
+        return knife;
     }
 }

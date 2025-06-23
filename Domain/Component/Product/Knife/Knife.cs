@@ -84,6 +84,29 @@ public class Knife : Product, IUpdatable<Knife>
         return TotalPriceInUah / exchangerRate;
     }
 
+    public double CalculateTotalPriceInUah(double engravingPriceInUah)
+    {
+        const double exchangerRate = 1;
+        double price = 0;
+        price += this.Blade.GetPrice(exchangerRate);
+        price += this.Color.GetPrice(exchangerRate);
+        price += this.Handle?.GetPrice(exchangerRate) ?? 0;
+        price += this.Sheath?.GetPrice(exchangerRate) ?? 0;
+        price += this.SheathColor?.GetPrice(this.Blade.Type , exchangerRate) ?? 0;
+
+        int sides = 0;
+        if (this.Engravings != null)
+        {
+            sides = this.Engravings.Select(engraving => engraving.Side).Distinct().Count();
+        }
+        price += sides * engravingPriceInUah;
+        
+        price += this.Attachments?.Sum(x => x.GetPrice(exchangerRate)) ?? 0;
+        
+        this.TotalPriceInUah = price;
+        return price;
+    }
+
     public void Update(Knife knife)
     {
         if (knife is { Sheath: not null, SheathColor: null })
@@ -109,5 +132,6 @@ public class Knife : Product, IUpdatable<Knife>
         this.SheathColor = knife.SheathColor;
         this.Engravings = knife.Engravings;
         this.Attachments = knife.Attachments;
+        this.TotalPriceInUah = knife.TotalPriceInUah;
     }
 }

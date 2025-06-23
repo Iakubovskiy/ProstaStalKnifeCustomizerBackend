@@ -118,17 +118,32 @@ public class KnifeController : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
-    public async Task<IActionResult> UpdateKnife(Guid id, [FromBody] KnifeDto knifeDto)
+    public async Task<IActionResult> UpdateKnife(
+        Guid id, 
+        [FromBody] KnifeDto knifeDto,
+        [FromHeader(Name = "Locale")] string locale,
+        [FromHeader(Name = "Currency")] string currency
+    )
     {
         try
         {
             var updatedKnife = await this._updateProductService.Update(id, knifeDto);
 
-            return Ok(updatedKnife);
+            return Ok(await KnifePresenter.Present(
+                updatedKnife,
+                locale,
+                currency,
+                this._getComponentPrice,
+                this._priceService
+            ));
         }
-        catch (Exception)
+        catch (ObjectNotFoundException e)
         {
-            return NotFound("Can't find knife");
+            return BadRequest(e.Message);
+        }
+        catch (ArgumentException e)
+        {
+            return BadRequest(e.Message);
         }
     }
 
