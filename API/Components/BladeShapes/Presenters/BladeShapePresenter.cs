@@ -18,7 +18,7 @@ public class BladeShapePresenter
     public Dictionary<string, string> Names { get; set; }
     public double Price { get; set; }
     public FileEntity BladeShapeModel { get; set; }
-    public FileEntity BladeShapeImage { get; set; }
+    public FileEntity? BladeShapeImage { get; set; }
     public FileEntity? SheathModelUrl { get; set; }
     public BladeCharacteristics BladeCharacteristicsModel { get; set; }
     public SheathPresenter? Sheath { get; set; } 
@@ -36,7 +36,7 @@ public class BladeShapePresenter
             Price = await getComponentPriceService.GetPrice(bladeShape, currency),
             Name = bladeShape.Name.GetTranslation(locale),
             BladeShapeModel = bladeShape.BladeShapeModel,
-            BladeShapeImage = bladeShape.BladeShapeModel,
+            BladeShapeImage = bladeShape.BladeShapePhoto,
             BladeCharacteristicsModel = bladeShape.BladeCharacteristics,
             IsActive = bladeShape.IsActive,
         };
