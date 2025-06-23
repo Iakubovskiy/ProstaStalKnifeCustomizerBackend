@@ -11,11 +11,12 @@ public class BladeShapePresenterForCanvas
     public Guid Id { get; set; }
     public string Name { get; set; }
     public double Price { get; set; }
+    public FileEntity? BladeShapeImage { get; set; }
     public FileEntity BladeShapeModel { get; set; }
     public FileEntity? SheathModel { get; set; }
     public BladeShapeType ShapeType { get; set; }
     public Guid? SheathId {get; set;}
-    public BladeCharacteristics bladeCharacteristicsModel { get; set; }
+    public BladeCharacteristics BladeCharacteristicsModel { get; set; }
 
     public static async Task<BladeShapePresenterForCanvas> Present(
         BladeShape bladeShape, 
@@ -28,7 +29,7 @@ public class BladeShapePresenterForCanvas
         bladeShapePresenterForCanvas.Id = bladeShape.Id;
         bladeShapePresenterForCanvas.Name = bladeShape.Name.GetTranslation(locale);
         bladeShapePresenterForCanvas.BladeShapeModel = bladeShape.BladeShapeModel;
-        bladeShapePresenterForCanvas.bladeCharacteristicsModel = bladeShape.BladeCharacteristics;
+        bladeShapePresenterForCanvas.BladeCharacteristicsModel = bladeShape.BladeCharacteristics;
         if(bladeShape.Sheath != null)
         {
             bladeShapePresenterForCanvas.SheathModel = bladeShape.Sheath.Model;
@@ -36,6 +37,7 @@ public class BladeShapePresenterForCanvas
         bladeShapePresenterForCanvas.Price = await priceService.GetPrice(bladeShape.Price, currency);
         bladeShapePresenterForCanvas.ShapeType = bladeShape.Type;
         bladeShapePresenterForCanvas.SheathId = bladeShape.Sheath?.Id;
+        bladeShapePresenterForCanvas.BladeShapeImage = bladeShape.BladeShapePhoto;
         
         return bladeShapePresenterForCanvas;
     }
