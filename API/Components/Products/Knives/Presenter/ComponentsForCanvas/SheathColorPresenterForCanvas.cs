@@ -12,6 +12,7 @@ public class SheathColorPresenterForCanvas
     public FileEntity? ColorMap { get; set; }
     public FileEntity? NormalMap { get; set; }
     public FileEntity? RoughnessMap { get; set; }
+    public string Color { get; set; }
     public string ColorCode { get; set; }
     public string EngravingColorCode { get; set; }
 
@@ -31,6 +32,7 @@ public class SheathColorPresenterForCanvas
         sheathColorPresenter.EngravingColorCode = sheathColor.EngravingColorCode;
         sheathColorPresenter.Prices = await SheathColorPriceByTypePresenter
             .PresentList(sheathColor.Prices, locale, currency, priceService);
+        sheathColorPresenter.Color = sheathColor.Color.GetTranslation(locale);
         
         return sheathColorPresenter;
     }

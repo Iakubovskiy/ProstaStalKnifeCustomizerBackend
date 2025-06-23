@@ -7,6 +7,7 @@ namespace API.Components.Products.Knives.Presenter.ComponentsForCanvas;
 public class HandleColorPresenterForCanvas
 {
     public Guid Id { get; set; }
+    public string Material { get; set; }
     public string Color { get; set; }
     public string ColorCode { get; set; }
     public double Price { get; set; }
@@ -31,6 +32,8 @@ public class HandleColorPresenterForCanvas
         handleColorPresenterForCanvas.NormalMap = handle.Texture?.NormalMap;
         handleColorPresenterForCanvas.RoughnessMap = handle.Texture?.RoughnessMap;
         handleColorPresenterForCanvas.Price = await priceService.GetPrice(handle.Price, currency);
+        handleColorPresenterForCanvas.Color = handle.Color.GetTranslation(locale);
+        handleColorPresenterForCanvas.Material = handle.Color.GetTranslation(locale);
         
         return handleColorPresenterForCanvas;
     }

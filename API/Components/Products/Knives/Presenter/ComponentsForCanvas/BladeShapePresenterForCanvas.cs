@@ -1,5 +1,6 @@
 using Application.Currencies;
 using Domain.Component.BladeShapes;
+using Domain.Component.BladeShapes.BladeCharacteristic;
 using Domain.Component.BladeShapes.BladeShapeTypes;
 using Domain.Files;
 
@@ -14,6 +15,7 @@ public class BladeShapePresenterForCanvas
     public FileEntity? SheathModel { get; set; }
     public BladeShapeType ShapeType { get; set; }
     public Guid? SheathId {get; set;}
+    public BladeCharacteristics bladeCharacteristicsModel { get; set; }
 
     public static async Task<BladeShapePresenterForCanvas> Present(
         BladeShape bladeShape, 
@@ -26,6 +28,7 @@ public class BladeShapePresenterForCanvas
         bladeShapePresenterForCanvas.Id = bladeShape.Id;
         bladeShapePresenterForCanvas.Name = bladeShape.Name.GetTranslation(locale);
         bladeShapePresenterForCanvas.BladeShapeModel = bladeShape.BladeShapeModel;
+        bladeShapePresenterForCanvas.bladeCharacteristicsModel = bladeShape.BladeCharacteristics;
         if(bladeShape.Sheath != null)
         {
             bladeShapePresenterForCanvas.SheathModel = bladeShape.Sheath.Model;

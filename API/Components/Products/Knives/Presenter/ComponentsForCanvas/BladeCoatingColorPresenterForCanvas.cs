@@ -9,6 +9,7 @@ public class BladeCoatingColorPresenterForCanvas
     public Guid Id { get; set; }
     public double Price { get; set; }
     public string Color { get; set; }
+    public string Type { get; set; }
     public string ColorCode { get; set; }
     public string EngravingColorCode { get; set; }
     public FileEntity? ColorMap { get; set; }
@@ -31,6 +32,7 @@ public class BladeCoatingColorPresenterForCanvas
         bladeCoatingColorPresenterForCanvas.NormalMap = bladeCoatingColor.Texture?.NormalMap;
         bladeCoatingColorPresenterForCanvas.RoughnessMap = bladeCoatingColor.Texture?.RoughnessMap;
         bladeCoatingColorPresenterForCanvas.Price = await priceService.GetPrice(bladeCoatingColor.Price, currency);
+        bladeCoatingColorPresenterForCanvas.Type = bladeCoatingColor.Type.GetTranslation(locale);
         
         return bladeCoatingColorPresenterForCanvas;
     }
