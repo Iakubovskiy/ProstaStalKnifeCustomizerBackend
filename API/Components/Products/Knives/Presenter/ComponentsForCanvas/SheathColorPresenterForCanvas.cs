@@ -15,12 +15,14 @@ public class SheathColorPresenterForCanvas
     public string Color { get; set; }
     public string ColorCode { get; set; }
     public string EngravingColorCode { get; set; }
+    public double BasePrice { get; set; }
 
     public static async Task<SheathColorPresenterForCanvas> Present(
         SheathColor sheathColor, 
         string locale, 
         string currency,
-        IPriceService priceService
+        IPriceService priceService,
+        double sheathPrice
     )
     {
         SheathColorPresenterForCanvas sheathColorPresenter = new SheathColorPresenterForCanvas();
@@ -33,6 +35,7 @@ public class SheathColorPresenterForCanvas
         sheathColorPresenter.Prices = await SheathColorPriceByTypePresenter
             .PresentList(sheathColor.Prices, locale, currency, priceService);
         sheathColorPresenter.Color = sheathColor.Color.GetTranslation(locale);
+        sheathColorPresenter.BasePrice = sheathPrice;
         
         return sheathColorPresenter;
     }

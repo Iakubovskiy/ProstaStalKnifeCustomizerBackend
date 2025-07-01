@@ -43,7 +43,7 @@ public class KnifeForCanvasPresenter
         if (knife.SheathColor != null)
         {
             presenter.SheathColor = await SheathColorPresenterForCanvas
-                .Present(knife.SheathColor, locale, currency, priceService);
+                .Present(knife.SheathColor, locale, currency, priceService, knife.Sheath?.Price ?? 0);
         }
 
         if (knife.Attachments != null)
