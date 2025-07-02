@@ -14,20 +14,14 @@ public class EngravingDtoMapper : IComponentDtoMapper<Engraving, EngravingDto>
 {
     private readonly IRepository<EngravingTag> _engravingTagRepository;
     private readonly IRepository<FileEntity> _fileRepository;
-    private readonly IGetEngravingPrice _getEngravingPrice;
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private const double MockedEngravingPrice = 0.0; 
     
     public EngravingDtoMapper(
         IRepository<EngravingTag> engravingTagRepository,
-        IRepository<FileEntity> fileRepository,
-        IGetEngravingPrice getEngravingPrice,
-        IHttpContextAccessor httpContextAccessor
+        IRepository<FileEntity> fileRepository
     )
     {
         this._engravingTagRepository = engravingTagRepository;
-        this._getEngravingPrice = getEngravingPrice;
-        this._httpContextAccessor = httpContextAccessor;
         this._fileRepository = fileRepository;
     }
     public async Task<Engraving> Map(EngravingDto dto)
