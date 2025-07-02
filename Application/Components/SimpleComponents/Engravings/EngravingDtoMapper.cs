@@ -16,6 +16,7 @@ public class EngravingDtoMapper : IComponentDtoMapper<Engraving, EngravingDto>
     private readonly IRepository<FileEntity> _fileRepository;
     private readonly IGetEngravingPrice _getEngravingPrice;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private const double MockedEngravingPrice = 0.0; 
     
     public EngravingDtoMapper(
         IRepository<EngravingTag> engravingTagRepository,
@@ -55,11 +56,6 @@ public class EngravingDtoMapper : IComponentDtoMapper<Engraving, EngravingDto>
         {
             image = await this._fileRepository.GetById(dto.PictureId.Value);
         }
-        string currency = _httpContextAccessor.HttpContext?.Request.Headers["Currency"].ToString()
-            ?? throw new Exception("Currency header is missing");
-        if (string.IsNullOrWhiteSpace(currency))
-            throw new Exception("Currency header is missing");
-        EngravingPrice engravingPrice = await this._getEngravingPrice.GetPrice(currency);
         
         foreach (Guid tagId in dto.TagsIds)
         {
@@ -79,7 +75,7 @@ public class EngravingDtoMapper : IComponentDtoMapper<Engraving, EngravingDto>
             engravingScale,
             tags,
             descriptions,
-            engravingPrice.Price,
+            MockedEngravingPrice,
             dto.IsActive
         );
     }
