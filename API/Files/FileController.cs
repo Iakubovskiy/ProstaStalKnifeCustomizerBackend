@@ -1,7 +1,9 @@
+using System.Data.Entity.Core;
 using Application.Files;
 using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Domain.Files;
+using Infrastructure.Files;
 
 namespace API.Files;
 
@@ -10,10 +12,10 @@ namespace API.Files;
 public class FileController : ControllerBase
 {
     private readonly IFileService _fileService;
-    private readonly IRepository<FileEntity> _fileRepository;
+    private readonly IFileRepository _fileRepository;
     public FileController(
         IFileService fileService,
-        IRepository<FileEntity> fileRepository
+        IFileRepository fileRepository
     )
     {
         this._fileService = fileService;
@@ -38,6 +40,34 @@ public class FileController : ControllerBase
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetFileById(Guid id)
     {
-        return Ok(await this._fileRepository.GetById(id));
+        try
+        {
+            return Ok(await this._fileRepository.GetById(id));
+        }
+        catch (ObjectNotFoundException e)
+        {
+            return NotFound(e.Message);
+        }
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> DeleteFile(Guid id)
+    {
+        
+        return BadRequest();
+        
+    }
+
+    [HttpGet("is-used/{id:guid}")]
+    public async Task<IActionResult> IsUsed(Guid id)
+    {
+        return Ok(await this._fileRepository.IsRecordReferencedAsync(id));
+    }
+
+    [HttpDelete("remove-unused/")]
+    public async Task<IActionResult> RemoveUnusedFiles()
+    {
+        await this._fileService.RemoveUnusedFiles();
+        return Ok();
     }
 }

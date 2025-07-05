@@ -106,6 +106,7 @@ using Infrastructure.Components.Products.Filters.Colors;
 using Infrastructure.Components.Products.Filters.Price;
 using Infrastructure.Components.Products.Filters.Styles;
 using Infrastructure.Components.Products.Knives;
+using Infrastructure.Files;
 using Infrastructure.Users;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -284,6 +285,7 @@ builder.Services.AddScoped<IAddReviewToProductRepository, ProductRepository>();
 builder.Services.AddScoped<IRepository<Review>, BaseRepository<Review>>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IGetUserWithOrder, UserRepository>();
+builder.Services.AddScoped<IFileRepository, FileRepository>();
 #endregion
 
 #region Mappers
