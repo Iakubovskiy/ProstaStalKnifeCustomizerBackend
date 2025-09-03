@@ -91,6 +91,8 @@ using Microsoft.IdentityModel.Tokens;
 using Application.Components.TexturedComponents.UseCases.Create;
 using Application.Components.TexturedComponents.UseCases.Update;
 using Application.Currencies;
+using Application.Files.FileConversion;
+using Application.Files.FileConversion.SvgToDxfConvertor;
 using Application.Orders;
 using Application.Orders.Dto;
 using Application.Orders.UseCases.ChangeClientData;
@@ -286,6 +288,7 @@ builder.Services.AddScoped<IRepository<Review>, BaseRepository<Review>>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IGetUserWithOrder, UserRepository>();
 builder.Services.AddScoped<IFileRepository, FileRepository>();
+builder.Services.AddScoped<IFileConversionService, SvgToDxfConvertorService>();
 #endregion
 
 #region Mappers
