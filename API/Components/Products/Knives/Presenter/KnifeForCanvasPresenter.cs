@@ -61,7 +61,7 @@ public class KnifeForCanvasPresenter
             presenter.Engravings = new List<EngravingPresenterForCanvas>();
             foreach (Engraving engraving in knife.Engravings)
             {
-                presenter.Engravings.Add(EngravingPresenterForCanvas.Present(engraving));
+                presenter.Engravings.Add(EngravingPresenterForCanvas.Present(engraving, locale));
             }
         }
         

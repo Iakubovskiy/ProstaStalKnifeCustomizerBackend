@@ -7,6 +7,7 @@ public class EngravingPresenterForCanvas
 {
     public Guid Id { get; private set; }
     public int Side { get; private set; }
+    public string? Name { get; private set; }
     public string? Text { get; private set; }
     public string? Font { get; private set; }
     public FileEntity? Picture { get; private set; }
@@ -20,11 +21,12 @@ public class EngravingPresenterForCanvas
     public double ScaleY { get; private set; }
     public double ScaleZ { get; private set; }
 
-    public static EngravingPresenterForCanvas Present(Engraving engraving)
+    public static EngravingPresenterForCanvas Present(Engraving engraving, string locale)
     {
         EngravingPresenterForCanvas engravingPresenterForCanvas  = new EngravingPresenterForCanvas();
         engravingPresenterForCanvas.Id = engraving.Id;
         engravingPresenterForCanvas.Side = engraving.Side;
+        engravingPresenterForCanvas.Name = engraving.Name.GetTranslation(locale);
         engravingPresenterForCanvas.Text = engraving.Text;
         engravingPresenterForCanvas.Font = engraving.Font;
         if (engraving.Picture != null)
