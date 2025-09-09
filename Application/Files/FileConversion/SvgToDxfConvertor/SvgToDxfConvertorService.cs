@@ -49,8 +49,8 @@ public class SvgToDxfConvertorService: IFileConversionService
                 paint.TextSize = fontSize;
 
                 using var path = paint.GetTextPath(text, (float)textXLocation, (float)textYLocation);
-                var transformMatrix = SKMatrix.CreateScale(-1, -1);
-                path.Transform(transformMatrix);
+                var transformMatrix = SKMatrix.CreateScale(1, -1);
+                path.Transform(in transformMatrix);
                 var polylines = ConvertSkiaPathToPolylines(path);
                 foreach (var polyline in polylines)
                 {
