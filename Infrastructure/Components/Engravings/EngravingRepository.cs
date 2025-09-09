@@ -18,6 +18,7 @@ public class EngravingRepository : ComponentRepository<Engraving>
         return await this.Set
             .Include(engraving => engraving.Tags)
             .Include(engraving => engraving.Picture)
+            .Include(engraving => engraving.PictureForLaser)
             .ToListAsync();
     }
 
@@ -26,6 +27,7 @@ public class EngravingRepository : ComponentRepository<Engraving>
         return await this.Set.Where(component => component.IsActive)
             .Include(engraving => engraving.Tags)
             .Include(engraving => engraving.Picture)
+            .Include(engraving => engraving.PictureForLaser)
             .ToListAsync();
     }
     public override async Task<Engraving> GetById(Guid id)
@@ -33,6 +35,7 @@ public class EngravingRepository : ComponentRepository<Engraving>
         return await this.Set
             .Include(engraving => engraving.Tags)
             .Include(engraving => engraving.Picture)
+            .Include(engraving => engraving.PictureForLaser)
             .FirstOrDefaultAsync(engraving => engraving.Id == id) 
                ?? throw new ObjectNotFoundException($"Entity not found {nameof(Engraving)}");
     }
