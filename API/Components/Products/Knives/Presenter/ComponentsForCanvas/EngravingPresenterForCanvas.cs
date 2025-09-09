@@ -11,6 +11,7 @@ public class EngravingPresenterForCanvas
     public string? Text { get; private set; }
     public string? Font { get; private set; }
     public FileEntity? Picture { get; private set; }
+    public FileEntity? PictureForLaser { get; private set; }
     public double LocationX { get; private set; }
     public double LocationY { get; private set; }
     public double LocationZ { get; private set; }
@@ -32,6 +33,11 @@ public class EngravingPresenterForCanvas
         if (engraving.Picture != null)
         {
             engravingPresenterForCanvas.Picture = engraving.Picture;
+        }
+
+        if (engraving.PictureForLaser != null)
+        {
+            engravingPresenterForCanvas.PictureForLaser = engraving.PictureForLaser;
         }
 
         engravingPresenterForCanvas.LocationX = engraving.EngravingPosition.LocationX;
