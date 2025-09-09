@@ -6,6 +6,7 @@ public class EngravingDto
     public Dictionary<string, string> Names { get; set; }
     public Dictionary<string, string> Descriptions { get; set; }
     public Guid? PictureId { get; set; }
+    public Guid? PictureForLaserId { get; set; }
     public int Side { get; set; }
     public string? Text { get; set; }
     public string? Font { get; set; }

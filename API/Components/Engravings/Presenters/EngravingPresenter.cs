@@ -16,6 +16,7 @@ public class EngravingPresenter
     public string? Text { get; set; }
     public string? Font { get; set; }
     public FileEntity? Picture { get; set; }
+    public FileEntity? PictureForLaser { get; set; }
     public EngravingPosition Position { get; set; }
     public EngravingRotation Rotation { get; set; }
     public EngravingScale Scale { get; set; }
@@ -34,6 +35,7 @@ public class EngravingPresenter
             Text = engraving.Text,
             Font = engraving.Font,
             Picture = engraving.Picture,
+            PictureForLaser = engraving.PictureForLaser,
             Position = engraving.EngravingPosition,
             Rotation = engraving.EngravingRotation,
             Scale = engraving.EngravingScale,

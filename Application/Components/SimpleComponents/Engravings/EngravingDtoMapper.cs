@@ -45,10 +45,16 @@ public class EngravingDtoMapper : IComponentDtoMapper<Engraving, EngravingDto>
             dto.ScaleY,
             dto.ScaleZ
         );
-        FileEntity image = null;
+        FileEntity? image = null;
         if(dto.PictureId is not null)
         {
             image = await this._fileRepository.GetById(dto.PictureId.Value);
+        }
+
+        FileEntity? pictureForLaser = null;
+        if (dto.PictureForLaserId is not null)
+        {
+            pictureForLaser = await this._fileRepository.GetById(dto.PictureForLaserId.Value);
         }
         
         foreach (Guid tagId in dto.TagsIds)
@@ -64,6 +70,7 @@ public class EngravingDtoMapper : IComponentDtoMapper<Engraving, EngravingDto>
             dto.Text,
             dto.Font,
             image,
+            pictureForLaser,
             engravingPosition,
             engravingRotation,
             engravingScale,

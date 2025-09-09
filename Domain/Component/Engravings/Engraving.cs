@@ -22,6 +22,7 @@ public class Engraving : IEntity, IComponent, IUpdatable<Engraving>
         string? text, 
         string? font, 
         FileEntity? picture,
+        FileEntity? pictureForLaser,
         EngravingPosition engravingPosition, 
         EngravingRotation engravingRotation, 
         EngravingScale engravingScale,
@@ -38,6 +39,7 @@ public class Engraving : IEntity, IComponent, IUpdatable<Engraving>
         this.Text = text;
         this.Font = font;
         this.Picture = picture;
+        this.PictureForLaser = pictureForLaser;
         this.EngravingPosition = engravingPosition;
         this.EngravingRotation = engravingRotation;
         this.EngravingScale = engravingScale;
@@ -57,6 +59,7 @@ public class Engraving : IEntity, IComponent, IUpdatable<Engraving>
     [MaxLength(100)]
     public string? Font { get; private set; }
     public FileEntity? Picture { get; private set; }
+    public FileEntity? PictureForLaser { get; private set; }
     [Required]
     public EngravingPosition EngravingPosition { get; private set; }
     [Required]
@@ -91,6 +94,7 @@ public class Engraving : IEntity, IComponent, IUpdatable<Engraving>
         this.Text = engraving.Text;
         this.Font = engraving.Font;
         this.Picture = engraving.Picture;
+        this.PictureForLaser = engraving.PictureForLaser;
         this.EngravingPosition = engraving.EngravingPosition;
         this.EngravingRotation = engraving.EngravingRotation;
         this.EngravingScale = engraving.EngravingScale;
