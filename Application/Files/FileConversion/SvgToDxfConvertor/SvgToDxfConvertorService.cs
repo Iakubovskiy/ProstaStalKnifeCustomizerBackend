@@ -22,18 +22,18 @@ public class SvgToDxfConvertorService: IFileConversionService
             throw new Exception("You are using svg to dxf convertor, please use different converter");
         }
         
-        var stream = fileFrom.OpenReadStream();
-        var svg = SvgDocument.Open<SvgDocument>(stream);
+        Stream stream = fileFrom.OpenReadStream();
+        SvgDocument svg = SvgDocument.Open<SvgDocument>(stream);
         
-        var dxf = new DxfDocument();
-        foreach (var svgElement in svg.Children)
+        DxfDocument dxf = new DxfDocument();
+        foreach (SvgElement svgElement in svg.Children)
         {
             if (svgElement is SvgText svgText)
             {
                 string text = svgText.Text.Trim();
                 float fontSize = svgText.FontSize.Value;
                 string rawSvgFontFamily = svgText.FontFamily;
-                var rawSvgFontFamilyArray = rawSvgFontFamily.Split(',');
+                string[] rawSvgFontFamilyArray = rawSvgFontFamily.Split(',');
                 string svgFontFamily = rawSvgFontFamilyArray[0].Replace("\"", "");
                 
                 string svgFontFamilyBase64 = FontOptions.GetFontOptions()[svgFontFamily];
@@ -42,17 +42,17 @@ public class SvgToDxfConvertorService: IFileConversionService
                 double textXLocation = svgText.X.FirstOrDefault().Value;
                 double textYLocation = svgText.Y.FirstOrDefault().Value;
 
-                using var fontStream = new MemoryStream(fontBytes);
-                using var typeface = SKTypeface.FromStream(fontStream);
-                using var paint = new SKPaint();
+                using MemoryStream fontStream = new MemoryStream(fontBytes);
+                using SKTypeface typeface = SKTypeface.FromStream(fontStream);
+                using SKPaint paint = new SKPaint();
                 paint.Typeface = typeface;
                 paint.TextSize = fontSize;
 
-                using var path = paint.GetTextPath(text, (float)textXLocation, (float)textYLocation);
-                var transformMatrix = SKMatrix.CreateScale(1, -1);
+                using SKPath path = paint.GetTextPath(text, (float)textXLocation, (float)textYLocation);
+                SKMatrix transformMatrix = SKMatrix.CreateScale(1, -1);
                 path.Transform(in transformMatrix);
-                var polylines = ConvertSkiaPathToPolylines(path);
-                foreach (var polyline in polylines)
+                List<Polyline2D> polylines = ConvertSkiaPathToPolylines(path);
+                foreach (Polyline2D polyline in polylines)
                 {
                     dxf.Entities.Add(polyline);
                 }
@@ -74,10 +74,10 @@ public class SvgToDxfConvertorService: IFileConversionService
     
     private List<Polyline2D> ConvertSkiaPathToPolylines(SKPath path)
     {
-        var polylines = new List<Polyline2D>();
-        var iterator = path.CreateIterator(false);
-        var points = new SKPoint[4];
-        var currentPolyline = new Polyline2D();
+        List<Polyline2D> polylines = new List<Polyline2D>();
+        SKPath.Iterator iterator = path.CreateIterator(false);
+        SKPoint[] points = new SKPoint[4];
+        Polyline2D currentPolyline = new Polyline2D();
     
         SKPathVerb verb;
         while ((verb = iterator.Next(points)) != SKPathVerb.Done)
@@ -98,16 +98,16 @@ public class SvgToDxfConvertorService: IFileConversionService
                     break;
                 
                 case SKPathVerb.Quad:
-                    var quadPoints = ApproximateQuadCurve(points[0], points[1], points[2]);
-                    foreach (var point in quadPoints)
+                    List<SKPoint> quadPoints = ApproximateQuadCurve(points[0], points[1], points[2]);
+                    foreach (SKPoint point in quadPoints)
                     {
                         currentPolyline.Vertexes.Add(new Polyline2DVertex(point.X, point.Y));
                     }
                     break;
                     
                 case SKPathVerb.Cubic:
-                    var cubicPoints = ApproximateCubicCurve(points[0], points[1], points[2], points[3]);
-                    foreach (var point in cubicPoints)
+                    List<SKPoint> cubicPoints = ApproximateCubicCurve(points[0], points[1], points[2], points[3]);
+                    foreach (SKPoint point in cubicPoints)
                     {
                         currentPolyline.Vertexes.Add(new Polyline2DVertex(point.X, point.Y));
                     }
@@ -132,7 +132,7 @@ public class SvgToDxfConvertorService: IFileConversionService
     
     private List<SKPoint> ApproximateQuadCurve(SKPoint p0, SKPoint p1, SKPoint p2, int segments = 10)
     {
-        var points = new List<SKPoint>();
+        List<SKPoint> points = new List<SKPoint>();
         
         for (int i = 1; i <= segments; i++)
         {
@@ -147,7 +147,7 @@ public class SvgToDxfConvertorService: IFileConversionService
     
     private List<SKPoint> ApproximateCubicCurve(SKPoint p0, SKPoint p1, SKPoint p2, SKPoint p3, int segments = 10)
     {
-        var points = new List<SKPoint>();
+        List<SKPoint> points = new List<SKPoint>();
         
         for (int i = 1; i <= segments; i++)
         {
