@@ -23,6 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Components\Products\Knives\UseCases\" />
       <Folder Include="Files\FileConversion\DxfToSvgConvertor\" />
     </ItemGroup>
 

@@ -27,7 +27,8 @@ public class CompletedSheath : Product, IUpdatable<CompletedSheath>
         Sheath sheath, 
         SheathColor sheathColor, 
         List<Engraving>? engravings, 
-        List<Attachment>? attachments
+        List<Attachment>? attachments,
+        DateTime createdAt
     ) : base(
         id, 
         isActive, 
@@ -37,7 +38,8 @@ public class CompletedSheath : Product, IUpdatable<CompletedSheath>
         description, 
         metaTitle, 
         metaDescription,
-        tags
+        tags,
+        createdAt
     )
     {
         this.Sheath = sheath;

@@ -110,6 +110,8 @@ using Infrastructure.Components.Products.Filters.Styles;
 using Infrastructure.Components.Products.Knives;
 using Infrastructure.Files;
 using Infrastructure.Users;
+using Application.Components.Products.Knives.UseCases.RemoveOld;
+using Application.Components.Products.UseCases.RemoveOld;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -288,6 +290,9 @@ builder.Services.AddScoped<IRepository<Review>, BaseRepository<Review>>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IGetUserWithOrder, UserRepository>();
 builder.Services.AddScoped<IFileRepository, FileRepository>();
+builder.Services.AddScoped<IGetNotActiveProducts<Product>, ProductRepository>();
+builder.Services.AddScoped<IGetOldUnusedProducts<Product>, ProductRepository>();
+
 builder.Services.AddScoped<IFileConversionService, SvgToDxfConvertorService>();
 #endregion
 
@@ -416,6 +421,8 @@ builder.Services.AddScoped<IUpdateOrderItemQuantityService, UpdateOrderItemQuant
 builder.Services.AddScoped<IRemoveOrderItem, RemoveOrderItemService>();
     
 builder.Services.AddScoped<IPriceService, PriceService>();
+
+builder.Services.AddScoped<IRemoveOldProduct<Knife>, RemoveOldUnusedKnivesService>();
 #endregion
 
 #region Presenters
@@ -447,6 +454,10 @@ builder.Services.Scan(scan => scan
 
 builder.Services.AddTransient<MainSeeder>();
 
+#endregion
+
+#region timeEvents
+builder.Services.AddHostedService<ExecuteKnivesCleanEveryMonth>();
 #endregion
 
 var app = builder.Build();
@@ -488,7 +499,6 @@ if (!app.Environment.IsEnvironment("Test"))
 // await mainSeeder.SeedAsync();
 // #endregion
 
-app.Run();
 
 app.Run();
 

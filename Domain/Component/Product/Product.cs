@@ -21,6 +21,7 @@ public abstract class Product : IEntity, IComponent, IUpdatable<Product>
         Translations metaTitle, 
         Translations metaDescription,
         List<ProductTag> tags,
+        DateTime createdAt,
         List<Review>? reviews = null
     )
     {
@@ -34,6 +35,7 @@ public abstract class Product : IEntity, IComponent, IUpdatable<Product>
         this.MetaDescription = metaDescription;
         this.Tags = tags;
         this.Reviews = reviews;
+        this.CreatedAt = createdAt;
     }
     
     public Guid Id { get; private set;  }
@@ -44,9 +46,9 @@ public abstract class Product : IEntity, IComponent, IUpdatable<Product>
     public Translations Description { get; private set; }
     public Translations MetaTitle { get; private set; }
     public Translations MetaDescription { get; private set; }
-    public List<ProductTag> Tags { get; set; }
-    
-    public List<Review>? Reviews { get; set; }
+    public List<ProductTag> Tags { get; private set; }
+    public List<Review>? Reviews { get; private set; }
+    public DateTime CreatedAt { get; private set; }
 
     public abstract double GetPrice(double exchangerRate);
 

@@ -10,7 +10,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Components.Products;
 
-public class ProductRepository : ComponentRepository<Product>, IProductRepository, IGetProductPaginatedList, IAddReviewToProductRepository
+public class ProductRepository : ComponentRepository<Product>, 
+    IProductRepository, 
+    IGetProductPaginatedList, 
+    IAddReviewToProductRepository, 
+    IGetNotActiveProducts<Product>,
+    IGetOldUnusedProducts<Product>
 {
     public ProductRepository(DBContext context) : base(context)
     {
@@ -228,5 +233,27 @@ public class ProductRepository : ComponentRepository<Product>, IProductRepositor
                    .Include(p => (p as Knife).Blade)
                    .FirstOrDefaultAsync(p => p.Id == id) 
                ?? throw new ObjectNotFoundException("Product not found");
+    }
+
+    public async Task<List<Product>> GetNotActiveProducts()
+    {
+        return await this.Set
+            .Where(p => !p.IsActive)
+            .ToListAsync();
+    }
+
+    public async Task<List<Product>> GetOldUnusedProducts()
+    {
+        return await this.Set
+            .Where(p => !p.IsActive && (DateTime.UtcNow - p.CreatedAt).TotalDays > 30)
+            .ToListAsync();
+    }
+    
+    public async Task<List<Guid>> GetOldUnusedProductIds()
+    {
+        return await this.Set
+            .Where(p => !p.IsActive && (DateTime.UtcNow - p.CreatedAt).TotalDays > 30)
+            .Select(p => p.Id)
+            .ToListAsync();
     }
 }

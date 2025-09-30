@@ -85,7 +85,7 @@ public class HandleSeeder : ISeeder
         var handle3 = new Handle(
             new Guid("33c3d3e3-f3a3-43b3-a3c3-d3e3f3a3b3c3"),
             new Translations(new Dictionary<string, string> { { "en", "Dark Wood" }, { "ua", "Темне дерево" }, }),
-            null,
+            "#ff43ff",
             true,
             new Translations(new Dictionary<string, string> { { "en", "Walnut" }, { "ua", "Горіх" }, }),
             textureWood,
@@ -124,7 +124,7 @@ public class HandleSeeder : ISeeder
         var handle6 = new Handle(
             new Guid("66f6a6b6-c6d6-46e6-d6f6-a6b6c6d6e6f6"),
             new Translations(new Dictionary<string, string> { { "en", "Brown Leather" }, { "ua", "Коричнева шкіра" }, }),
-            null,
+            "#434221",
             true,
             new Translations(new Dictionary<string, string> { { "en", "Leather Wrapped" }, { "ua", "Обмотка шкірою" }, }),
             textureLeather,
@@ -163,7 +163,7 @@ public class HandleSeeder : ISeeder
         var handle9 = new Handle(
             new Guid("99c9d9e9-f9a9-49b9-a9c9-d9e9f9a9b9c9"),
             new Translations(new Dictionary<string, string> { { "en", "Light Wood" }, { "ua", "Світле дерево" }, }),
-            null,
+            "629301",
             false,
             new Translations(new Dictionary<string, string> { { "en", "Birch" }, { "ua", "Береза" }, }),
             textureWood,

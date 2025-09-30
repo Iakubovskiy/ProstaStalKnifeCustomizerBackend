@@ -12,6 +12,10 @@ public class KnifeConfiguration : IEntityTypeConfiguration<Knife>
             .WithMany();
         builder.HasMany(k => k.Attachments)
             .WithMany();
+        builder.Property(k => k.CreatedAt).HasConversion(
+            v => v.Kind == DateTimeKind.Utc ? v : DateTime.SpecifyKind(v, DateTimeKind.Utc),
+            v => DateTime.SpecifyKind(v, DateTimeKind.Utc)
+        );
         builder.Property(k => k.TotalPriceInUah)
             .HasComputedColumnSql("public.get_knife_total_price(\"Id\")", stored:true);
     }

@@ -48,7 +48,7 @@ public class BladeCoatingColorSeeder : ISeeder
             new Translations(new Dictionary<string, string> { { "en", "Satin Finish" }, { "ua", "Сатинування" }, }),
             0.0,
             new Translations(new Dictionary<string, string> { { "en", "Natural Steel" }, { "ua", "Натуральна сталь" }, }),
-            null,
+            "#479520",
             "#101010",
             textureMetal,
             null
@@ -148,7 +148,7 @@ public class BladeCoatingColorSeeder : ISeeder
             new Translations(new Dictionary<string, string> { { "en", "Two-Tone" }, { "ua", "Двоколірний" }, }),
             600.0,
             new Translations(new Dictionary<string, string> { { "en", "Satin & Black" }, { "ua", "Сатин та чорний" }, }),
-            null,
+            "#566hjd",
             "#FFFFFF",
             textureCarbon,
             null

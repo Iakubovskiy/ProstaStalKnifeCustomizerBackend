@@ -33,7 +33,8 @@ public class Knife : Product, IUpdatable<Knife>
         Sheath? sheath,
         SheathColor? sheathColor,
         List<Engraving>? engravings,
-        List<Attachment>? attachments
+        List<Attachment>? attachments,
+        DateTime createdAt
     ) : base(
         id, 
         isActive, 
@@ -43,7 +44,8 @@ public class Knife : Product, IUpdatable<Knife>
         description, 
         metaTitle, 
         metaDescription,
-        tags
+        tags,
+        createdAt
     )
     {
         if (sheath != null && sheathColor == null)

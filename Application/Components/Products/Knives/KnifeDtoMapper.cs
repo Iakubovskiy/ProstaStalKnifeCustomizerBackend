@@ -113,6 +113,8 @@ public class KnifeDtoMapper : IProductDtoMapper<Knife, KnifeDto>
         var metaTitle = new Translations(dto.MetaTitles);
         var metaDescription = new Translations(dto.MetaDescriptions);
         
+        DateTime createdAt = DateTime.Now;
+        
         Knife knife = new Knife(
             id,
             dto.IsActive,
@@ -129,7 +131,8 @@ public class KnifeDtoMapper : IProductDtoMapper<Knife, KnifeDto>
             sheath,
             sheathColor,
             allEngravings,
-            allAttachments
+            allAttachments,
+            createdAt
         );
 
         double engravingPrice = (await this._getEngravingPrice.GetPrice("uah")).Price;

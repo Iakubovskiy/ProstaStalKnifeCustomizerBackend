@@ -72,7 +72,7 @@ public class SheathColorSeeder : ISeeder
         SetPrivateProperty(color4, nameof(SheathColor.Prices), prices4);
         sheathColors.Add(color4);
         
-        var color5 = CreateSheathColorInstance(new Guid("e5e5e5e5-5555-4555-8555-e5e5e5e5e5e5"), new Translations(new Dictionary<string, string> { { "en", "Carbon Fiber" }, { "ua", "Карбон" }, }), false, null, new Translations(new Dictionary<string, string> { { "en", "Kydex" }, { "ua", "Кайдекс" }, }), "#EAEAEA", textureMatte, file1);
+        var color5 = CreateSheathColorInstance(new Guid("e5e5e5e5-5555-4555-8555-e5e5e5e5e5e5"), new Translations(new Dictionary<string, string> { { "en", "Carbon Fiber" }, { "ua", "Карбон" }, }), false, "#81613C", new Translations(new Dictionary<string, string> { { "en", "Kydex" }, { "ua", "Кайдекс" }, }), "#EAEAEA", textureMatte, file1);
         var prices5 = allBladeShapeTypes.Select((type, index) => new SheathColorPriceByType(type, color5, 500.0 + (index * 20.0))).ToList();
         SetPrivateProperty(color5, nameof(SheathColor.Prices), prices5);
         sheathColors.Add(color5);

@@ -95,6 +95,7 @@ public class CompletedSheathDtoMapper : IProductDtoMapper<CompletedSheath, Compl
         var description = new Translations(dto.Descriptions);
         var metaTitle = new Translations(dto.MetaTitles);
         var metaDescription = new Translations(dto.MetaDescriptions);
+        DateTime createdAt = DateTime.Now;
 
         return new CompletedSheath(
             id,
@@ -109,7 +110,8 @@ public class CompletedSheathDtoMapper : IProductDtoMapper<CompletedSheath, Compl
             baseSheath,
             sheathColor,
             allEngravings,
-            allAttachments
+            allAttachments,
+            createdAt
         );
     }
 }

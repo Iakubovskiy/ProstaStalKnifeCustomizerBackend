@@ -56,6 +56,7 @@ public class AttachmentDtoMapper : IProductDtoMapper<Attachment, AttachmentDto>
         var metaDescription = new Translations(dto.MetaDescriptions);
         var color = new Translations(dto.Colors);
         var material = new Translations(dto.Materials);
+        DateTime createdAt = DateTime.Now;
 
         return new Attachment(
             id,
@@ -71,7 +72,8 @@ public class AttachmentDtoMapper : IProductDtoMapper<Attachment, AttachmentDto>
             color,
             dto.Price,
             material,
-            modelFile
+            modelFile,
+            createdAt
         );
     }
 }

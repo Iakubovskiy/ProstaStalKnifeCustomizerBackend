@@ -24,7 +24,8 @@ public class Attachment : Product, IUpdatable<Attachment>
         Translations color, 
         double price, 
         Translations material,
-        FileEntity model
+        FileEntity model,
+        DateTime createdAt
     ) : base(
         id, 
         isActive, 
@@ -34,7 +35,8 @@ public class Attachment : Product, IUpdatable<Attachment>
         description, 
         metaTitle, 
         metaDescription,
-        tags
+        tags,
+        createdAt
     )
     {
         if (string.IsNullOrWhiteSpace(model.FileUrl) || !Uri.IsWellFormedUriString(model.FileUrl, UriKind.Absolute))

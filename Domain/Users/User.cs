@@ -43,12 +43,13 @@ namespace Domain.Users
 
         public static bool operator == (User first, User second)
         {
+            if (ReferenceEquals(first, second)) return true;
             return first.Equals(second);
         }
     
         public static bool operator != (User first, User second)
         {
-            return !first.Equals(second);
+            return !(first == second);
         }
     }
 
