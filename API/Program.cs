@@ -456,9 +456,9 @@ builder.Services.AddTransient<MainSeeder>();
 
 #endregion
 
-// #region timeEvents
-// builder.Services.AddHostedService<ExecuteKnivesCleanEveryMonth>();
-// #endregion
+#region timeEvents
+builder.Services.AddHostedService<ExecuteKnivesCleanEveryMonth>();
+#endregion
 
 var app = builder.Build();
 

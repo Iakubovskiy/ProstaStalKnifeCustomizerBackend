@@ -1,1 +1,1 @@
-web: dotnet WorkshopBackend.dll
+web: dotnet API.dll
