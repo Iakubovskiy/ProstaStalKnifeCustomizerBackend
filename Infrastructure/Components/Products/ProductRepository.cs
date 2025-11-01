@@ -11,9 +11,9 @@ using Microsoft.EntityFrameworkCore;
 namespace Infrastructure.Components.Products;
 
 public class ProductRepository : ComponentRepository<Product>, 
-    IProductRepository, 
-    IGetProductPaginatedList, 
-    IAddReviewToProductRepository, 
+    IProductRepository,
+    IGetProductPaginatedList,
+    IAddReviewToProductRepository,
     IGetNotActiveProducts<Product>,
     IGetOldUnusedProducts<Product>
 {
@@ -249,7 +249,7 @@ public class ProductRepository : ComponentRepository<Product>,
             .ToListAsync();
     }
     
-    public async Task<List<Guid>> GetOldUnusedProductIds()
+    public async Task<List<Guid>> GetOldUnusedIds()
     {
         return await this.Set
             .Where(p => !p.IsActive && (DateTime.UtcNow - p.CreatedAt).TotalDays > 30)

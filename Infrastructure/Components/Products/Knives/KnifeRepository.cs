@@ -1,12 +1,11 @@
 using System.Data.Entity.Core;
-using Domain.Component.Product;
 using Domain.Component.Product.Knife;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Components.Products.Knives;
 
-public class KnifeRepository : ComponentRepository<Knife>
+public class KnifeRepository : ComponentRepository<Knife>, IGetOldUnusedProducts<Knife>
 {
     public KnifeRepository(DBContext context)
     : base(context)
@@ -86,5 +85,20 @@ public class KnifeRepository : ComponentRepository<Knife>
                    .ThenInclude(review => review.User)
                    .FirstOrDefaultAsync(product => product.Id == id)
                ?? throw new ObjectNotFoundException($"Entity not found {nameof(Knife)}");
+    }
+
+    public async Task<List<Knife>> GetOldUnusedProducts()
+    {
+        return await this.Set.Where(
+            product => !product.IsActive && 
+            (DateTime.Now - product.CreatedAt).TotalDays > 30
+        ).ToListAsync();
+    }
+    public async Task<List<Guid>> GetOldUnusedIds()
+    {
+        return await this.Set
+            .Where(p => !p.IsActive && (DateTime.UtcNow - p.CreatedAt).TotalDays > 30)
+            .Select(p => p.Id)
+            .ToListAsync();
     }
 }

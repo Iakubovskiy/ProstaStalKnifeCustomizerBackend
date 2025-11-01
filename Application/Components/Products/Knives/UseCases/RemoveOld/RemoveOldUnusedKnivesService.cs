@@ -9,12 +9,12 @@ namespace Application.Components.Products.Knives.UseCases.RemoveOld;
 
 public class RemoveOldUnusedKnivesService : IRemoveOldProduct<Knife>
 {
-    private readonly IGetOldUnusedProducts<Product> _getOldUnusedProducts;
+    private readonly IGetOldUnusedProducts<Knife> _getOldUnusedProducts;
     private readonly IComponentRepository<Knife> _componentRepository;
     private readonly IFileService _fileService;
 
     public RemoveOldUnusedKnivesService(
-        IGetOldUnusedProducts<Product> getOldUnusedProducts, 
+        IGetOldUnusedProducts<Knife> getOldUnusedProducts, 
         IComponentRepository<Knife> componentRepository,
         IFileService fileService
     )
@@ -26,7 +26,7 @@ public class RemoveOldUnusedKnivesService : IRemoveOldProduct<Knife>
 
     public async Task RemoveOldUnusedProducts()
     {
-        List<Guid> unusedProductIds = await this._getOldUnusedProducts.GetOldUnusedProductIds();
+        List<Guid> unusedProductIds = await this._getOldUnusedProducts.GetOldUnusedIds();
         foreach (Guid productId in unusedProductIds)
         {
             await this._componentRepository.Delete(productId);

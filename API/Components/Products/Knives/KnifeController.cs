@@ -3,6 +3,7 @@ using API.Components.Products.Knives.Presenter;
 using Application.Components.Prices;
 using Microsoft.AspNetCore.Mvc;
 using Application.Components.Products.Knives;
+using Application.Components.Products.Knives.UseCases.RemoveOld;
 using Application.Components.Products.UseCases.Activate;
 using Application.Components.Products.UseCases.Create;
 using Application.Components.Products.UseCases.Deactivate;

@@ -292,6 +292,7 @@ builder.Services.AddScoped<IGetUserWithOrder, UserRepository>();
 builder.Services.AddScoped<IFileRepository, FileRepository>();
 builder.Services.AddScoped<IGetNotActiveProducts<Product>, ProductRepository>();
 builder.Services.AddScoped<IGetOldUnusedProducts<Product>, ProductRepository>();
+builder.Services.AddScoped<IGetOldUnusedProducts<Knife>, KnifeRepository>();
 
 builder.Services.AddScoped<IFileConversionService, SvgToDxfConvertorService>();
 #endregion
